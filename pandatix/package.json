@@ -1,0 +1,14 @@
+{
+  "name": "pandatix",
+  "version": "1.0.1",
+  "private": true,
+  "description": "Tiket wahana Lembah Pandawa",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
