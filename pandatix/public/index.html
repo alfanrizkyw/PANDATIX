@@ -384,7 +384,7 @@ function drawTab(anim){
   if(tab==='tiket'){b.innerHTML=`<div class="tkts">${o.tickets.map((t,i)=>tkHTML(t,anim?i:0)).join('')}</div><div class="petunjuk"><span style="color:var(--p)">${ico('pin',24,2)}</span><div><b>Petunjuk Masuk Wahana</b><p>Pindai QR langsung dari layar handphone pada pintu putar otomatis (Turnstile) zona wahana yang dituju. Pastikan kecerahan layar maksimal saat scan.</p></div></div>`}
   else{b.innerHTML=`<div class="card pnota"><div class="h"><h3>Nota Pemesanan</h3><span class="chip">Lunas</span></div><div class="meta"><div><small>Nomor Pesanan</small><b>${o.nota}</b></div><div style="text-align:right"><small>Waktu Transaksi</small><span>${fDate(o.confirmedAt)}, ${fTime(o.confirmedAt).replace('.',':')}</span></div></div>
   ${o.items.map(i=>`<div class="nr"><span>${esc(i.name)} × ${i.qty}</span><b>${rp(i.price*i.qty)}</b></div>`).join('')}<div class="nr"><span>Biaya admin</span><b>${rp(o.fee)}</b></div><div class="nr"><span>Metode pembayaran</span><span class="mt">${ico(METHODS.find(m=>m[0]===o.method)[3],18,2)}${o.method==='qris'?'QRIS':METHODS.find(m=>m[0]===o.method)[1]}</span></div>
-  <div class="nt" style="border-top:1px solid var(--line);padding-top:14px;margin-top:8px"><span>Total dibayar</span><b>${rp(o.total)}</b></div></div><button class="btn btn-out block again" onclick="badOrder()">${ico('bag',18,2)} Pesan tiket lagi</button>`}
+  <div class="nt" style="border-top:1px solid var(--line);padding-top:14px;margin-top:8px"><span>Total dibayar</span><b>${rp(o.total)}</b></div></div><button class="btn btn-out block again" onclick="dlNota(this)">${ico('dl',18,2)} Download nota (JPG)</button>`}
 }
 function bigQr(code){$('#qmQr').innerHTML=qrSvg(code,320,1);$('#qmCode').textContent=code;$('#qm').classList.add('show')}
 $('#qm').addEventListener('click',e=>{if(e.target.id==='qm')e.target.classList.remove('show')});
@@ -414,6 +414,52 @@ async function dlOne(i,btn){const t=cur.tickets[i];btn.disabled=true;const h=btn
 async function dlAll(){const b=$('#dlall');b.disabled=true;const o=$('#dlo');o.classList.add('show');const L=cur.tickets;
   for(let i=0;i<L.length;i++){$('#dlt').textContent=`Mengunduh tiket ${i+1} dari ${L.length}`;$('#dlp').style.width=((i+1)/L.length*100)+'%';save(await ticketBlob(L[i]),`PANDATIX-${L[i].code}.jpg`);await new Promise(r=>setTimeout(r,450))}
   setTimeout(()=>{o.classList.remove('show');$('#dlp').style.width=0;b.disabled=false},500)}
+/* JPG nota pemesanan */
+async function notaBlob(o){
+  try{await document.fonts.load('800 38px "Schibsted Grotesk"');await document.fonts.load('700 28px "Schibsted Grotesk"');await document.fonts.load('600 20px "Schibsted Grotesk"');await document.fonts.load('500 18px "Schibsted Grotesk"')}catch(e){}
+  const F='"Schibsted Grotesk",system-ui,sans-serif',W=800,items=o.items||[],H=790+items.length*42,cv=document.createElement('canvas');cv.width=W;cv.height=H;const c=cv.getContext('2d');
+  c.fillStyle='#F3F6F3';c.fillRect(0,0,W,H);
+  c.fillStyle='#FFFFFF';rr(c,36,36,W-72,H-72,28);c.fill();c.strokeStyle='#E1EAE3';c.lineWidth=2.5;c.stroke();
+  c.fillStyle='#1B6B44';rr(c,36,36,W-72,100,28);c.fill();c.fillRect(36,90,W-72,46);
+  c.fillStyle='#FFFFFF';c.font=`800 38px ${F}`;c.textAlign='left';c.fillText('PANDATIX',70,102);
+  c.font=`500 20px ${F}`;c.textAlign='right';c.fillText('Lembah Pandawa, Pandaan',W-70,98);
+  c.textAlign='left';c.fillStyle='#181C19';c.font=`700 28px ${F}`;c.fillText('Nota Pemesanan',70,182);
+  const chipW=90,chipH=34,chipX=W-70-chipW,chipY=156;c.fillStyle='#E2F2E9';rr(c,chipX,chipY,chipW,chipH,17);c.fill();
+  c.fillStyle='#1B6B44';c.font=`700 16px ${F}`;c.textAlign='center';c.fillText('Lunas',chipX+chipW/2,chipY+23);
+  c.strokeStyle='#E1EAE3';c.lineWidth=1.5;c.beginPath();c.moveTo(70,208);c.lineTo(W-70,208);c.stroke();
+  c.textAlign='left';c.fillStyle='#7B837E';c.font=`500 16px ${F}`;c.fillText('Nomor Pesanan',70,240);
+  c.textAlign='right';c.fillText('Waktu Transaksi',W-70,240);
+  c.textAlign='left';c.fillStyle='#181C19';c.font=`700 22px ${F}`;c.fillText(o.nota||o.code||'-',70,270);
+  c.textAlign='right';c.fillStyle='#4A524D';c.font=`600 17px ${F}`;
+  const txTime=o.confirmedAt?`${fDate(o.confirmedAt)}, ${fTime(o.confirmedAt).replace('.',':')}`:(o.createdAt?`${fDate(o.createdAt)}, ${fTime(o.createdAt).replace('.',':')}`:'-');
+  c.fillText(txTime,W-70,270);
+  c.textAlign='left';c.fillStyle='#7B837E';c.font=`500 16px ${F}`;c.fillText('Pemesan',70,308);
+  c.fillStyle='#181C19';c.font=`700 20px ${F}`;c.fillText(o.nama||'-',70,334);
+  c.setLineDash([6,6]);c.strokeStyle='#D5DFD8';c.lineWidth=1.5;c.beginPath();c.moveTo(70,360);c.lineTo(W-70,360);c.stroke();c.setLineDash([]);
+  let y=398;
+  items.forEach(it=>{c.textAlign='left';c.fillStyle='#181C19';c.font=`500 20px ${F}`;c.fillText(`${it.name} × ${it.qty}`,70,y);c.textAlign='right';c.font=`700 20px ${F}`;c.fillText(rp(it.price*it.qty),W-70,y);y+=42});
+  y+=4;c.strokeStyle='#E1EAE3';c.lineWidth=1.5;c.beginPath();c.moveTo(70,y);c.lineTo(W-70,y);c.stroke();
+  y+=34;c.textAlign='left';c.fillStyle='#7B837E';c.font=`500 18px ${F}`;c.fillText('Biaya admin',70,y);
+  c.textAlign='right';c.fillStyle='#181C19';c.font=`600 18px ${F}`;c.fillText(rp(o.fee||0),W-70,y);
+  y+=34;const mObj=METHODS.find(m=>m[0]===o.method),mLabel=o.method==='qris'?'QRIS':(mObj?mObj[1]:(o.method||'-'));
+  c.textAlign='left';c.fillStyle='#7B837E';c.font=`500 18px ${F}`;c.fillText('Metode pembayaran',70,y);
+  c.textAlign='right';c.fillStyle='#181C19';c.font=`600 18px ${F}`;c.fillText(mLabel,W-70,y);
+  y+=18;c.strokeStyle='#E1EAE3';c.lineWidth=1.5;c.beginPath();c.moveTo(70,y);c.lineTo(W-70,y);c.stroke();
+  y+=40;c.textAlign='left';c.fillStyle='#181C19';c.font=`700 22px ${F}`;c.fillText('Total dibayar',70,y);
+  c.textAlign='right';c.fillStyle='#1B6B44';c.font=`800 30px ${F}`;c.fillText(rp(o.total||0),W-70,y);
+  y+=24;c.setLineDash([6,6]);c.strokeStyle='#D5DFD8';c.lineWidth=1.5;c.beginPath();c.moveTo(70,y);c.lineTo(W-70,y);c.stroke();c.setLineDash([]);
+  y+=24;const qrSz=110,qx=(W-qrSz)/2;
+  c.fillStyle='#fff';rr(c,qx-8,y-8,qrSz+16,qrSz+16,12);c.fill();c.strokeStyle='#E1EAE3';c.lineWidth=1.5;c.stroke();
+  qrCanvas(c,o.code,qx,y,qrSz);
+  y+=qrSz+24;c.textAlign='center';c.fillStyle='#181C19';c.font=`700 17px ${F}`;c.fillText('Kode Pesanan: '+o.code,W/2,y);
+  y+=24;c.fillStyle='#7B837E';c.font=`500 14.5px ${F}`;c.fillText('Simpan nota digital ini sebagai bukti transaksi resmi.',W/2,y);
+  return new Promise(r=>cv.toBlob(r,'image/jpeg',.93));
+}
+async function dlNota(btn){
+  btn.disabled=true;const h=btn.innerHTML;
+  btn.innerHTML='<span class="spin" style="border-color:var(--p-200);border-top-color:var(--p)"></span> Mengunduh…';
+  try{save(await notaBlob(cur),`NOTA-${cur.nota||cur.code}.jpg`)}catch(e){toast('Gagal mengunduh nota.',true)}finally{btn.disabled=false;btn.innerHTML=h}
+}
 route();
 </script>
 </body>
