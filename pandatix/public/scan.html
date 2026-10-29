@@ -21,11 +21,19 @@
 .rc{padding:6px 0}.rc h3{font-size:15px;padding:12px 18px 6px}
 .ri{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 18px;border-top:1px solid var(--line);font-size:13px;animation:fadeUp .3s both}
 .ri b{display:block;font-size:13px}.ri small{color:var(--ink-3);font-size:11.5px}
-.res{position:fixed;inset:0;z-index:100;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#fff;text-align:center;padding:30px}
-.res.show{display:flex;animation:fadeUp .15s both}
-.res.ok{background:var(--p)}.res.no{background:var(--e)}
-.res .big{width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.2);display:grid;place-items:center;animation:pop .4s both}
-.res h2{font-size:38px;color:#fff;line-height:1}.res p{font-size:17px;opacity:.95;max-width:340px}.res small{opacity:.8;font-size:13px;margin-top:14px}
+.res{position:fixed;inset:0;z-index:100;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#fff;text-align:center;padding:28px;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
+.res.show{display:flex;animation:fadeUp .2s cubic-bezier(.16,1,.3,1) both}
+.res.ok{background:linear-gradient(180deg,#1F7A4D 0%,#165A38 100%)}
+.res.no{background:linear-gradient(180deg,#D93829 0%,#B32418 100%)}
+.res .big{width:116px;height:116px;border-radius:50%;background:rgba(255,255,255,.22);border:2px solid rgba(255,255,255,.35);display:grid;place-items:center;animation:pop .4s both;box-shadow:0 12px 32px rgba(0,0,0,.22)}
+.res h2{font-size:38px;font-weight:800;color:#fff;line-height:1;letter-spacing:.02em;margin-top:4px}
+.res p{font-size:17.5px;font-weight:500;line-height:1.45;opacity:.98;max-width:420px;margin:0}
+.res small{opacity:.85;font-size:13.5px;margin-top:6px}
+.res .cust{display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.22);padding:6px 16px;border-radius:999px;font-size:13px;font-weight:600}
+.res .res-btn{margin-top:16px;display:inline-flex;align-items:center;gap:8px;padding:13px 26px;border-radius:999px;background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.65);color:#fff;font-size:14.5px;font-weight:700;letter-spacing:.02em;box-shadow:0 8px 24px rgba(0,0,0,.2);transition:transform .15s,background .15s;animation:pulseBtn 2s ease-in-out infinite}
+.res .res-btn:hover{background:rgba(255,255,255,.35);transform:scale(1.03)}
+.res .res-btn:active{transform:scale(.97)}
+@keyframes pulseBtn{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.45),0 8px 24px rgba(0,0,0,.2)}50%{box-shadow:0 0 0 10px rgba(255,255,255,0),0 8px 24px rgba(0,0,0,.2)}}
 .lock{min-height:100vh;display:none;place-items:center;padding:24px;text-align:center}.lock .card{padding:30px;max-width:380px;display:flex;flex-direction:column;gap:12px;align-items:center}
 </style></head><body>
 <div id="main" hidden>
@@ -62,15 +70,51 @@ async function startCam(silent){
 function man(e){e.preventDefault();const v=$('#mc').value.trim();if(v){submit(v);$('#mc').value=''}}
 let hideT;
 function beep(ok){try{ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=ok?880:220;o.type=ok?'sine':'square';g.gain.value=.15;o.connect(g);g.connect(ctx.destination);o.start();o.stop(ctx.currentTime+(ok?.18:.4))}catch(e){}if(navigator.vibrate)navigator.vibrate(ok?80:[120,60,120])}
-function showRes(ok,title,msg,sub){const r=$('#res');r.className='res show '+(ok?'ok':'no');r.innerHTML=`<div class="big">${ico(ok?'check':'x',64,3)}</div><h2>${title}</h2><p>${msg}</p><small>${sub||'Ketuk untuk menutup'}</small>`;beep(ok);clearTimeout(hideT);hideT=setTimeout(hideRes,ok?1800:3200)}
-function hideRes(){$('#res').classList.remove('show')}
+function showRes(ok,title,msg,sub,nama){
+  const r=$('#res');
+  r.className='res show '+(ok?'ok':'no');
+  clearTimeout(hideT);
+  const custHtml=nama?`<div class="cust">${ico('user',14,2)} Pemesan: ${esc(nama)}</div>`:'';
+  const actionHtml=ok
+    ?`<small>${sub||'Silakan masuk'}</small>`
+    :`${custHtml}<div class="res-btn">👉 Ketuk di mana saja untuk menutup &amp; scan lagi! ✨</div>`;
+  r.innerHTML=`<div class="big">${ico(ok?'check':'x',64,3)}</div><h2>${title}</h2><p>${msg}</p>${actionHtml}`;
+  beep(ok);
+  if(ok)hideT=setTimeout(hideRes,1800);
+}
+function hideRes(){
+  $('#res').classList.remove('show');
+  if(scn){scn.pause(1000);scn.last=''}
+}
 async function submit(code){
-  if(busy)return;busy=true;scn&&scn.pause(2200);
-  try{const r=await api('/api/scan/redeem',{method:'POST',headers:H,body:{code}});stats(r);
-    if(r.ok)showRes(true,'VALID',`${esc(r.nama)} · tiket ${r.ticketNo} dari ${r.total}<br>${esc(r.tiket)}`,'Silakan masuk');
-    else showRes(false,'DITOLAK',r.reason==='used'?`Sudah dipakai pukul ${fTime(r.usedAt)} WIB`:esc(r.msg),r.nama?'Pemesan: '+esc(r.nama):'')}
-  catch(e){if(e.status===401)lockUI('Akses dicabut',e.message);else showRes(false,'GAGAL',esc(e.message),'Scan ulang')}
-  finally{busy=false}
+  if(busy||$('#res').classList.contains('show'))return;
+  busy=true;scn&&scn.pause(2200);
+  try{
+    const r=await api('/api/scan/redeem',{method:'POST',headers:H,body:{code}});
+    stats(r);
+    if(r.ok){
+      showRes(true,'VALID',`<b>${esc(r.nama)}</b> · tiket ${r.ticketNo} dari ${r.total}<br>${esc(r.tiket)}`,'Silakan masuk');
+    }else{
+      let msg = esc(r.msg);
+      if(r.reason==='not_found'){
+        msg = 'Waduh, tiketnya gaib nih! Nggak ketemu di sistem 🙈<br><span style="font-size:14px;opacity:.9">Coba periksa lagi atau scan ulang kodenya ya!</span>';
+      }else if(r.reason==='used'){
+        msg = `Yah, tiket ini udah dipakai seru-seruan tadi pukul <b>${fTime(r.usedAt)} WIB</b>! 🎢<br><span style="font-size:14px;opacity:.9">Satu tiket hanya berlaku untuk sekali masuk wahana ya!</span>`;
+      }else if(r.reason==='unpaid'){
+        msg = 'Ups! Tiket ini belum aktif atau belum lunas nih 💸<br><span style="font-size:14px;opacity:.9">Silakan selesaikan pembayaran di kasir terlebih dahulu.</span>';
+      }else if(r.reason==='expired'){
+        msg = 'Waduh, masa berlaku tiket ini sudah lewat nih ⏰<br><span style="font-size:14px;opacity:.9">Tiket tidak berlaku untuk hari ini.</span>';
+      }else if(r.reason==='wrong_ride'){
+        msg = `Wah salah pintu wahana nih! 🎡<br><span style="font-size:14px;opacity:.9">${esc(r.msg)}</span>`;
+      }
+      showRes(false,'DITOLAK!',msg,'',r.nama);
+    }
+  }catch(e){
+    if(e.status===401)lockUI('Akses dicabut',e.message);
+    else showRes(false,'GAGAL!',`Waduh terjadi kendala: ${esc(e.message)}<br><span style="font-size:14px;opacity:.9">Yuk coba scan sekali lagi!</span>`);
+  }finally{
+    busy=false;
+  }
 }
 init();
 </script></body></html>
