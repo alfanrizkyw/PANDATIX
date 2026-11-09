@@ -27,26 +27,97 @@
 .lg td,.lg th{text-align:left!important}.lg td:last-child{color:inherit!important;font-weight:400!important;text-align:left!important}
 .mq{position:fixed;inset:0;z-index:150;background:rgba(10,30,20,.65);backdrop-filter:blur(4px);display:none;place-items:center;padding:20px}.mq.show{display:grid}
 .mq .in{background:#fff;border-radius:26px;padding:26px;text-align:center;width:min(92vw,380px);animation:pop .35s both}.mq svg{width:100%;height:auto}.mq b{display:block;font-size:18px;margin:12px 0 4px}.mq p{font-size:12.5px;color:var(--ink-2);margin-bottom:14px}
+/* popularitas wahana */
+.popx .pnl-h{flex-wrap:wrap}
+.pstats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
+.pstat{border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;background:var(--surface);min-width:0}
+.pstat small{display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.pstat b{display:block;font-size:23px;letter-spacing:-.03em;margin:7px 0 3px;font-variant-numeric:tabular-nums;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pstat span{font-size:11.5px;color:var(--ink-2)}
+.prows{display:grid;gap:13px;margin-top:22px}
+.prw{display:grid;grid-template-columns:30px 1fr;gap:14px;align-items:center;min-width:0}
+.prw .rk{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-size:12.5px;font-weight:700;background:var(--surface);border:1.5px solid var(--line);color:var(--ink-2)}
+.prw.lead .rk{background:var(--p);border-color:var(--p);color:#fff}
+.prw .pl{display:flex;align-items:center;gap:9px;margin-bottom:6px;flex-wrap:wrap}
+.prw .pl b{font-size:13.5px;min-width:0}
+.prw .pl .pv{margin-left:auto;font-size:13px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.prw .pl .pv i{font-style:normal;font-weight:500;color:var(--ink-3);font-size:11.5px;margin-left:4px}
+.prw .track{height:12px;border-radius:99px;background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.prw .track i{display:block;height:100%;border-radius:99px;transform-origin:left;animation:pgrow .7s cubic-bezier(.22,.9,.3,1) both}
+@keyframes pgrow{from{transform:scaleX(0)}}
+.popfoot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);margin-top:22px;padding-top:16px;font-size:12px;color:var(--ink-2)}
+.popload{display:flex;align-items:center;gap:11px;padding:38px 4px;color:var(--ink-3);font-size:13px}
+.popload .spin{border-color:var(--p-200);border-top-color:var(--p)}
+.popx .tb{margin-top:24px}
+.popx .tb td:nth-child(2),.popx .tb th:nth-child(2){text-align:left!important;color:var(--ink)}
+.popx .tb td:nth-child(2){font-weight:600}
+@media(max-width:640px){.pstats{grid-template-columns:1fr}.prw{grid-template-columns:26px 1fr;gap:10px}.prw .rk{width:26px;height:26px}}
 @media(max-width:900px){.frm,.frm.u{grid-template-columns:1fr 1fr}.frm .btn{grid-column:1/-1}.wr{grid-template-columns:1fr;gap:10px}}
 @media(max-width:520px){.frm,.frm.u{grid-template-columns:1fr}}
 </style></head><body>
 <script src="/vendor/qrcode.js"></script><script src="/common.js"></script><script src="/staff.js"></script>
 <script>
-let D=null,tab='petugas';
+let D=null,tab='petugas',POP=null,popRange='7d',popBusy=false;
 Shell.boot({roles:[],roleLabel:'Admin',idPrefix:'ADMIN',onReady(main){
-  main.innerHTML=`<div class="ttl"><div><h1>Panel Admin</h1><p>Kelola petugas wahana, link scan, dan akun staf. Satu wahana hanya boleh punya satu petugas.</p></div></div>
+  main.innerHTML=`<div class="ttl"><div><h1>Panel Admin</h1><p>Kelola petugas wahana, link scan, dan akun staf. Pantau wahana yang paling sering dikunjungi. Satu wahana hanya boleh punya satu petugas.</p></div></div>
   <div class="kpis" id="kp"></div><div class="tabs3" id="tb"></div><div id="body"></div>
   <div class="mq" id="mq"><div class="in"><div id="mqQ"></div><b id="mqT"></b><p>Pindai dengan HP petugas untuk membuka halaman scan wahana ini.</p><button class="btn btn-out block" onclick="$('#mq').classList.remove('show')">Tutup</button></div></div>`;
   load();const d=debounce(load,200);Shell.stream({scan:d,order:d,_reconnect:d});
 }});
-async function load(){try{D=await api('/api/admin/overview');draw()}catch(e){toast(e.message,true)}}
+async function load(){try{D=await api('/api/admin/overview');if(tab==='popularitas')POP=null;draw()}catch(e){toast(e.message,true)}}
 const lnk=t=>location.origin+'/s/'+t;
 function draw(){
   const act=D.petugas.filter(p=>p.active).length;
   const K=[['Tiket masuk hari ini',D.stats.scansToday,'scan valid'],['Scan ditolak',D.stats.rejectedToday,'hari ini'],['Wahana terjaga',act+' / '+D.wahana.length,'petugas aktif'],['Pesanan menunggu',D.stats.pending,'belum dikonfirmasi']];
   $('#kp').innerHTML=K.map(k=>`<div class="card kpi"><small>${k[0]}</small><div class="v">${k[1]}</div><div class="f"><span>${k[2]}</span><span></span></div></div>`).join('');
-  $('#tb').innerHTML=[['petugas','Petugas Wahana'],['staf','Akun Kasir & Keuangan'],['log','Aktivitas Scan']].map(t=>`<button class="tb2 ${tab===t[0]?'on':''}" onclick="tab='${t[0]}';draw()">${t[1]}</button>`).join('');
-  $('#body').innerHTML=tab==='petugas'?vPetugas():tab==='staf'?vStaf():vLog();
+  $('#tb').innerHTML=[['petugas','Petugas Wahana'],['popularitas','Popularitas Wahana'],['staf','Akun Kasir & Keuangan'],['log','Aktivitas Scan']].map(t=>`<button class="tb2 ${tab===t[0]?'on':''}" onclick="tab='${t[0]}';draw()">${t[1]}</button>`).join('');
+  $('#body').innerHTML=tab==='petugas'?vPetugas():tab==='popularitas'?vPop():tab==='staf'?vStaf():vLog();
+  if(tab==='popularitas'&&!POP&&!popBusy)loadPop();
+}
+const POP_RANGE=[['hari','Hari ini'],['7d','7 hari'],['semua','Semua']];
+const POP_HUES=[['#1B6B44','#4F9C74'],['#C2410C','#F97316'],['#1D4ED8','#38BDF8'],['#7E22CE','#C084FC'],['#0E7490','#22D3EE'],['#B45309','#FBBF24'],['#BE185D','#EC4899'],['#15803D','#4ADE80'],['#0F766E','#5EEAD4'],['#9A3412','#FB923C'],['#4338CA','#818CF8'],['#A16207','#FDE68A'],['#166534','#86EFAC']];
+function vPop(){
+  return `<section class="card pnl popx"><div class="pnl-h"><div><h3>Wahana Paling Sering Dikunjungi</h3><p>Peringkat dari scan valid petugas wahana. Jika belum ada scan pada periode ini, peringkat memakai jumlah tiket terbit.</p></div>
+  <div class="seg">${POP_RANGE.map(r=>`<button class="${popRange===r[0]?'on':''}" onclick="setPop('${r[0]}')">${r[1]}</button>`).join('')}</div></div>
+  <div id="popBody">${popInner()}</div></section>`;
+}
+async function loadPop(){
+  if(popBusy)return;popBusy=true;
+  try{POP=await api('/api/popularity?range='+popRange)}catch(e){POP={error:e.message}}
+  popBusy=false;
+  if(tab==='popularitas'&&$('#popBody'))$('#popBody').innerHTML=popInner();
+}
+function setPop(r){if(popBusy||r===popRange)return;popRange=r;POP=null;draw()}
+function popInner(){
+  if(!POP)return `<div class="popload"><span class="spin"></span> Menghitung kunjungan…</div>`;
+  if(POP.error)return `<div class="empty">Gagal memuat data: ${esc(POP.error)}<div style="margin-top:14px"><button class="btn-w" onclick="POP=null;draw()">${ico('refresh',14,2)} Coba lagi</button></div></div>`;
+  const rows=POP.rows,basis=POP.basis,unit=basis==='kunjungan'?'kunjungan':'tiket';
+  const max=Math.max(1,...rows.map(r=>r[basis])),tot=rows.reduce((s,r)=>s+r[basis],0);
+  const lead=rows.find(r=>r[basis]>0);
+  if(!tot)return `<div class="empty">Belum ada ${unit} pada periode ini.<div style="margin-top:14px"><button class="btn-w" onclick="setPop('semua')">Lihat semua periode</button></div></div>`;
+  const top=rows.filter(r=>r[basis]>0).slice(0,8);
+  return `<div class="pstats">
+    <div class="pstat"><small>Total ${unit}</small><b>${tot.toLocaleString('id-ID')}</b><span>${POP_RANGE.find(r=>r[0]===popRange)[1].toLowerCase()}</span></div>
+    <div class="pstat"><small>Wahana teramai</small><b title="${esc(lead.nama)}">${esc(lead.nama)}</b><span>${lead[basis]} ${unit} · ${Math.round(lead[basis]/tot*100)}% pangsa</span></div>
+    <div class="pstat"><small>Wahana tercatat</small><b>${rows.filter(r=>r[basis]>0).length} / ${rows.length}</b><span>${POP.totalTiket.toLocaleString('id-ID')} tiket terbit periode ini</span></div>
+  </div>
+  <div class="prows">${top.map((r,i)=>{const h=POP_HUES[i%POP_HUES.length],pct=Math.max(3,Math.round(r[basis]/max*100));
+    return `<div class="prw ${i===0?'lead':''}"><div class="rk">${i+1}</div><div style="min-width:0">
+    <div class="pl"><b>${esc(r.nama)}</b><span class="chip">${r.kategori}</span><span class="pv">${r[basis].toLocaleString('id-ID')}<i>${unit}</i></span></div>
+    <div class="track"><i style="width:${pct}%;background:linear-gradient(90deg,${h[0]},${h[1]});animation-delay:${i*45}ms"></i></div></div></div>`}).join('')}</div>
+  <table class="tb lg"><thead><tr><th>#</th><th>Wahana</th><th>Kategori</th><th>Kunjungan</th><th>Tiket terbit</th><th>Pangsa</th></tr></thead>
+  <tbody>${rows.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.nama)}</td><td><span class="chip">${r.kategori}</span></td><td>${r.kunjungan.toLocaleString('id-ID')}</td><td>${r.tiket.toLocaleString('id-ID')}</td><td>${tot?Math.round(r[basis]/tot*100):0}%</td></tr>`).join('')}</tbody></table>
+  <div class="popfoot"><span>Basis peringkat: <b>${basis==='kunjungan'?'scan valid petugas':'tiket terbit'}</b> · diperbarui ${fTime(POP.updatedAt)} WIB</span>
+  <button class="btn-w" onclick="popCsv()">${ico('dl',14,2)} Unduh CSV</button></div>`;
+}
+function popCsv(){
+  if(!POP||POP.error||!POP.rows)return;
+  const q=s=>'"'+String(s).replace(/"/g,'""')+'"';
+  const head=['Peringkat','Wahana','Kategori','Kunjungan','Tiket Terbit','Basis'];
+  const lines=[head.map(q).join(',')].concat(POP.rows.map((r,i)=>[i+1,r.nama,r.kategori,r.kunjungan,r.tiket,POP.basis].map(q).join(',')));
+  const blob=new Blob(['\uFEFF'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='popularitas-wahana-'+popRange+'.csv';a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),2000);toast('CSV popularitas diunduh');
 }
 function vPetugas(){
   const taken=new Set(D.petugas.filter(p=>p.active).map(p=>p.wahanaId));

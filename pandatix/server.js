@@ -224,9 +224,27 @@ function report(range) {
     all: sum(() => true), days, rows, todayKey: today, yesterdayKey: yest };
 }
 
+function popularity(range) {
+  const now = Date.now(), today = dayKey(now), week = dayKey(now - 6 * 864e5);
+  const inRange = at => range === 'hari' ? dayKey(at) === today : range === '7d' ? dayKey(at) >= week : true;
+  const visits = {}, issued = {};
+  for (const s of db.scans) if (s.result === 'ok' && inRange(s.at)) visits[s.wahanaId] = (visits[s.wahanaId] || 0) + 1;
+  const confirmed = new Map(db.orders.filter(o => o.status === 'confirmed').map(o => [o.id, o]));
+  for (const t of db.tickets) {
+    const o = confirmed.get(t.orderId);
+    if (!o || !inRange(o.confirmedAt)) continue;
+    for (const id of t.rides) issued[id] = (issued[id] || 0) + 1;
+  }
+  const rows = WAHANA.map(w => ({ id: w.id, nama: w.nama, kategori: w.kategori, kunjungan: visits[w.id] || 0, tiket: issued[w.id] || 0 }));
+  const totalKunjungan = rows.reduce((s, r) => s + r.kunjungan, 0);
+  const basis = totalKunjungan > 0 ? 'kunjungan' : 'tiket';
+  rows.sort((a, b) => (b[basis] - a[basis]) || (b.tiket - a.tiket) || a.nama.localeCompare(b.nama));
+  return { range, basis, rows, totalKunjungan, totalTiket: rows.reduce((s, r) => s + r.tiket, 0), updatedAt: now };
+}
+
 /* ---------- http ---------- */
 function err(status, msg) { const e = new Error(msg); e.status = status; return e; }
-const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.jpg': 'image/jpeg', '.png': 'image/png', '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.json': 'application/json', '.webmanifest': 'application/manifest+json' };
+const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.png': 'image/png', '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.json': 'application/json', '.mp4': 'video/mp4', '.webm': 'video/webm', '.webmanifest': 'application/manifest+json' };
 const send = (res, status, obj, headers = {}) => { const b = JSON.stringify(obj); res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', ...headers }); res.end(b); };
 const readBody = req => new Promise((ok, no) => { let b = ''; req.on('data', d => { b += d; if (b.length > 1e5) { req.destroy(); no(err(413, 'Terlalu besar')); } }); req.on('end', () => { try { ok(b ? JSON.parse(b) : {}); } catch (e) { no(err(400, 'JSON tidak valid')); } }); });
 const cookies = req => Object.fromEntries((req.headers.cookie || '').split(';').map(s => s.trim().split('=')).filter(a => a[0]).map(a => [a[0], decodeURIComponent(a[1] || '')]));
@@ -247,6 +265,7 @@ async function api(req, res, u) {
   const m = req.method, p = u.pathname;
   const ip = req.socket.remoteAddress;
   if (m === 'GET' && p === '/api/catalog') return send(res, 200, { wahana: WAHANA, paket: PAKET, fee: ADMIN_FEE, qtyMax: QTY_MAX, today: dayKey() });
+  if (m === 'GET' && p === '/api/popularity') { const r = u.searchParams.get('range'); return send(res, 200, popularity(['hari', '7d', 'semua'].includes(r) ? r : '7d')); }
 
   /* pelanggan */
   if (m === 'POST' && p === '/api/orders') { limit('ord' + ip, 30, 60e3); const o = createOrder(await readBody(req)); return send(res, 201, { ...pubOrder(o), key: o.key }); }
@@ -382,7 +401,20 @@ const server = http.createServer(async (req, res) => {
     const fp = path.join(PUB, file);
     if (!fp.startsWith(PUB) || !fs.existsSync(fp) || fs.statSync(fp).isDirectory()) throw err(404, 'Halaman tidak ditemukan');
     const ext = path.extname(fp);
-    res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream', 'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=3600', 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'no-referrer' });
+    const type = MIME[ext] || 'application/octet-stream';
+    const size = fs.statSync(fp).size;
+    const base = { 'Content-Type': type, 'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=3600', 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'no-referrer', 'Accept-Ranges': 'bytes' };
+    const range = req.headers.range;
+    if (range && /^bytes=\d*-\d*$/.test(range)) {
+      const [s, e] = range.replace('bytes=', '').split('-');
+      let start = s ? parseInt(s, 10) : 0;
+      let end = e ? parseInt(e, 10) : size - 1;
+      if (isNaN(start) || isNaN(end) || start > end || start >= size) { res.writeHead(416, { ...base, 'Content-Range': `bytes */${size}` }); return res.end(); }
+      if (end >= size) end = size - 1;
+      res.writeHead(206, { ...base, 'Content-Range': `bytes ${start}-${end}/${size}`, 'Content-Length': end - start + 1 });
+      return fs.createReadStream(fp, { start, end }).pipe(res);
+    }
+    res.writeHead(200, { ...base, 'Content-Length': size });
     fs.createReadStream(fp).pipe(res);
   } catch (e) {
     if (res.headersSent) return res.end();

@@ -4,237 +4,560 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1B6B44">
+<meta name="description" content="Pesan tiket wahana Lembah Pandawa — Bali Van Java, Pandaan. Pilih paket, bayar, tiket QR langsung terbit.">
 <title>PANDATIX · Tiket Wahana Lembah Pandawa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/app.css">
+<link rel="stylesheet" href="/app.css?v=glass3">
 <style>
-.page{width:100%;max-width:1100px;margin:0 auto;padding:16px 16px 56px;animation:fadeUp .45s cubic-bezier(.22,.9,.3,1) both}
-.narrow{max-width:620px}
-/* hero */
-.hero{position:relative;height:230px;border-radius:24px;overflow:hidden;isolation:isolate;background:#16314a;box-shadow:var(--shadow)}
-.hero-bg{position:absolute;inset:-6%;animation:kb 22s ease-in-out infinite alternate;will-change:transform}
-.hero-bg img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 54%}
-@keyframes kb{from{transform:scale(1) translate3d(0,0,0)}to{transform:scale(1.1) translate3d(-1.5%,-1%,0)}}
-.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,30,20,.05) 25%,rgba(8,30,20,.72) 100%);z-index:1}
-.hero-in{position:absolute;inset:0;z-index:2;padding:20px 22px;display:flex;flex-direction:column;justify-content:flex-end;color:#fff;gap:10px}
-.wx{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 14px;border-radius:999px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(8px);font-size:13px;font-weight:500;animation:fadeUp .7s .1s both}
-.wx b{font-weight:700}.wx s{width:1px;height:14px;background:rgba(255,255,255,.6)}
-.hero h1{color:#fff;font-size:clamp(24px,5.4vw,40px);line-height:1.1;max-width:520px;animation:fadeUp .7s .2s both}
-.hero p{color:rgba(255,255,255,.9);font-size:13.5px;max-width:460px;animation:fadeUp .7s .3s both}
-.cloud{position:absolute;z-index:0;opacity:.8;animation:drift 40s linear infinite}
-@keyframes drift{from{transform:translateX(-30%)}to{transform:translateX(130%)}}
+html{scroll-behavior:auto}
+:root{--hh:63px}
+@media(max-width:560px){:root{--hh:61px}}
+@media(max-width:340px){:root{--hh:55px}}
+.page{width:100%;max-width:1100px;margin:0 auto;padding:18px 16px 40px;animation:fadeUp .4s cubic-bezier(.22,.9,.3,1) both}
+.narrow{max-width:640px}
+.bleed{width:100vw;margin-left:calc(50% - 50vw)}
+/* header */
+#shellTop{display:contents}
+.hdr .hwrap{max-width:1100px;gap:10px}
+.hspacer{flex:1;min-width:0}
+.hactions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.locbtn{display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 16px;border-radius:999px;background:var(--p-cont);border:1.5px solid var(--p-200);color:var(--p-dark);font-weight:700;font-size:13px;flex-shrink:0;transition:.15s}
+.locbtn:hover{background:var(--p-200)}.locbtn:active{transform:scale(.96)}
+.lang{position:relative;flex-shrink:0}
+.langbtn{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 11px 0 13px;border-radius:999px;background:var(--bg);border:1.5px solid var(--line-2);color:var(--ink);font-weight:800;font-size:12.5px;letter-spacing:.02em;transition:.15s}
+.langbtn:hover{border-color:var(--p-300);color:var(--p)}
+.langbtn:active{transform:scale(.96)}
+.langbtn .cv{display:inline-flex;color:var(--ink-3);transition:transform .22s cubic-bezier(.22,.9,.3,1)}
+.lang.open .langbtn{border-color:var(--p);background:var(--p-cont);color:var(--p-dark)}
+.lang.open .langbtn .cv{transform:rotate(180deg)}
+.langmenu{position:absolute;right:0;top:calc(100% + 8px);min-width:216px;padding:6px;border-radius:16px;background:#fff;border:1.5px solid var(--line);box-shadow:0 20px 40px -18px rgba(10,40,30,.42);display:none;z-index:60}
+.lang.open .langmenu{display:block;animation:fadeUp .18s both}
+.langopt{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:44px;padding:9px 12px;border-radius:11px;text-align:left;color:var(--ink);transition:background .12s}
+.langopt:hover{background:var(--p-cont)}
+.langopt.on{background:var(--p-cont);color:var(--p-dark)}
+.langopt .lgtxt{display:flex;align-items:baseline;gap:8px;min-width:0}
+.langopt b{font-size:13.5px;font-weight:700;white-space:nowrap}
+.langopt i{font-style:normal;font-size:10.5px;font-weight:800;color:var(--ink-3);letter-spacing:.06em}
+.langopt svg{color:var(--p);flex-shrink:0}
+/* footer: dark panel with layered wave top (Footer frame) */
+.ftr{position:relative;margin-top:54px;background:transparent;border:0;padding:0;color:#C3D9CC}
+.ftr .fwave{display:block;width:100%;height:52px}
+.ftr .fwave svg{display:block;width:100%;height:100%}
+.ftr .fp{background:#143A2B;padding:4px 0 46px}
+.ftr .wrap{max-width:1100px}
+.ftr .lg{display:block;font-weight:800;font-size:30px;letter-spacing:-.03em;color:#fff;margin:0 0 15px}
+.ftr .ds{font-size:16px;line-height:1.6;color:#C0D6C9;max-width:560px;margin:0 0 30px}
+.ftr .fi{display:flex;align-items:flex-start;gap:14px;margin:0 0 21px}
+.ftr .fi .ic{color:#D3E6DB;margin-top:1px;display:flex}
+.ftr .fi b{display:block;color:#fff;font-size:15.5px;font-weight:700;line-height:1.35}
+.ftr .fi .tx span{display:block;color:#C0D6C9;font-size:15px;line-height:1.5;margin-top:2px}
+.ftr .ig{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 22px;border-radius:999px;border:1.5px solid rgba(255,255,255,.28);color:#fff;font-size:15px;font-weight:700;margin-top:7px;transition:background .2s,border-color .2s}
+.ftr .ig:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.48)}
+.ftr .hr{height:1px;background:rgba(255,255,255,.16);margin:30px 0 20px}
+.ftr .cp{font-size:14.5px;color:#8EA89B;margin:0}
+/* hero: illustrated valley scene with gentle environmental motion */
+.hero{position:relative;z-index:2;isolation:isolate;background:#6E93A3;margin-top:calc(-1*var(--hh));padding-top:var(--hh)}
+.hero-art{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.hero-art svg{display:block;width:100%;height:100%}
+.hero::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:
+  linear-gradient(180deg,rgba(10,32,24,0) 44%,rgba(10,32,24,.05) 66%,rgba(10,32,24,.14) 100%),
+  radial-gradient(76% 66% at 14% 84%,rgba(10,32,24,.2),rgba(10,32,24,0) 72%)}
+.hero-in{position:relative;z-index:2;max-width:1100px;margin:0 auto;min-height:530px;display:flex;flex-direction:column;justify-content:flex-end;gap:14px;padding:26px 20px 80px}
+.hero-curve{position:absolute;left:0;right:0;bottom:-1px;z-index:1;line-height:0;pointer-events:none}
+.hero-curve svg{display:block;width:100%;height:34px}
+.hero-art .cl{animation:hcl 160s ease-in-out infinite alternate;will-change:transform}
+.hero-art .tr{transform-box:fill-box;transform-origin:50% 100%;animation:hsway 9s ease-in-out infinite alternate;will-change:transform}
+.hero-art .wv{animation:hwv 22s ease-in-out infinite alternate;will-change:transform}
+.hero-art .bk{animation:hbk 180s ease-in-out infinite alternate;will-change:transform}
+.hero-art .wing{transform-box:fill-box;transform-origin:50% 65%;animation:hflap 3.2s ease-in-out infinite}
+.hero-art .cl{transform-box:fill-box}
+.hero-art .lv{transform-box:fill-box;transform-origin:50% 100%;animation:hsway 11s ease-in-out infinite alternate;will-change:transform}
+.hero-art .lf{transform-box:fill-box;transform-origin:50% 50%;animation:hleaf 16s ease-in-out infinite alternate;will-change:transform}
+.hero-art .gl{animation:hgl 9s ease-in-out infinite alternate;will-change:opacity}
+@keyframes hcl{from{transform:translateX(-34px)}to{transform:translateX(34px)}}
+@keyframes hsway{from{transform:rotate(-.7deg)}to{transform:rotate(.9deg)}}
+@keyframes hwv{from{transform:translateX(-12px)}to{transform:translateX(12px)}}
+@keyframes hbk{from{transform:translateX(-34px)}to{transform:translateX(34px)}}
+@keyframes hflap{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.5)}}
+@keyframes wxpace{from{transform:translateX(0)}to{transform:translateX(138px)}}
+@keyframes wxbob{from{transform:translateY(1px) rotate(-1.3deg)}to{transform:translateY(-2px) rotate(1.5deg)}}
+@keyframes hleaf{from{transform:translate(0,0) rotate(-12deg)}to{transform:translate(-42px,30px) rotate(26deg)}}
+@keyframes hgl{from{opacity:.28}to{opacity:.72}}
+.wxwrap{position:relative;align-self:flex-start;padding-top:27px;animation:fadeUp .6s .05s both}
+.wxship{position:absolute;left:5px;top:0;width:46px;height:27px;display:flex;align-items:flex-end;pointer-events:none;animation:wxpace 15s ease-in-out infinite alternate;will-change:transform}
+.wxship svg{display:block;width:100%;height:auto;filter:drop-shadow(0 2px 3px rgba(10,32,24,.3));transform-origin:50% 88%;animation:wxbob 5.2s ease-in-out infinite alternate;will-change:transform}
+.wx{display:inline-flex;align-items:center;gap:9px;height:38px;padding:0 17px;border-radius:999px;background:rgba(255,255,255,.26);border:1px solid rgba(255,255,255,.52);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:#fff;font-size:14px;font-weight:600}
+.wx b{font-weight:700}.wx s{width:1px;height:16px;background:rgba(255,255,255,.5)}.wx .sun{color:#F6C85B;display:inline-flex}
+.hero h1{color:#fff;font-size:clamp(29px,4.6vw,44px);line-height:1.14;max-width:620px;font-weight:700;letter-spacing:-.025em;text-shadow:0 2px 12px rgba(10,32,24,.42),0 1px 2px rgba(10,32,24,.28);animation:fadeUp .6s .12s both}
+.hero p{color:rgba(255,255,255,.93);font-size:15px;line-height:1.55;max-width:480px;text-shadow:0 1px 8px rgba(10,32,24,.55),0 1px 2px rgba(10,32,24,.35);animation:fadeUp .6s .2s both}
+@media(max-width:480px){.hero h1{font-size:28px;letter-spacing:-.045em;line-height:1.16}}
+@media(max-width:700px){.hero-in{min-height:544px;padding-bottom:106px}.hero-curve svg{height:30px}
+ .ftr .fwave{height:36px}.ftr .lg{font-size:26px}.ftr .ds{font-size:15px}.ftr .fi .tx span{font-size:14.5px}.ftr .fp{padding-bottom:38px}}
+@media(prefers-reduced-motion:reduce){.hero-art .cl,.hero-art .tr,.hero-art .wv,.hero-art .bk,.hero-art .wing,.hero-art .lv,.hero-art .lf,.hero-art .gl,.wxship,.wxship svg{animation:none}}
 /* search */
-.search{position:relative;margin:24px 0 0;z-index:30}
-.sbar{display:flex;align-items:center;gap:10px;height:56px;padding:0 6px 0 22px;border-radius:999px;background:var(--bg);border:1.5px solid var(--line-2);transition:.18s;box-shadow:var(--shadow)}
-.sbar:focus-within,.sbar.open{border-color:var(--p);box-shadow:0 0 0 4px rgba(27,107,68,.1)}
-.sbar input{flex:1;min-width:0;height:100%;border:0;outline:0;background:transparent;font-size:14.5px}
-.sbar input::placeholder{color:#9AA39D}
-.sgo{width:44px;height:44px;border-radius:50%;background:var(--p);color:#fff;display:grid;place-items:center;transition:.15s;flex-shrink:0}
-.sgo:hover{background:var(--p-hover)}.sgo:active{transform:scale(.92)}
-.sug{position:absolute;left:0;right:0;top:calc(100% + 8px);background:var(--bg);border:1.5px solid var(--p);border-radius:20px;padding:6px;box-shadow:0 22px 40px -20px rgba(18,72,46,.45);display:none;max-height:360px;overflow:auto}
-.sug.show{display:block;animation:fadeUp .2s both}
+.search{position:relative;z-index:20;animation:fadeUp .6s .28s both}
+.sbar{display:flex;align-items:center;gap:10px;height:60px;padding:0 8px 0 25px;border-radius:999px;background:#fff;border:1.5px solid transparent;box-shadow:0 16px 36px -18px rgba(10,40,30,.55);transition:.18s}
+.sbar:focus-within,.sbar.open{border-color:var(--p);box-shadow:0 0 0 4px rgba(27,107,68,.16),0 16px 36px -18px rgba(10,40,30,.55)}
+.sbar input{flex:1;min-width:0;height:100%;border:0;outline:0;background:transparent;font-size:15.5px;color:var(--ink)}
+.sbar input::placeholder{color:#939C96}
+.sgo{width:46px;height:46px;border-radius:50%;background:#166534;color:#fff;display:grid;place-items:center;flex-shrink:0;transition:.15s}
+.sgo:hover{background:#1B7A42}.sgo:active{transform:scale(.92)}
+.sug{position:absolute;left:0;right:0;top:calc(100% + 8px);background:#fff;border:1.5px solid var(--p);border-radius:20px;padding:6px;box-shadow:0 22px 44px -20px rgba(18,72,46,.5);display:none;max-height:340px;overflow:auto;z-index:40}
+.sug.show{display:block;animation:fadeUp .18s both}
 .si{display:flex;align-items:center;gap:12px;width:100%;padding:8px 10px;border-radius:14px;text-align:left;border:1.5px solid transparent;transition:.12s}
 .si:hover,.si.on{background:var(--p-cont);border-color:var(--p)}
-.si .th{width:44px;height:44px;border-radius:10px;flex-shrink:0;background-color:var(--p-cont)}
-.si .t{flex:1;min-width:0}.si b{display:block;font-size:13px}.si span{font-size:11px;color:var(--ink-3)}
-.si em{font-style:normal;font-weight:700;color:var(--p);font-size:13px;white-space:nowrap}
+.si .th{width:46px;height:46px;border-radius:11px;flex-shrink:0;background-color:var(--p-cont);background-size:cover;background-position:center}
+.si .t{flex:1;min-width:0}.si b{display:block;font-size:13.5px}.si span{font-size:11px;color:var(--ink-3)}
+.si em{font-style:normal;font-weight:800;color:var(--p);font-size:13px;white-space:nowrap}
 .snone{padding:18px;text-align:center;color:var(--ink-3);font-size:13px}
-.mytix{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px;padding:12px 16px;border-radius:16px;background:var(--p-cont);border:1.5px solid var(--p-200);font-size:13px;font-weight:600;color:var(--p-dark)}
+.mytix{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:18px 0 0;padding:13px 18px;border-radius:16px;background:var(--p-cont);border:1.5px solid var(--p-200);font-size:13.5px;font-weight:700;color:var(--p-dark)}
+.mytix .r{display:inline-flex;gap:4px;align-items:center}
 /* sections */
 .sec{margin-top:34px}
-.sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:16px}
-.sec-h h2{font-size:19px}.sec-h span{font-size:12px;font-weight:600;color:var(--ink-2)}
-.pgrid{display:grid;grid-template-columns:1fr;gap:16px}
-.pk{padding:20px;display:flex;flex-direction:column;gap:12px;transition:.2s;position:relative}
-.pk:hover,.pk:focus-within{border-color:var(--p);box-shadow:0 0 0 .5px var(--p),0 16px 30px -18px rgba(18,72,46,.4);transform:translateY(-3px)}
-.pk h3{font-size:20px}.pk .d{font-size:12.5px;color:var(--ink-2);margin-top:-4px}
-.pk ul{list-style:none;margin:2px 0;padding:0;display:flex;flex-direction:column;gap:9px}
-.pk li{display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:500}
-.pk li svg{color:var(--p)}.pk li:last-child svg{color:var(--s)}
-.pk .pr{border-top:1px solid var(--line);padding-top:14px;margin-top:2px}
-.pk .cor{font-size:11.5px;color:var(--ink-3);text-decoration:line-through}
-.pk .hg{font-size:22px;font-weight:700;color:var(--p);letter-spacing:-.03em}
-.pk .un{font-size:11.5px;color:var(--ink-2)}
-.pk .qr{display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:12px;padding:4px 4px 4px 12px;font-size:13.5px;font-weight:600}
-.fav{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 16px 16px;margin:0 -16px;scrollbar-width:none}
+.sec-h{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:16px}
+.sec-h h2{font-size:22px;letter-spacing:-.02em}
+.sec-h .sub{font-size:13px;color:var(--ink-2);margin-top:3px}
+.sec-h .side{font-size:12.5px;font-weight:700;color:var(--ink-2);white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
+/* package cards */
+.pgrid{display:grid;grid-template-columns:1fr;gap:18px}
+.pk{position:relative;overflow:hidden;display:flex;flex-direction:column;border-width:2px;transition:transform .3s cubic-bezier(.22,.61,.36,1),box-shadow .3s cubic-bezier(.22,.61,.36,1)}
+.pk:hover{transform:translateY(-3px);box-shadow:0 20px 38px -20px rgba(18,72,46,.4)}
+.pk.murah{border-color:#EBCF8E}.pk.reguler{border-color:var(--p-300)}.pk.premium{border-color:#C7CBF0}
+.strip{position:relative;height:152px;overflow:hidden;isolation:isolate;border-radius:0 0 20px 20px}
+.pk.murah .strip{background:#FBF4E2}.pk.reguler .strip{background:var(--p-cont)}.pk.premium .strip{background:#EEF0FB}
+.shot{position:absolute;top:0;bottom:0;width:calc((100% + 68px)/3);background-color:var(--p-cont);background-size:cover;background-position:center;transition:transform .7s cubic-bezier(.22,.61,.36,1)}
+.shot:nth-child(1){left:0;z-index:3;-webkit-mask-image:linear-gradient(90deg,#000 0 62%,rgba(0,0,0,0) 100%);mask-image:linear-gradient(90deg,#000 0 62%,rgba(0,0,0,0) 100%)}
+.shot:nth-child(2){left:calc((100% + 68px)/3 - 34px);z-index:2;-webkit-mask-image:linear-gradient(90deg,#000 0 62%,rgba(0,0,0,0) 100%);mask-image:linear-gradient(90deg,#000 0 62%,rgba(0,0,0,0) 100%)}
+.shot:nth-child(3){left:calc((100% + 68px)*2/3 - 68px);z-index:1}
+.strip::after{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;background:
+  linear-gradient(180deg,rgba(10,34,24,.26) 0%,rgba(10,34,24,.02) 30%,rgba(10,34,24,0) 62%,rgba(10,34,24,.22) 100%),
+  linear-gradient(90deg,rgba(10,34,24,.2),rgba(10,34,24,0) 22%,rgba(10,34,24,0) 78%,rgba(10,34,24,.2)),
+  linear-gradient(0deg,rgba(18,72,46,.14),rgba(18,72,46,.14))}
+.pk:hover .shot{transform:scale(1.035)}
+.pbody{position:relative;padding:18px 20px 20px;display:flex;flex-direction:column;gap:13px;flex:1}
+.ptitle{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.ptitle h3{font-size:22px;letter-spacing:-.02em}
+.tchip{display:inline-flex;align-items:center;height:26px;padding:0 13px;border-radius:999px;font-size:12px;font-weight:800;white-space:nowrap}
+.tchip.green{background:var(--p-cont);color:var(--p)}.tchip.indigo{background:#E7E8F9;color:#3B3F9A}
+.pk .d{font-size:13.5px;color:var(--ink-2);line-height:1.5;margin-top:-4px}
+.feats{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px}
+.feats li{display:flex;align-items:flex-start;gap:11px;font-size:13.5px;font-weight:500;line-height:1.4}
+.feats .st{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;margin-top:0;background:var(--p-cont);color:var(--p)}
+.feats .st svg{width:14px;height:14px;fill:currentColor;stroke:none}
+.pprice{border-top:1px solid var(--line);padding-top:14px;margin-top:2px}
+.cor-row{display:flex;align-items:center;gap:9px;margin-bottom:3px}
+.cor{font-size:12.5px;color:var(--ink-3);text-decoration:line-through}
+.disc{display:inline-flex;align-items:center;height:21px;padding:0 9px;border-radius:7px;font-size:11.5px;font-weight:800}
+.pk.murah .disc{background:#FBEFC9;color:var(--s-dark)}.pk.reguler .disc{background:var(--p-cont);color:var(--p)}.pk.premium .disc{background:#E7E8F9;color:#3B3F9A}
+.pprice .big{display:flex;align-items:baseline;gap:7px}
+.pprice .big b{font-size:27px;font-weight:800;color:var(--p);letter-spacing:-.03em}
+.pprice .big span{font-size:12.5px;color:var(--ink-3)}
+/* favorit dark band */
+.favband{background:linear-gradient(160deg,#165A39 0%,#12482E 55%,#0D3722 100%);position:relative;overflow:hidden;margin-top:38px}
+.favband::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 80% at 80% 0%,rgba(143,200,169,.14),transparent 60%);pointer-events:none}
+.favband .in{position:relative;max-width:1100px;margin:0 auto;padding:34px 16px 38px}
+.favband .fh{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:20px}
+.favband h2{color:#fff;font-size:26px}
+.favband .sub{color:var(--p-200);font-size:13.5px;margin-top:4px}
+.favband .geser{color:var(--p-200);font-size:13px;font-weight:700;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.fav{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 12px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 94%,transparent);mask-image:linear-gradient(90deg,#000 94%,transparent)}
 .fav::-webkit-scrollbar{display:none}
-.fc{flex:0 0 min(200px,56vw);scroll-snap-align:start;padding:8px;display:flex;flex-direction:column;gap:10px;text-align:left;transition:.2s;cursor:pointer}
-.fc:hover{border-color:var(--p);transform:translateY(-3px);box-shadow:0 16px 30px -18px rgba(18,72,46,.4)}
-.fc .im{height:112px;border-radius:14px;position:relative;background-color:var(--p-cont);overflow:hidden;background-repeat:no-repeat}
-.fc .im .tag{position:absolute;top:8px;left:8px}
-.fc .bd{padding:0 6px 4px}.fc h3{font-size:15px;line-height:1.2;margin-bottom:6px;min-height:36px}
-.fc .mt{display:flex;gap:10px;font-size:11px;color:var(--ink-2);margin-bottom:10px;flex-wrap:wrap}.fc .mt span{display:inline-flex;gap:4px;align-items:center}.fc .mt svg{width:12px;height:12px}
-.fc .ft{display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid var(--line);padding-top:10px}
-.fc small{display:block;font-size:10.5px;color:var(--ink-3)}.fc b{color:var(--p);font-size:14px}
-.fc .lh{font-size:11.5px;font-weight:700;color:var(--p);display:inline-flex;align-items:center;gap:2px}
-.tabs{display:flex;gap:8px;overflow-x:auto;padding:2px 16px 12px;margin:0 -16px 6px;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
-.tb2{height:36px;padding:0 18px;border-radius:999px;border:1.5px solid var(--line-2);background:var(--bg);font-size:13px;font-weight:600;color:var(--ink-2);flex-shrink:0;transition:.18s}
-.tb2:hover{border-color:var(--p);color:var(--p)}.tb2.on{background:var(--p);border-color:var(--p);color:#fff;box-shadow:0 6px 14px -8px rgba(18,72,46,.7)}
-.wgrid{display:grid;grid-template-columns:1fr;gap:12px}.wgrid>*,.pgrid>*{min-width:0}.wc{overflow:hidden}
-.wc{display:flex;gap:14px;padding:12px;text-align:left;cursor:pointer;transition:.2s;animation:fadeUp .4s both;width:100%}
+.fc{flex:0 0 min(280px,76vw);scroll-snap-align:start;background:#fff;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;text-align:left;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 14px 30px -18px rgba(0,0,0,.5)}
+.fc:hover{transform:translateY(-4px);box-shadow:0 22px 40px -18px rgba(0,0,0,.55)}
+.fc .im{height:158px;position:relative;background-color:var(--p-cont);background-size:cover;background-position:center}
+.fc .im .tag{position:absolute;top:11px;left:11px;height:25px;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase}
+.fc .bd{padding:16px 18px 18px;display:flex;flex-direction:column;gap:9px;flex:1}
+.fc h3{font-size:18px;line-height:1.2}
+.fc .ds{font-size:12.5px;color:var(--ink-2);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.fc .mt{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;background:var(--surface);border-radius:9px;padding:6px 11px;font-size:11.5px;color:var(--ink-2);font-weight:600}
+.fc .ft{display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid var(--line);padding-top:13px;margin-top:auto}
+.fc small{display:block;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:700;margin-bottom:2px}
+.fc b{color:var(--p);font-size:18px;letter-spacing:-.02em}
+.fc .lh{display:inline-flex;align-items:center;gap:3px;height:38px;padding:0 18px;border-radius:999px;border:1.5px solid var(--p);color:var(--p);font-weight:700;font-size:13px}
+/* semua wahana */
+.tabs{display:flex;gap:9px;overflow-x:auto;padding:2px 2px 14px;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
+.tb2{height:40px;padding:0 22px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);font-size:13.5px;font-weight:700;color:var(--ink-2);flex-shrink:0;transition:.16s}
+.tb2:hover{border-color:var(--p-300);color:var(--p)}
+.tb2.on{background:var(--p-dark);border-color:var(--p-dark);color:#fff}
+.wgrid{display:grid;grid-template-columns:1fr;gap:13px}
+.wc{display:flex;gap:14px;padding:13px;text-align:left;cursor:pointer;transition:transform .18s,border-color .18s,box-shadow .18s;animation:fadeUp .4s both;width:100%;overflow:hidden}
 .wc:hover{border-color:var(--p);transform:translateY(-2px);box-shadow:0 14px 28px -18px rgba(18,72,46,.4)}
-.wc .im{width:92px;height:auto;min-height:92px;border-radius:12px;flex-shrink:0;background-color:var(--p-cont);background-repeat:no-repeat}
-.wc .bd{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.wc .k{font-size:11px;color:var(--ink-2)}.wc h3{font-size:16px}.wc .ds{font-size:12px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.wc .ft{display:flex;align-items:flex-end;justify-content:space-between;border-top:1px solid var(--line);margin-top:8px;padding-top:8px}
-.wc small{display:block;font-size:10.5px;color:var(--ink-3)}.wc b{font-size:15px;color:var(--p)}
-.noinfo{margin-top:34px;padding:16px 18px;border-radius:18px;background:var(--p-cont);border:1.5px solid var(--p-200);display:flex;gap:12px;color:var(--p-dark)}
-.noinfo b{display:block;font-size:13.5px;margin-bottom:2px}.noinfo p{font-size:12.5px;color:var(--ink-2)}
+.wc .im{width:96px;min-height:96px;border-radius:14px;flex-shrink:0;background-color:var(--p-cont);background-size:cover;background-position:center;position:relative}
+.wc .im .tag{position:absolute;top:7px;left:7px;height:19px;font-size:9.5px;padding:0 8px}
+.wc .bd{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.wc .k{font-size:11px;color:var(--p);font-weight:700;letter-spacing:.03em;text-transform:uppercase}
+.wc h3{font-size:16.5px}
+.wc .ds{font-size:12px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wc .ft{display:flex;align-items:flex-end;justify-content:space-between;border-top:1px solid var(--line);margin-top:8px;padding-top:9px}
+.wc small{display:block;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+.wc b{font-size:16px;color:var(--p)}
+.wc .go{display:inline-flex;align-items:center;gap:3px;height:34px;padding:0 15px;border-radius:999px;border:1.5px solid var(--p);color:var(--p);font-weight:700;font-size:12px;pointer-events:none}
+/* popularity */
+.pop{padding:22px}
+.phead{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.phead h3{font-size:17px;display:flex;align-items:center;gap:9px}
+.phead h3 svg{color:var(--p)}
+.phead p{font-size:12.5px;color:var(--ink-2);margin-top:4px;max-width:420px}
+.rows{display:flex;flex-direction:column;gap:13px}
+.prow{display:flex;align-items:center;gap:13px}
+.prow .rk{width:26px;height:26px;border-radius:8px;background:var(--surface);color:var(--ink-2);display:grid;place-items:center;font-size:12px;font-weight:800;flex-shrink:0}
+.prow.lead .rk{background:var(--p);color:#fff}
+.prow>div{flex:1;min-width:0}
+.prow .lbl{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:5px}
+.prow .lbl b{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prow .v{font-size:13px;font-weight:800;color:var(--p);white-space:nowrap}
+.prow .v i{font-style:normal;font-weight:600;color:var(--ink-3);font-size:11px;margin-left:4px}
+.track{height:9px;border-radius:99px;background:var(--surface);overflow:hidden}
+.fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--c1),var(--c2));transform-origin:left;animation:grow .7s cubic-bezier(.22,.9,.3,1) both}
+@keyframes grow{from{transform:scaleX(0)}}
+.pop .foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);margin-top:18px;padding-top:14px;font-size:11.5px;color:var(--ink-3)}
+.pop .empty{padding:22px 18px;text-align:center;color:var(--ink-3);font-size:13px;line-height:1.6;border:1.5px dashed var(--line-2);border-radius:14px;background:var(--surface);max-width:560px;margin:0 auto}
+.pop .empty svg{color:var(--p-300);margin:0 auto 6px}
+/* location section */
+.loc{display:grid;grid-template-columns:1fr;gap:0;overflow:hidden;margin-top:34px}
+.loc .txt{padding:24px}
+.loc .eyebrow{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--p)}
+.loc h3{font-size:20px;margin:7px 0 6px}
+.loc p{font-size:13px;color:var(--ink-2);line-height:1.55}
+.loc .acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.loc .mini{background:var(--p-cont);min-height:200px;position:relative}
+.loc .mini svg{width:100%;height:100%;display:block;position:absolute;inset:0}
+.btn-blue{background:linear-gradient(180deg,#2C93B4,#13809F);box-shadow:0 3px 0 #0C5A70,0 6px 14px -6px rgba(19,128,159,.5)}
+.btn-blue:hover{background:linear-gradient(180deg,#4FB0CC,#2C93B4);box-shadow:0 3px 0 #137089,0 6px 14px -6px rgba(19,128,159,.4)}
+.btn-blue:active{background:#0F6E88;box-shadow:0 1px 0 #0A4A5C}
 /* detail */
-.back{display:inline-flex;align-items:center;gap:10px;font-size:13.5px;font-weight:600;color:var(--ink-2);padding:8px 0;margin-bottom:6px}
+.back{display:inline-flex;align-items:center;gap:9px;font-size:13.5px;font-weight:700;color:var(--ink-2);padding:8px 0;margin-bottom:8px}
 .back:hover{color:var(--p)}
-.dgrid{display:grid;gap:14px}.dgrid>*,.pgr>*{min-width:0}.dgrid .right{display:flex;flex-direction:column;gap:14px}
-.dimg{height:270px;border-radius:24px;position:relative;overflow:hidden;background-color:var(--p-cont);background-repeat:no-repeat;box-shadow:var(--shadow)}
-.dimg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(8,30,20,.78));}
-.dimg .in{position:absolute;left:20px;right:20px;bottom:18px;z-index:2;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
-.dimg h1{color:#fff;font-size:30px}
-.dimg .tag{height:23px;font-size:12px}
-.pills{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding:2px 16px;margin:0 -16px}.pills::-webkit-scrollbar{display:none}
-.pill{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:999px;border:1.5px solid var(--line-2);background:var(--bg);font-size:13px;font-weight:600;white-space:nowrap;flex-shrink:0}
+.dgrid{display:grid;gap:16px}
+.dimg{height:280px;border-radius:24px;position:relative;overflow:hidden;background-color:var(--p-cont);background-size:cover;background-position:center;box-shadow:var(--shadow)}
+.dimg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 42%,rgba(8,30,20,.78))}
+.dimg .in{position:absolute;left:22px;right:22px;bottom:20px;z-index:2;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.dimg h1{color:#fff;font-size:31px}
+.dimg .tag{height:25px;font-size:12px}
+.right{display:flex;flex-direction:column;gap:16px}
+.pills{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding:2px}.pills::-webkit-scrollbar{display:none}
+.pill{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 17px;border-radius:999px;border:1.5px solid var(--line-2);background:var(--bg);font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;color:var(--ink)}
 .pill svg{color:var(--p)}
-.about{padding:20px}.about h3{font-size:16px;margin-bottom:8px}.about p{font-size:15px;color:var(--ink-2);line-height:1.55}
+button.pill:hover{border-color:var(--p);color:var(--p)}
+.about{padding:22px}.about h3{font-size:17px;margin-bottom:9px}.about p{font-size:14.5px;color:var(--ink-2);line-height:1.6}
 .about hr{border:0;border-top:1px solid var(--line);margin:16px 0 14px}
-.about .sf{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--ink-2)}
-.buy{padding:20px}.buy .t{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.buy small{font-size:12px;color:var(--ink-2)}.buy .pr{font-size:21px;font-weight:700;letter-spacing:-.02em}
-.buy .sub{display:flex;justify-content:space-between;align-items:center;border-top:1.5px dashed var(--line-2);margin:16px 0;padding-top:14px;color:var(--ink-2);font-size:14px}
-.buy .sub b{color:var(--p);font-size:19px;letter-spacing:-.02em}
+.about .sf{display:flex;gap:9px;align-items:center;font-size:12.5px;color:var(--ink-2)}.about .sf svg{color:var(--p)}
+.buy{padding:22px}.buy .t{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.buy small{font-size:12.5px;color:var(--ink-2)}.buy .pr{font-size:23px;font-weight:800;letter-spacing:-.02em;margin-top:2px}
+.buy .sub{display:flex;justify-content:space-between;align-items:center;border-top:1.5px dashed var(--line-2);margin:18px 0;padding-top:15px;color:var(--ink-2);font-size:14px}
+.buy .sub b{color:var(--p);font-size:20px;letter-spacing:-.02em}
 /* bayar */
-.h1{font-size:30px;margin:6px 0 2px}.sub1{color:var(--ink-2);font-size:14px;margin-bottom:16px}
-.pgr{display:grid;gap:14px}
-.box{padding:20px}.box h3{font-size:18px;margin-bottom:14px}
-.bh{display:flex;justify-content:space-between;align-items:baseline}.bh span{font-size:12px;color:var(--ink-2)}
-.ol{display:flex;align-items:center;gap:12px;padding:6px 0 14px}
-.ol .th{width:50px;height:50px;border-radius:12px;background-color:var(--p-cont);flex-shrink:0;background-repeat:no-repeat}
+.h1{font-size:31px;margin:6px 0 3px;letter-spacing:-.03em}.sub1{color:var(--ink-2);font-size:14px;margin-bottom:18px}
+.pgr{display:grid;gap:16px}
+.box{padding:22px}.box h3{font-size:18px;margin-bottom:14px}
+.bh{display:flex;justify-content:space-between;align-items:baseline}.bh span{font-size:12px;color:var(--ink-3);font-weight:600}
+.ol{display:flex;align-items:center;gap:13px;padding:7px 0 15px}
+.ol .th{width:52px;height:52px;border-radius:13px;background-color:var(--p-cont);flex-shrink:0;background-size:cover;background-position:center}
 .ol .i{flex:1;min-width:0}.ol b{display:block;font-size:14.5px}.ol span{font-size:12px;color:var(--ink-2)}
-.ol .a{text-align:right;font-weight:700;font-size:15px;white-space:nowrap}.ol .a button{display:block;margin-left:auto;font-size:11px;color:var(--ink-3);font-weight:600;margin-top:2px}.ol .a button:hover{color:var(--e)}
-.ml{display:flex;flex-direction:column;gap:10px}
-.mo{display:flex;align-items:center;gap:12px;padding:10px 14px 10px 10px;border-radius:18px;border:1.5px solid var(--line-2);background:var(--bg);text-align:left;transition:.18s;width:100%}
+.ol .a{text-align:right;font-weight:800;font-size:15px;white-space:nowrap}
+.del{display:inline-flex;align-items:center;gap:5px;margin-top:5px;font-size:11.5px;color:var(--e);font-weight:700;padding:4px 9px;border-radius:8px;background:var(--e-cont);transition:.15s}
+.del:hover{background:#F9D8D4}.del:active{transform:scale(.95)}
+.ol.removing{opacity:0;transform:translateX(14px);transition:.17s}
+.ecart{font-size:13px;color:var(--ink-3);padding:8px 0 14px}
+.ml{display:grid;gap:11px}
+.mo{display:grid;grid-template-columns:48px minmax(0,1fr) 22px;align-items:center;gap:14px;min-height:76px;padding:13px 15px 13px 13px;border-radius:16px;border:1.5px solid var(--line-2);background:var(--bg);text-align:left;transition:border-color .16s,background .16s,box-shadow .16s;width:100%}
 .mo:hover{border-color:var(--p-300)}
-.mo .mi{width:44px;height:44px;border-radius:50%;background:var(--p-cont);color:var(--p);display:grid;place-items:center;flex-shrink:0;transition:.18s}
-.mo b{display:flex;align-items:center;gap:8px;font-size:14px}.mo span{font-size:13px;color:var(--ink-2)}
-.mo.on{border:2px solid var(--p);background:linear-gradient(180deg,#fff,var(--p-cont));animation:pop .3s both}
-.mo .ins{font-size:10.5px;font-weight:700;color:var(--p);background:var(--bg);border:1px solid var(--p-200);padding:2px 8px;border-radius:999px}
-.nota{padding:20px}
+.mo .mi{width:48px;height:48px;border-radius:13px;background:var(--p-cont);color:var(--p);display:grid;place-items:center;flex-shrink:0;transition:background .16s}
+.mo .tx{display:flex;flex-direction:column;gap:3px;min-width:0}
+.mo .nm{display:flex;align-items:center;gap:8px;min-width:0}
+.mo b{font-size:14.5px;font-weight:700;line-height:1.2;white-space:nowrap}
+.mo .sb{font-size:12.5px;color:var(--ink-2);line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mo .rd{position:relative;width:22px;height:22px;border-radius:50%;border:2px solid var(--line-2);flex-shrink:0;transition:border-color .16s,background .16s}
+.mo.on{border-color:var(--p);box-shadow:0 0 0 1px var(--p) inset;background:linear-gradient(180deg,#fff,var(--p-cont))}
+.mo.on .mi{background:#fff;color:var(--p-dark)}
+.mo.on .rd{border-color:var(--p);background:var(--p)}
+.mo.on .rd::after{content:"";position:absolute;inset:3px;border-radius:50%;background:#fff}
+.mo .ins{font-style:normal;font-size:10px;line-height:1;font-weight:800;color:var(--p);background:#fff;border:1px solid var(--p-200);padding:3px 7px;border-radius:999px;flex-shrink:0}
+.nota{padding:22px}
 .nota .nh{display:flex;justify-content:space-between;align-items:center}.nota h3{font-size:19px;margin:0}
-.nota .nm{display:flex;justify-content:space-between;color:var(--ink-2);font-size:13.5px;padding:6px 0 14px;border-bottom:1px solid var(--line);margin-bottom:12px}
+.nota .nm{display:flex;justify-content:space-between;color:var(--ink-2);font-size:13px;padding:8px 0 14px;border-bottom:1px solid var(--line);margin-bottom:12px}
 .nr{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 0;font-size:14px;color:var(--ink-2)}.nr b{color:var(--ink);font-size:15px;white-space:nowrap}
-.nr .mt{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--ink)}
-.nt{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-weight:700;font-size:17px}.nt b{font-size:23px;color:var(--p);letter-spacing:-.02em}
-.secure{display:flex;gap:8px;align-items:center;justify-content:center;font-size:13px;color:var(--ink-2);margin-top:14px}
+.nr .mt{display:inline-flex;align-items:center;gap:6px;font-weight:800;color:var(--ink)}
+.nt{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);margin-top:8px;padding-top:15px;font-weight:800;font-size:17px}.nt b{font-size:24px;color:var(--p);letter-spacing:-.02em}
+.chip.blue{background:#E3F1F6;color:var(--ocean)}.chip.gold{background:var(--s-cont);color:var(--s-dark)}.chip.grey{background:var(--surface);color:var(--ink-3)}
+/* undo */
+.ut{position:fixed;left:50%;bottom:24px;transform:translate(-50%,80px);display:flex;align-items:center;gap:14px;background:var(--ink);color:#fff;padding:12px 12px 12px 20px;border-radius:999px;font-size:13.5px;font-weight:600;z-index:210;opacity:0;transition:.3s cubic-bezier(.22,.9,.3,1);box-shadow:0 16px 36px -12px rgba(0,0,0,.5);max-width:92vw}
+.ut.show{opacity:1;transform:translate(-50%,0)}
+.ut button{background:var(--p);color:#fff;font-weight:800;font-size:13px;padding:8px 16px;border-radius:999px;transition:.15s}
+.ut button:hover{background:var(--p-hover)}
 /* tunggu */
-.wait{padding:22px 20px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px}
-.hg-c{width:58px;height:58px;border-radius:50%;background:var(--s-cont);color:var(--s-dark);display:grid;place-items:center;animation:pop .5s both}
+.wait{padding:26px 22px 22px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:15px}
+.hg-c{width:62px;height:62px;border-radius:50%;background:var(--s-cont);color:var(--s-dark);display:grid;place-items:center;animation:pop .5s both}
 .hg-c svg{animation:flip 3s ease-in-out infinite}
-@keyframes flip{0%,40%{transform:rotate(0)}60%,100%{transform:rotate(180deg)}}
-.wait h2{font-size:26px}.wait .s{color:var(--ink-2);font-size:14px;max-width:300px}
-.qrb{width:min(100%,290px);aspect-ratio:1;border:2px dashed var(--p);border-radius:26px;display:grid;place-items:center;padding:20px;background:var(--bg);position:relative;overflow:hidden}
+@keyframes flip{0%,42%{transform:rotate(0)}58%,100%{transform:rotate(180deg)}}
+.wait h2{font-size:25px}.wait .s{color:var(--ink-2);font-size:14px;max-width:300px;line-height:1.5}
+.qrb{width:min(100%,290px);aspect-ratio:1;border:2px dashed var(--p);border-radius:26px;display:grid;place-items:center;padding:22px;background:#fff;position:relative;overflow:hidden}
 .qrb svg{width:100%;height:100%}
-.qrb::after{content:"";position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--p),transparent);animation:scanl 2.4s ease-in-out infinite;opacity:.55}
-@keyframes scanl{0%,100%{top:8%}50%{top:90%}}
-.scanp{display:inline-flex;align-items:center;gap:10px;height:38px;padding:0 18px;border-radius:999px;background:var(--s-cont);border:1px solid var(--s-300);color:var(--s-dark);font-weight:600;font-size:13px}
+.scanp{display:inline-flex;align-items:center;gap:10px;height:40px;padding:0 18px;border-radius:999px;background:var(--s-cont);border:1px solid var(--s-300);color:var(--s-dark);font-weight:700;font-size:13px}
 .scanp i{width:9px;height:9px;border-radius:50%;background:var(--s);animation:pulse 1.4s infinite}
-.kv{display:flex;justify-content:space-between;align-items:flex-start;width:100%;border-top:1px solid var(--line);padding-top:14px;text-align:left}
-.kv small{display:block;font-size:12px;font-weight:700;margin-bottom:4px}.kv b{font-size:19px;letter-spacing:-.01em}
-.kv .r{text-align:right}.kv .chip{background:var(--s-cont);color:var(--s-dark);height:24px}
-.tipb{display:flex;gap:12px;background:var(--surface);border-radius:14px;padding:14px;text-align:left;font-size:13px;color:var(--ink-2);width:100%}
+.kv{display:flex;justify-content:space-between;align-items:center;width:100%;border-top:1px solid var(--line);padding-top:16px;text-align:left}
+.kv small{display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px}.kv b{font-size:20px;letter-spacing:-.01em}
+.kv .chip{background:var(--s-cont);color:var(--s-dark);height:26px}
+.tipb{display:flex;gap:12px;background:var(--surface);border-radius:15px;padding:15px;text-align:left;font-size:13px;color:var(--ink-2);line-height:1.55;width:100%}.tipb svg{color:var(--p);flex-shrink:0;margin-top:1px}
 /* tiket */
-.ok-e{display:flex;align-items:center;gap:8px;color:var(--p);font-weight:700;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;margin-top:10px}
+.ok-e{display:flex;align-items:center;gap:8px;color:var(--p);font-weight:800;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;margin-top:8px}
 .ok-e svg{animation:pop .6s both}
 .dlall{margin:16px 0 14px}
-.cnt{display:flex;align-items:center;gap:8px;color:var(--p);font-weight:700;font-size:13px;margin-bottom:20px}
-.seg2{display:grid;grid-template-columns:1fr 1fr;background:var(--bg);border:1.5px solid var(--line);border-radius:999px;padding:4px;margin-bottom:18px;position:relative}
-.seg2 button{height:42px;border-radius:999px;font-weight:700;font-size:14px;color:var(--ink-2);position:relative;z-index:1;transition:color .25s}
-.seg2 button.on{color:#fff}
-.seg2 .knob{position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:999px;background:linear-gradient(180deg,#1F7449,#165A38);transition:transform .35s cubic-bezier(.5,1.4,.5,1);box-shadow:0 3px 0 #0F3F28}
-.seg2[data-t="nota"] .knob{transform:translateX(100%)}
+.cnt{display:flex;align-items:center;gap:8px;color:var(--p);font-weight:800;font-size:13px;margin-bottom:20px}
+.seg3{display:grid;grid-template-columns:repeat(3,1fr);background:var(--bg);border:1.5px solid var(--line);border-radius:999px;padding:4px;margin-bottom:20px;position:relative}
+.seg3 button{height:44px;border-radius:999px;font-weight:800;font-size:13.5px;color:var(--ink-2);position:relative;z-index:1;transition:color .25s;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.seg3 button.on{color:#fff}
+.seg3 .knob{position:absolute;top:4px;bottom:4px;left:4px;width:calc(33.333% - 4px);border-radius:999px;background:linear-gradient(180deg,#1F7449,#165A38);transition:transform .35s cubic-bezier(.4,1.3,.5,1);box-shadow:0 3px 0 #0F3F28}
+.seg3[data-t="nota"] .knob{transform:translateX(100%)}
+.seg3[data-t="peta"] .knob{transform:translateX(200%)}
 .tkts{display:grid;gap:16px}
-.tk{padding:18px 20px;display:flex;flex-direction:column;gap:14px;animation:fadeUp .5s both}
-.tk .top{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:600;color:var(--ink-2)}
-.tk h3{font-size:25px;line-height:1.1;margin-bottom:4px}.tk .vd{font-size:14px;color:var(--ink-2)}
-.tk .row{display:flex;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding-top:12px}
-.tk .row small{display:block;font-size:12px;color:var(--ink-2);margin-bottom:3px}.tk .row b{font-size:15px}.tk .row .pr{color:var(--p);font-size:17px}
-.tk .bt{display:flex;align-items:center;gap:12px}
-.qrs{width:72px;height:72px;border:1.5px solid var(--line);border-radius:12px;padding:6px;background:#fff;flex-shrink:0;position:relative;cursor:zoom-in;transition:.15s}
+.tk{padding:20px 22px;display:flex;flex-direction:column;gap:15px;animation:fadeUp .5s both}
+.tk .top{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;font-weight:800;letter-spacing:.04em;color:var(--ink-2)}
+.tk h3{font-size:25px;line-height:1.1;margin-bottom:4px}.tk .vd{font-size:13.5px;color:var(--ink-2)}
+.tk .row{display:flex;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding-top:14px}
+.tk .row small{display:block;font-size:12px;color:var(--ink-2);margin-bottom:3px}.tk .row b{font-size:15px}.tk .row .pr{color:var(--p);font-size:18px}
+.tk .bt{display:flex;align-items:center;gap:13px}
+.qrs{width:74px;height:74px;border:1.5px solid var(--line);border-radius:13px;padding:7px;background:#fff;flex-shrink:0;position:relative;cursor:zoom-in;transition:.15s}
 .qrs:hover{border-color:var(--p);transform:scale(1.04)}.qrs svg{width:100%;height:100%}
 .tk .kd{flex:1;min-width:0}.tk .kd small{display:block;font-size:11.5px;color:var(--ink-2)}.tk .kd b{display:block;font-size:17px;letter-spacing:.04em;margin:2px 0}
 .tk.used .qrs svg{opacity:.18}
 .tk.used .qrs::after{content:"TERPAKAI";position:absolute;inset:0;display:grid;place-items:center;font-size:9px;font-weight:800;color:var(--s-dark);letter-spacing:.05em}
-.rides{display:flex;flex-wrap:wrap;gap:6px;border-top:1px dashed var(--line-2);padding-top:12px}
-.rd{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 11px;border-radius:999px;background:var(--p-cont);color:var(--p-dark);font-size:12px;font-weight:600;transition:.3s}
+html[lang="en"] .tk.used .qrs::after{content:"USED"}
+.rides{display:flex;flex-wrap:wrap;gap:6px;border-top:1px dashed var(--line-2);padding-top:13px}
+.rd{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 12px;border-radius:999px;background:var(--p-cont);color:var(--p-dark);font-size:12px;font-weight:700}
 .rd.u{background:var(--s-cont);color:var(--s);text-decoration:line-through}
-.petunjuk{display:flex;gap:12px;padding:18px;margin-top:18px;border-radius:20px;border:1.5px solid var(--p-200);background:linear-gradient(180deg,var(--p-cont),#fff)}
-.petunjuk b{display:block;font-size:14.5px;margin-bottom:3px}.petunjuk p{font-size:13px;color:var(--ink-2)}
-.pnota{padding:20px;animation:fadeUp .4s both}
-.pnota .h{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:14px}.pnota h3{font-size:20px}
-.pnota .meta{display:flex;justify-content:space-between;margin-bottom:16px;gap:10px}.pnota .meta small{display:block;font-size:12px;font-weight:700;margin-bottom:3px}.pnota .meta span{font-size:14px;color:var(--ink-2)}.pnota .meta b{font-size:15px}
+.petunjuk{display:flex;gap:13px;padding:20px;margin-top:18px;border-radius:20px;border:1.5px solid var(--p-200);background:linear-gradient(180deg,var(--p-cont),#fff)}
+.petunjuk svg{color:var(--p);flex-shrink:0}.petunjuk b{display:block;font-size:14.5px;margin-bottom:4px}.petunjuk p{font-size:13px;color:var(--ink-2);line-height:1.55}
+.pnota{padding:22px;animation:fadeUp .4s both}
+.pnota .h{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:15px;margin-bottom:15px}.pnota h3{font-size:20px}
+.pnota .meta{display:flex;justify-content:space-between;margin-bottom:16px;gap:10px}.pnota .meta small{display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:3px}.pnota .meta span{font-size:13.5px;color:var(--ink-2)}.pnota .meta b{font-size:15px}
 .again{margin-top:16px}
-.qmodal{position:fixed;inset:0;z-index:150;background:rgba(10,30,20,.7);backdrop-filter:blur(4px);display:none;place-items:center;padding:20px}
-.qmodal.show{display:grid;animation:fadeUp .2s both}
-.qmodal .in{background:#fff;border-radius:26px;padding:24px;text-align:center;width:min(92vw,360px);animation:pop .35s both}
-.qmodal svg{width:100%;height:auto}.qmodal b{display:block;font-size:22px;letter-spacing:.05em;margin:14px 0 4px}.qmodal p{font-size:12.5px;color:var(--ink-2);margin-bottom:14px}
+/* park map */
+.peta{padding:22px}
+.parkmap{border-radius:18px;overflow:hidden;border:1.5px solid var(--line);background:#EAF3EC}
+.parkmap svg{display:block;width:100%;height:auto}
+.parkcols{display:grid;gap:12px}
+.parkcols .pside{display:flex;flex-direction:column;gap:10px;min-width:0}
+.parkcols .pside .plist{margin-bottom:0}
+@media(min-width:720px){.parkcols{grid-template-columns:1.7fr 1fr;align-items:start}
+ .parkcols .pside{max-height:min(58vh,430px);overflow:hidden}
+ .parkcols .pside .plist{flex:1;min-height:0;overflow:auto;grid-template-columns:1fr;padding-right:3px;-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 16px),transparent);mask-image:linear-gradient(180deg,#000 calc(100% - 16px),transparent)}
+ .parkcols .pside .plist::-webkit-scrollbar{width:6px}
+ .parkcols .pside .plist::-webkit-scrollbar-thumb{background:var(--p-300);border-radius:9px}
+ .parkcols .pside .plist button{min-width:0;padding:8px 9px;gap:9px}
+ .parkcols .pside .plist .nm{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.25}
+ .parkcols .pside .plist .zn{display:none}
+ .parkcols .pside .acts{gap:8px}}
+@media(max-width:600px){.parkmap{overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}.parkmap svg{min-width:600px}}
+.legend{display:flex;flex-wrap:wrap;gap:10px 12px;margin:10px 0;font-size:11.5px;color:var(--ink-2);font-weight:600}
+.legend span{display:inline-flex;align-items:center;gap:6px}.legend i{width:11px;height:11px;border-radius:50%}
+.peta .info{display:flex;gap:12px;padding:12px;border-radius:16px;background:var(--p-cont);border:1.5px solid var(--p-200);margin-bottom:10px}
+.peta .info .im{width:64px;height:64px;border-radius:12px;flex-shrink:0;background-size:cover;background-position:center}
+.peta .info .t{flex:1;min-width:0}.peta .info b{font-size:14.5px}.peta .info p{font-size:12px;color:var(--ink-2);margin:3px 0 8px}
+.peta .info .st{display:flex;gap:7px;flex-wrap:wrap}
+.plist{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:14px}
+.plist button{display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:13px;border:1.5px solid var(--line);background:var(--bg);text-align:left;transition:.14s}
+.plist button:hover{border-color:var(--p-300)}.plist button.sel{border-color:var(--p);background:var(--p-cont)}
+.plist .num{width:26px;height:26px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:12px;font-weight:800;flex-shrink:0}
+.plist .nm{flex:1;min-width:0;font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.plist .zn{font-size:11px;color:var(--ink-3);font-weight:600;white-space:nowrap}
+.peta .acts{display:flex;gap:9px;flex-wrap:wrap}
+.pin{cursor:pointer}.pin .dot{transition:transform .16s;transform-box:fill-box;transform-origin:center}.pin:hover .dot{transform:scale(1.07)}
+.pin .halo{opacity:0}.pin.sel .halo{opacity:1;animation:pulse 1.8s infinite}
+.pin.sel .dot{stroke:#1B6B44;stroke-width:4}
+/* modals */
+.modal{position:fixed;inset:0;z-index:150;background:rgba(10,30,20,.55);backdrop-filter:blur(4px);display:none;place-items:center;padding:18px}
+.modal.show{display:grid;animation:fadeUp .2s both}
+.modal .in{background:#fff;border-radius:24px;padding:22px;width:min(94vw,480px);max-height:90vh;overflow:auto;animation:pop .3s both;box-shadow:0 30px 70px -24px rgba(0,0,0,.5)}
+.mh{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+.mh h3{font-size:19px}.mh p{font-size:12.5px;color:var(--ink-2);margin-top:3px}
+.xbtn{width:38px;height:38px;border-radius:50%;background:var(--surface);color:var(--ink-2);display:grid;place-items:center;flex-shrink:0;transition:.15s}
+.xbtn:hover{background:var(--line);color:var(--ink)}
+.mapbox{position:relative;height:260px;border-radius:16px;overflow:hidden;border:1.5px solid var(--line);background:var(--p-cont)}
+.mapbox iframe{width:100%;height:100%;border:0;display:block}
+.mapbox .fb{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font-size:13px;color:var(--ink-2);padding:20px;line-height:1.6}
+.locinfo{display:flex;gap:11px;padding:15px 0;color:var(--p)}.locinfo div{min-width:0}.locinfo b{display:block;font-size:14px;color:var(--ink)}.locinfo p{font-size:12.5px;color:var(--ink-2);line-height:1.5;margin-top:3px}
+.locacts{display:flex;gap:10px;flex-wrap:wrap}.locacts .btn{flex:1;min-width:150px}
+.qmodal .in{width:min(92vw,360px);text-align:center}
+.qrw{background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:16px;margin-bottom:6px}.qrw svg{width:100%;height:auto}
+.qmodal b{display:block;font-size:23px;letter-spacing:.05em;margin:12px 0 4px}.qmodal p{font-size:12.5px;color:var(--ink-2);margin-bottom:16px;line-height:1.5}
+/* download overlay + confetti */
+.dlo{position:fixed;inset:0;z-index:160;background:rgba(10,30,20,.5);display:none;place-items:center}.dlo.show{display:grid}
+.dlo .in{background:#fff;border-radius:20px;padding:24px 28px;text-align:center;font-weight:700;font-size:14px}
+.dlo .pb{width:220px;height:8px;border-radius:9px;background:var(--p-cont);margin-top:14px;overflow:hidden}.dlo .pb i{display:block;height:100%;width:0;background:var(--p);transition:.3s}
 .conf{position:fixed;inset:0;z-index:180;pointer-events:none;overflow:hidden}
-.conf i{position:absolute;top:-10px;width:9px;height:14px;border-radius:2px;animation:fall 1.8s ease-in forwards}
+.conf i{position:absolute;top:-12px;width:9px;height:14px;border-radius:2px;animation:fall 1.8s ease-in forwards}
 @keyframes fall{to{transform:translate3d(var(--x),105vh,0) rotate(720deg);opacity:.7}}
-.dlo{position:fixed;inset:0;z-index:160;background:rgba(10,30,20,.55);display:none;place-items:center}.dlo.show{display:grid}
-.dlo .in{background:#fff;border-radius:20px;padding:22px 26px;text-align:center;font-weight:600;font-size:14px}
-.dlo .pb{width:220px;height:8px;border-radius:9px;background:var(--p-cont);margin-top:12px;overflow:hidden}.dlo .pb i{display:block;height:100%;width:0;background:var(--p);transition:.3s}
-@media(min-width:640px){.pgrid{grid-template-columns:repeat(2,1fr)}.wgrid{grid-template-columns:repeat(2,1fr)}.hero{height:300px}.hero-in{padding:30px 34px}.page{padding-top:24px}}
-@media(min-width:960px){.pgrid{grid-template-columns:repeat(3,1fr)}.wgrid{grid-template-columns:repeat(3,1fr)}.fc{flex-basis:250px}.fc .im{height:150px}.hero{height:340px}
- .dgrid{grid-template-columns:1.15fr 1fr;gap:28px;align-items:start}.dimg{height:440px}.dgrid .right{display:flex;flex-direction:column;gap:14px}
+@media(min-width:640px){.pgrid{grid-template-columns:repeat(2,1fr)}.wgrid{grid-template-columns:repeat(2,1fr)}.hero-in{min-height:500px;padding:34px 30px 74px}.loc{grid-template-columns:1.1fr 1fr}.loc .mini{min-height:100%}}
+@media(min-width:960px){.pgrid{grid-template-columns:repeat(3,1fr)}.wgrid{grid-template-columns:repeat(3,1fr)}.fc{flex-basis:300px}
+ .dgrid{grid-template-columns:1.1fr 1fr;gap:28px;align-items:start}.dimg{height:460px}
  .pgr{grid-template-columns:1.2fr 1fr;gap:24px;align-items:start}.pgr .rt{position:sticky;top:84px}
- .fav{padding-left:0;padding-right:0;margin:0}.tabs,.pills{margin-left:0;margin-right:0;padding-left:0}}
+ .plist{grid-template-columns:1fr 1fr}}
+@media(min-width:960px) and (max-width:1030px){.ptitle h3{font-size:20px}}
+@media(max-width:560px){.locbtn{padding:0 13px;font-size:12.5px}.langbtn{padding:0 10px}.langbtn .cv{display:none}.hdr .wrap{height:60px}.logo{font-size:21px}.sec-h h2{font-size:20px}.favband h2{font-size:23px}}
+@media(max-width:360px){.strip{height:124px}.ptitle h3{font-size:19px}}
+@media(max-width:340px){.hdr .wrap{height:auto;min-height:54px;padding:7px 10px}.logo{font-size:19px}.locbtn{height:36px;padding:0 11px;font-size:12px;gap:5px}.langbtn{height:36px;padding:0 9px;font-size:12px}.hactions{gap:6px}.hero-in{padding-left:14px;padding-right:14px}.hero h1{font-size:25px}}
+@media(min-width:1500px){.hero-in{min-height:clamp(600px,34vw,820px)}}
 </style>
 </head>
 <body>
-<header class="hdr"><div class="wrap" style="max-width:1100px"><a href="#/" class="logo" aria-label="PANDATIX">PANDATIX</a></div></header>
+<div id="shellTop"></div>
 <main id="app"></main>
-<footer class="ftr"><div class="wrap" style="max-width:1100px"><span class="logo">PANDATIX</span><p>Lembah Pandawa, Pandaan | Buka 07.00 - 17.00 setiap hari</p><p>© 2026 PANDATIX</p></div></footer>
-<div class="qmodal" id="qm"><div class="in"><div id="qmQr"></div><b id="qmCode"></b><p>Tunjukkan QR ini ke petugas wahana. Naikkan kecerahan layar ke maksimal.</p><button class="btn btn-out block" onclick="$('#qm').classList.remove('show')">Tutup</button></div></div>
+<footer class="ftr" id="ftr"></footer>
+<div id="modals"></div>
 <div class="dlo" id="dlo"><div class="in"><span id="dlt">Menyiapkan tiket…</span><div class="pb"><i id="dlp"></i></div></div></div>
 <script src="/vendor/qrcode.js"></script>
-<script src="/common.js"></script>
+<script src="/common.js?v=glass1"></script>
+<script src="/peta.js"></script>
 <script>
-let CAT=null, cart=[], order=null, ES=null, curCat='Semua', payMethod='qris', payNama='', tab='tiket';
+/* ---------- tempat ---------- */
+const PLACE={
+  nama:'Lembah Pendawa Bali Van Java',
+  alamat:'Jl. Sedap Malam No.99, Bakalan, Durensewu, Kec. Pandaan, Kabupaten Pasuruan, Jawa Timur 67156',
+  pendek:'Jl. Sedap Malam No.99, Durensewu, Pandaan, Pasuruan',
+  lat:-7.6703198,lng:112.6810375,
+  maps:'https://www.google.com/maps/search/?api=1&query=Lembah%20Pendawa%20Bali%20Van%20Java%20Pandaan',
+  dir:'https://www.google.com/maps/dir/?api=1&destination=-7.6703198%2C112.6810375',
+  embed:'https://maps.google.com/maps?q=-7.6703198%2C112.6810375&z=16&hl=id&output=embed'
+};
+/* ---------- state ---------- */
+let CAT=null,cart=[],order=null,ES=null,curCat='all',payMethod='qris',payNama='',tab='tiket',cur=null,pinSel=null;
+let POP=null,popRange='semua',popBusy=false,undoBuf=null,undoTimer=null,modalOpen=null,mapTimer=null;
 const ls={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
 cart=ls.get('ptx_cart')||[];order=ls.get('ptx_order');
 const saveCart=()=>ls.set('ptx_cart',cart);
-const wById=id=>CAT.wahana.find(w=>w.id===id), pById=id=>CAT.paket.find(p=>p.id===id);
+const wById=id=>CAT.wahana.find(w=>w.id===id),pById=id=>CAT.paket.find(p=>p.id===id);
 const ref=(type,id)=>type==='paket'?pById(id):wById(id);
-/* Foto wahana dipetakan berdasarkan identitas wahana agar gambar sesuai nama. */
-const RIDE_IMAGES={
- 'ombak-raksasa':'/img/wahana/ombak-raksasa.jpg',
- 'seluncur-naga':'/img/wahana/seluncur-naga.jpg',
- 'bianglala':'/img/wahana/bianglala.jpg',
- 'kapal-karam':'/img/wahana/kapal-karam.jpg',
- 'kolam-ombak':'/img/wahana/kolam-ombak.jpg',
- 'flying-fox':'/img/wahana/flying-fox.jpg',
- 'kereta-mini':'/img/wahana/kereta-mini.jpg',
- 'dunia-air-cilik':'/img/wahana/dunia-air-cilik.jpg',
- 'rumah-cermin':'/img/wahana/rumah-cermin.jpg',
- 'tornado-air':'/img/wahana/tornado-air.jpg',
- 'komidi-putar':'/img/wahana/komidi-putar.jpg',
- 'bumper-boat':'/img/wahana/bumper-boat.jpg',
- 'taman-lumba':'/img/wahana/taman-lumba.jpg'
-};
-function img(id,kind){
- const url=RIDE_IMAGES[id]||RIDE_IMAGES['ombak-raksasa'];
- return `background-image:url('${url}');background-size:cover;background-position:center;background-repeat:no-repeat`;
-}
-const thumbStyle=(it)=>{const id=it.type==='paket'?pById(it.refId||it.id).wahanaIds[0]:(it.refId||it.id);return img(id,'sm')};
-const stepperHTML=(id,v,fn)=>`<div class="stepper" id="${id}"><button type="button" aria-label="Kurangi" onclick="${fn}(-1)">${ico('minus',14,2.5)}</button><input value="${v}" inputmode="numeric" aria-label="Jumlah tiket" oninput="${fn}(0,this)" onblur="this.value=this.value||1"><button type="button" aria-label="Tambah" onclick="${fn}(1)">${ico('plus',14,2.5)}</button></div>`;
+const img=id=>`background-image:url('/img/wahana/${id}.jpg');background-size:cover;background-position:center;background-repeat:no-repeat`;
+const heroImg=`background-image:url('/img/hero-pandatix-c.jpg');background-size:cover;background-position:center 62%`;
+const thumbStyle=it=>{const p=it.type==='paket'?pById(it.refId||it.id):null;return img(p?p.wahanaIds[0]:(it.refId||it.id))};
+const stepperHTML=(id,v,fn)=>`<div class="stepper" id="${id}"><button type="button" aria-label="${L('Kurangi jumlah','Decrease quantity')}" onclick="${fn}(-1)">${ico('minus',14,2.6)}</button><input value="${v}" inputmode="numeric" aria-label="${L('Jumlah','Quantity')}" oninput="${fn}(0,this)" onblur="this.value=this.value||1"><button type="button" aria-label="${L('Tambah jumlah','Increase quantity')}" onclick="${fn}(1)">${ico('plus',14,2.6)}</button></div>`;
 const clampQ=v=>Math.max(1,Math.min(CAT.qtyMax,parseInt(v)||1));
 const bump=id=>{const e=$('#'+id);if(e){e.classList.remove('bump');void e.offsetWidth;e.classList.add('bump')}};
-
+const disc=p=>Math.max(0,Math.round((1-p.harga/p.normal)*100));
+/* ---------- bahasa ---------- */
+let LANG=['id','en'].includes(ls.get('ptx_lang'))?ls.get('ptx_lang'):'id';
+window.LANG=LANG;
+const L=(id,en)=>LANG==='en'?en:id;
+const EN_W={
+ 'ombak-raksasa':{nama:'Ocean Roller Coaster',desc:'The fastest coaster in Pandawa Valley, plunging steeply toward the open sea.'},
+ 'seluncur-naga':{nama:'Dragon Slide',desc:'An 80-meter water slide with winding turns shaped like a dragon’s body.'},
+ 'bianglala':{nama:'Skyline Ferris Wheel',desc:'A giant wheel with enclosed cabins and coastal views from 40 meters up.'},
+ 'kapal-karam':{nama:'Shipwreck',desc:'A shipwreck-themed haunted house with thrilling sound and visual effects.'},
+ 'kolam-ombak':{nama:'Wave Pool',desc:'An artificial wave pool with fresh waves every 15 minutes.'},
+ 'flying-fox':{nama:'Seagull Flying Fox',desc:'Glide 250 meters above the coastal canopy on the sea breeze.'},
+ 'kereta-mini':{nama:'Coastal Mini Train',desc:'A sightseeing train that loops around the whole Pandawa Valley area.'},
+ 'dunia-air-cilik':{nama:'Little Water World',desc:'A water play area just for kids, with safe shallow depths.'},
+ 'rumah-cermin':{nama:'Mirror Glass House',desc:'A mirror maze that reflects light in every direction.'},
+ 'tornado-air':{nama:'Water Tornado',desc:'A giant funnel slide that spins riders before dropping them.'},
+ 'komidi-putar':{nama:'Seaside Carousel',desc:'A classic carousel with a sea-creature theme.'},
+ 'bumper-boat':{nama:'Bumper Boat',desc:'Little boats you can bump into each other in a shallow pool.'},
+ 'taman-lumba':{nama:'Dolphin Park',desc:'An interactive area with a mini dolphin show.'}
+};
+const EN_P={
+ 'paket-murah':{nama:'Budget Package',desc:'For an easy, fun day out without emptying your wallet.'},
+ 'paket-reguler':{nama:'Regular Package',desc:'A balanced pick with 3 family-favorite rides.'},
+ 'paket-mahal':{nama:'Premium Package',desc:'The fullest option — 3 exciting rides for a whole day of fun.'}
+};
+const PK_FEATS_EN={
+ 'paket-murah':['Entry to Pandawa Valley & the Lake Area','Little Water World & Seaside Carousel','Photo spots at Meru Pagoda & the arched bridges'],
+ 'paket-reguler':['Everything in the Budget Package','Coastal Mini Train & Mirror Glass House','Seaside Carousel & lakeside photo spots','Fast-track access at the main gate'],
+ 'paket-mahal':['Unlimited VIP access to all rides','Shipwreck, Bumper Boat & Dolphin Park','Private boat rental & exclusive VIP photo spots','Rp 25.000 Pandawa food voucher bonus']
+};
+const EN_CAT={Ekstrem:'Extreme',Air:'Water',Santai:'Relaxed',Anak:'Kids'};
+const EN_ZONE={'Lembah Barat':'West Valley','Zona Keluarga':'Family Zone','Punggungan Atas':'Upper Ridge','Zona Adrenalin':'Adrenaline Zone','Zona Air':'Water Zone','Zona Anak':'Kids Zone'};
+const wn=w=>LANG==='en'?(EN_W[w.id]&&EN_W[w.id].nama||w.nama):w.nama;
+const wd=w=>LANG==='en'?(EN_W[w.id]&&EN_W[w.id].desc||w.desc):w.desc;
+const pn=p=>LANG==='en'?(EN_P[p.id]&&EN_P[p.id].nama||p.nama):p.nama;
+const pd=p=>LANG==='en'?(EN_P[p.id]&&EN_P[p.id].desc||p.desc):p.desc;
+const ct=c=>LANG==='en'?(EN_CAT[c]||c):c;
+const zt=z=>LANG==='en'?(EN_ZONE[z]||z):z;
+const hTxt=h=>{const s=String(h);return LANG==='en'?s.replace('Maks','Max').replace('Bebas','Any height'):s};
+const hReq=h=>/^\d/.test(String(h))?L('Syarat tinggi ','Minimum height ')+h:hTxt(h);
+const rowName=r=>LANG==='en'?(EN_W[r.id]&&EN_W[r.id].nama||r.nama):r.nama;
+const itemName=r=>LANG==='en'?((EN_W[r.id]&&EN_W[r.id].nama)||(EN_P[r.id]&&EN_P[r.id].nama)||r.nama):r.nama;
+const txName=n=>{if(LANG!=='en'||!CAT)return n;const w=CAT.wahana.find(x=>x.nama===n);if(w)return wn(w);const p=CAT.paket.find(x=>x.nama===n);return p?pn(p):n};
+window.PTX={wn,ct,zt,L};
+function setLang(v){
+  if(!['id','en'].includes(v))return;
+  closeLang();
+  if(v===LANG)return;
+  LANG=v;window.LANG=v;ls.set('ptx_lang',v);
+  document.documentElement.lang=v;
+  document.title=L('PANDATIX · Tiket Wahana Lembah Pandawa','PANDATIX · Pandawa Valley Ride Tickets');
+  renderShell();
+  if(!CAT){route();return}
+  route();
+}
+function toggleLang(e){if(e){e.stopPropagation()}const w=$('#langWrap');if(!w)return;const on=w.classList.toggle('open');$('#langBtn').setAttribute('aria-expanded',on)}
+function closeLang(){const w=$('#langWrap');if(!w||!w.classList.contains('open'))return;w.classList.remove('open');const b=$('#langBtn');if(b)b.setAttribute('aria-expanded','false')}
+document.addEventListener('click',e=>{if(!e.target.closest('.lang'))closeLang()});
+/* ---------- shell ---------- */
+function renderShell(){
+  $('#shellTop').innerHTML=`<header class="hdr"><div class="wrap hwrap">
+    <a class="logo" href="#/" aria-label="${L('PANDATIX, kembali ke beranda','PANDATIX, back to home')}">PANDATIX</a>
+    <div class="hspacer"></div>
+    <div class="hactions">
+      <div class="lang" id="langWrap">
+        <button class="langbtn" id="langBtn" onclick="toggleLang(event)" aria-haspopup="listbox" aria-expanded="false" aria-label="${L('Pilih bahasa','Choose language')}">${ico('globe',17,2.1)}<span>${LANG.toUpperCase()}</span><span class="cv">${ico('chevd',13,2.6)}</span></button>
+        <div class="langmenu" id="langMenu" role="listbox" aria-label="${L('Bahasa','Language')}">
+          <button role="option" class="langopt ${LANG==='id'?'on':''}" aria-selected="${LANG==='id'}" onclick="setLang('id')"><span class="lgtxt"><b>Bahasa Indonesia</b><i>ID</i></span>${LANG==='id'?ico('check',16,3):''}</button>
+          <button role="option" class="langopt ${LANG==='en'?'on':''}" aria-selected="${LANG==='en'}" onclick="setLang('en')"><span class="lgtxt"><b>English</b><i>EN</i></span>${LANG==='en'?ico('check',16,3):''}</button>
+        </div>
+      </div>
+      <button class="locbtn" onclick="openLokasi()">${ico('map',16,2.2)} ${L('Lokasi','Location')}</button>
+    </div>
+  </div></header>`;
+  $('#ftr').innerHTML=`<div class="fwave" aria-hidden="true"><svg viewBox="0 0 1440 96" preserveAspectRatio="none">
+      <path d="M0 40 C160 26 320 26 470 36 C620 46 760 40 900 30 C1060 18 1240 26 1440 44 L1440 96 L0 96 Z" fill="#1C4836"/>
+      <path d="M0 54 C180 64 360 52 540 52 C720 52 840 24 980 12 C1104 2 1230 16 1340 34 C1392 42 1418 44 1440 44 L1440 96 L0 96 Z" fill="#143A2B"/>
+    </svg></div>
+    <div class="fp"><div class="wrap">
+    <span class="lg">PANDATIX</span>
+    <p class="ds">${L('Platform tiket resmi &amp; petualangan seru Wisata Lembah Pandawa.','Official ticket platform &amp; exciting adventures at Pandawa Valley.')}</p>
+    <div class="fi"><span class="ic">${ico('clock',22,1.9)}</span><div class="tx"><b>${L('Jam Operasional','Opening Hours')}</b><span>${L('Buka setiap hari pukul 07.00 - 17.00 WIB','Open daily 07.00 - 17.00 WIB')}</span></div></div>
+    <div class="fi"><span class="ic">${ico('pin',22,1.9)}</span><div class="tx"><b>${L('Lokasi','Location')}</b><span>${L('Wisata Lembah Pandawa, Pandaan, Pasuruan, Jawa Timur','Pandawa Valley, Pandaan, Pasuruan, East Java')}</span></div></div>
+    <a class="ig" href="https://www.instagram.com/lembahpandawa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5.2"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1.15" fill="currentColor" stroke="none"/></svg> @lembahpandawa</a>
+    <div class="hr"></div>
+    <p class="cp">© 2026 PANDATIX. All rights reserved.</p>
+  </div></div>`;
+  $('#modals').innerHTML=`
+  <div class="modal" id="locModal"><div class="in">
+    <div class="mh"><div><h3>${L('Lokasi wisata','Visitor location')}</h3><p>${L('Titik gerbang utama Lembah Pandawa','Main gate point of Pandawa Valley')}</p></div><button class="xbtn" onclick="closeModal('locModal')" aria-label="${L('Tutup','Close')}">${ico('x',18,2.4)}</button></div>
+    <div class="mapbox" id="mapbox"><div class="fb" id="mapfb">${L('Memuat peta…','Loading map…')}</div></div>
+    <div class="locinfo">${ico('pin',20,2.1)}<div><b>${esc(PLACE.nama)}</b><p>${esc(PLACE.alamat)}</p></div></div>
+    <div class="locacts"><a class="btn" href="${PLACE.maps}" target="_blank" rel="noopener">${ico('ext',17,2.2)} ${L('Buka di Google Maps','Open in Google Maps')}</a><a class="btn btn-blue" href="${PLACE.dir}" target="_blank" rel="noopener">${ico('nav',17,2.2)} ${L('Petunjuk arah','Directions')}</a></div>
+  </div></div>
+  <div class="modal" id="parkModal"><div class="in" style="width:min(96vw,900px)">
+    <div class="mh"><div><h3>${L('Peta kawasan Lembah Pandawa','Pandawa Valley Area Map')}</h3><p>${L('Ketuk titik bernomor untuk melihat wahana','Tap a numbered pin to see the ride')}</p></div><button class="xbtn" onclick="closeModal('parkModal')" aria-label="${L('Tutup','Close')}">${ico('x',18,2.4)}</button></div>
+    <div id="parkBody"></div>
+  </div></div>
+  <div class="modal qmodal" id="qm"><div class="in">
+    <div class="qrw" id="qmQr"></div><b id="qmCode"></b><p>${L('Naikkan kecerahan layar agar kode mudah dipindai petugas.','Turn up your screen brightness so staff can scan the code easily.')}</p>
+    <button class="btn btn-out block" onclick="closeModal('qm')">${L('Tutup','Close')}</button>
+  </div></div>`;
+  $$('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeModal(m.id)}));
+  document.onkeydown=e=>{if(e.key==='Escape'){if(modalOpen)closeModal(modalOpen);closeLang()}};
+}
+function showModal(id){$('#'+id).classList.add('show');document.body.style.overflow='hidden';modalOpen=id}
+function closeModal(id){const m=$('#'+id);if(!m)return;m.classList.remove('show');if(modalOpen===id){modalOpen=null;document.body.style.overflow=''}}
+function openLokasi(){
+  showModal('locModal');const box=$('#mapbox');if(box.dataset.loaded)return;box.dataset.loaded='1';
+  const f=document.createElement('iframe');
+  f.title=L('Peta lokasi ','Location map ')+PLACE.nama;f.referrerPolicy='no-referrer-when-downgrade';f.allowFullscreen=true;f.src=PLACE.embed;
+  f.addEventListener('load',()=>{clearTimeout(mapTimer);const fb=$('#mapfb');if(fb)fb.remove()});
+  box.appendChild(f);
+  mapTimer=setTimeout(()=>{const fb=$('#mapfb');if(fb)fb.innerHTML=L('Peta tidak dapat dimuat di jaringan ini.','The map could not load on this network.')+`<br><a href="${PLACE.maps}" target="_blank" rel="noopener" style="color:var(--p);font-weight:800">${L('Buka langsung di Google Maps','Open Google Maps directly')}</a>`},9000);
+}
 /* ---------- router ---------- */
 const app=$('#app');
 function go(h){location.hash=h}
 async function route(){
-  if(!CAT){try{CAT=await api('/api/catalog')}catch(e){app.innerHTML='<div class="page narrow"><div class="box card"><h3>Server tidak dapat dihubungi</h3><p>Muat ulang halaman beberapa saat lagi.</p></div></div>';return}}
+  if(!CAT){try{CAT=await api('/api/catalog')}catch(e){app.innerHTML=`<div class="page narrow"><div class="card box"><h3>${L('Server tidak dapat dihubungi','Server is unreachable')}</h3><p style="color:var(--ink-3);font-size:13.5px;margin-top:8px">${L('Muat ulang halaman beberapa saat lagi.','Please reload the page in a moment.')}</p></div></div>`;return}}
   const h=location.hash.slice(1)||'/';
   if(ES&&!/^\/(tunggu|tiket)/.test(h)){ES.close();ES=null}
-  window.scrollTo({top:0});
+  window.scrollTo({top:0,behavior:'instant'});
   let m;
   if(h==='/')return pgHome();
   if(m=h.match(/^\/w\/([\w-]+)$/))return pgDetail(m[1]);
@@ -244,93 +567,359 @@ async function route(){
   go('/');
 }
 addEventListener('hashchange',route);
-
 /* ---------- HOME ---------- */
-function heroSvg(){return `<img src="/img/hero-pandatix.jpg" alt="Lanskap sinematik Lembah Pandawa" loading="eager" fetchpriority="high">`;}
-const cardHTML=w=>`<button class="card wc" onclick="go('/w/${w.id}')"><div class="im" style="${img(w.id,'sm')}"></div><div class="bd"><span class="k">${w.kategori} · ${w.durasi==='Bebas'?'Bebas':w.durasi} · ${w.tinggi}</span><h3>${esc(w.nama)}</h3><span class="ds">${esc(w.desc)}</span><div class="ft"><div><small>Harga</small><b>${rp(w.harga)}</b></div><span class="btn btn-out btn-sm" style="min-height:34px;pointer-events:none">Lihat ${ico('right',14,2.5)}</span></div></div></button>`;
-const favHTML=w=>`<article class="card fc" tabindex="0" onclick="go('/w/${w.id}')" onkeydown="if(event.key==='Enter')go('/w/${w.id}')"><div class="im" style="${img(w.id)}"><span class="tag ${w.kategori}">${w.kategori}</span></div><div class="bd"><h3>${esc(w.nama)}</h3><div class="mt"><span>${ico('clock',12,2)}${w.durasi==='Bebas'?'Bebas':w.durasi.replace('mnt','Menit')}</span><span>${ico('vert',12,2)}${/^\d/.test(w.tinggi)?'Min. '+w.tinggi:w.tinggi}</span></div><div class="ft"><div><small>Harga</small><b>Rp ${w.harga.toLocaleString('id-ID')}</b></div><span class="lh">Lihat ${ico('right',12,2.5)}</span></div></div></article>`;
-function pgHome(){
-  const saving=Math.max(...CAT.paket.map(p=>Math.round((1-p.harga/p.normal)*100)));
-  const pq={};CAT.paket.forEach(p=>pq[p.id]=1);window._pq=pq;
-  app.innerHTML=`<div class="page">
-  <section class="hero"><div class="hero-bg">${heroSvg()}</div><div class="hero-in"><span class="wx" id="wx">${ico('cloud',16,2)}<b id="wxT">24°C</b><s></s><span id="wxD">Cerah Sejuk</span></span><h1>Selamat datang di Lembah Pandawa</h1><p>Satu tiket untuk sehari penuh keseruan. Pilih wahana atau paket, bayar, tiket QR langsung terbit.</p></div></section>
-  ${order?`<a class="mytix" href="#/${'tunggu'}" id="myt"><span>Kamu punya pesanan aktif</span><span style="display:inline-flex;gap:4px;align-items:center">Lihat ${ico('right',16,2.5)}</span></a>`:''}
-  <div class="search"><div class="sbar" id="sbar"><input id="q" autocomplete="off" placeholder="Cari wahana — ketik disini.." aria-label="Cari wahana"><button class="sgo" onclick="doSearch()" aria-label="Cari">${ico('search',20,2.2)}</button></div><div class="sug" id="sug"></div></div>
-  <section class="sec"><div class="sec-h"><h2>Paket hemat wisata</h2><span>Hemat s/d ${saving}%</span></div><div class="pgrid">${CAT.paket.map(p=>`<article class="card pk"><span class="tier ${p.kelas}">${p.tag}</span><h3>${p.nama}</h3><p class="d">${p.desc}</p><ul>${p.wahanaIds.map(i=>`<li>${ico('checkc',20,2)}${esc(wById(i).nama)}</li>`).join('')}</ul><div class="pr"><div class="cor">${rp(p.normal)}</div><div class="hg" id="pp-${p.id}">${rp(p.harga)}</div><div class="un" id="pu-${p.id}">1 paket x ${rp(p.harga)}</div></div><div class="qr"><span>Jumlah tiket</span>${stepperHTML('ps-'+p.id,1,"pq('"+p.id+"'")}</div><button class="btn block" onclick="buyPaket('${p.id}')">Pilih paket ${ico('right',18,2.5)}</button></article>`).join('')}</div></section>
-  <section class="sec"><div class="sec-h"><h2>Wahana favorit</h2></div><div class="fav">${CAT.wahana.filter(w=>w.favorit).map(favHTML).join('')}</div></section>
-  <section class="sec"><div class="sec-h"><h2>Semua wahana</h2></div><div class="tabs" id="tabs"></div><div class="wgrid" id="wg"></div></section>
-  <div class="noinfo">${ico('info',22,2)}<div><b>Informasi Jam Operasional</b><p>Gerbang tiket ditutup pukul 17.30 WIB. Seluruh wahana beroperasi setiap hari dengan protokol keselamatan terstandarisasi.</p></div></div></div>`;
-  renderTabs();renderGrid();bindSearch();loadWx();
+const PK_FEATS={
+ 'paket-murah':['Tiket masuk Lembah Pandawa & Area Danau','Dunia Air Cilik & Komidi Putar Bahari','Spot foto Pagoda Meru & jembatan lengkung'],
+ 'paket-reguler':['Semua fasilitas tiket Paket Murah','Kereta Mini Pesisir & Rumah Kaca Cermin','Komidi Putar Bahari & spot foto danau','Akses jalur fast-track gate utama'],
+ 'paket-mahal':['Bebas akses wahana tanpa batas antre (VIP)','Kapal Karam, Bumper Boat & Taman Lumba-Lumba','Sewa perahu eksklusif & spot foto khusus VIP','Bonus voucher kuliner Pandawa Rp 25.000']
+};
+const pkFeats=p=>{
+  const list=LANG==='en'?(PK_FEATS_EN[p.id]||null):(PK_FEATS[p.id]||null);
+  return list||p.wahanaIds.map(i=>wn(wById(i)));
+};
+function paketHTML(p){
+  const d=disc(p),ids=p.wahanaIds;
+  const shots=[img(ids[0]),heroImg,img(ids[1]||ids[0])];
+  const chip=p.kelas==='premium'?`<span class="tchip indigo">All Access VIP</span>`:p.kelas==='reguler'?`<span class="tchip green">${L('Paling Populer','Most Popular')}</span>`:'';
+  return `<article class="card pk ${p.kelas}">
+    <div class="strip"><div class="shot" style="${shots[0]}"></div><div class="shot" style="${shots[1]}"></div><div class="shot" style="${shots[2]}"></div></div>
+    <div class="pbody">
+      <div class="ptitle"><h3>${esc(pn(p))}</h3>${chip}</div>
+      <p class="d">${esc(pd(p))}</p>
+      <ul class="feats">${pkFeats(p).map(f=>`<li><span class="st">${ico('star',15,2.2)}</span>${esc(f)}</li>`).join('')}</ul>
+      <div class="pprice"><div class="cor-row"><span class="cor">${rp(p.normal)}</span><span class="disc">-${d}%</span></div><div class="big"><b>${rp(p.harga)}</b><span>${L('/ orang','/ person')}</span></div></div>
+      <button class="btn block" onclick="buyPaket('${p.id}')">${L('Pilih Paket Ini','Choose This Package')} ${ico('right',18,2.6)}</button>
+    </div></article>`;
 }
-function pq(id,d,el){const cur=window._pq[id];let v=el?(el.value===''?cur:clampQ(el.value)):clampQ(cur+d);window._pq[id]=v;const p=pById(id);const inp=$('#ps-'+id+' input');if(!el||el.value!=='')inp.value=v;$('#pp-'+id).textContent=rp(p.harga*v);$('#pu-'+id).textContent=v+' paket x '+rp(p.harga);if(d)bump('ps-'+id)}
+const cardHTML=(w,i)=>`<button class="card wc" style="animation-delay:${i*35}ms" onclick="go('/w/${w.id}')"><div class="im" style="${img(w.id)}"><span class="tag ${w.kategori}">${ct(w.kategori)}</span></div><div class="bd"><span class="k">${ct(w.kategori)}</span><h3>${esc(wn(w))}</h3><span class="ds">${esc(wd(w))}</span><div class="ft"><div><small>${L('Harga','Price')}</small><b>${rp(w.harga)}</b></div><span class="go">${L('Lihat','View')} ${ico('right',13,2.6)}</span></div></div></button>`;
+const favHTML=w=>`<article class="fc" tabindex="0" role="link" aria-label="${esc(wn(w))}" onclick="go('/w/${w.id}')" onkeydown="if(event.key==='Enter')go('/w/${w.id}')"><div class="im" style="${img(w.id)}"><span class="tag ${w.kategori}">${w.favorit&&w.kategori!=='Ekstrem'?L('Favorit','Favorite'):ct(w.kategori)}</span></div><div class="bd"><h3>${esc(wn(w))}</h3><p class="ds">${esc(wd(w))}</p><span class="mt">${/^\d/.test(w.tinggi)?L('Min. ','Min. ')+w.tinggi:hTxt(w.tinggi)}</span><div class="ft"><div><small>${L('Harga','Price')}</small><b>${rp(w.harga)}</b></div><span class="lh">${L('Lihat','View')} ${ico('right',13,2.6)}</span></div></div></article>`;
+function miniMapSVG(){
+  return `<svg viewBox="0 0 420 260" preserveAspectRatio="xMidYMid slice" role="img" aria-label="${L('Peta jalan menuju Lembah Pandawa','Road map to Pandawa Valley')}">
+  <rect width="420" height="260" fill="#EAF3EC"/>
+  <g fill="#DCEAE0"><rect x="14" y="16" width="118" height="72" rx="8"/><rect x="150" y="16" width="120" height="52" rx="8"/><rect x="292" y="16" width="112" height="90" rx="8"/><rect x="14" y="150" width="96" height="94" rx="8"/><rect x="300" y="150" width="104" height="94" rx="8"/></g>
+  <g fill="#C2E3D0"><ellipse cx="205" cy="196" rx="72" ry="46"/><ellipse cx="70" cy="118" rx="40" ry="20"/></g>
+  <path d="M0 128 H420" stroke="#FFFFFF" stroke-width="17"/><path d="M0 128 H420" stroke="#8FC8A9" stroke-width="2" stroke-dasharray="12 10"/>
+  <path d="M140 0 V260" stroke="#FFFFFF" stroke-width="12"/><path d="M284 0 V260" stroke="#FFFFFF" stroke-width="12"/>
+  <path d="M0 240 Q 120 214 210 236 T 420 214" stroke="#7FC4D6" stroke-width="9" fill="none"/>
+  <g font-family="Schibsted Grotesk,system-ui,sans-serif" font-weight="700" fill="#7B837E" font-size="9.5" letter-spacing="1.1">
+    <text x="16" y="122">JL. SEDAP MALAM</text><text x="146" y="252" transform="rotate(-90 146 252)">PANDAAN</text><text x="316" y="46">DURENSEWU</text>
+  </g>
+  <g transform="translate(210 176)">
+    <circle r="30" fill="#1B6B44" opacity=".14"><animate attributeName="r" values="20;34;20" dur="3.4s" repeatCount="indefinite"/><animate attributeName="opacity" values=".22;0;.22" dur="3.4s" repeatCount="indefinite"/></circle>
+    <path d="M0 12 C -13 -2 -13 -12 -13 -14 A 13 13 0 1 1 13 -14 C 13 -12 13 -2 0 12 Z" fill="#1B6B44" stroke="#fff" stroke-width="2"/>
+    <circle cy="-14" r="5" fill="#fff"/>
+  </g>
+  <g font-family="Schibsted Grotesk,system-ui,sans-serif" font-weight="800" font-size="11" fill="#12482E"><text x="210" y="212" text-anchor="middle">Lembah Pandawa</text></g>
+</svg>`;
+}
+function heroSceneSVG(){
+  const cx=720;
+  /* clouds */
+  const cloud=(x,y,s,o,d)=>`<g transform="translate(${x} ${y})"><g class="cl" style="animation-duration:${d}s"><g transform="scale(${s})" opacity="${o}">
+    <ellipse cx="2" cy="16" rx="72" ry="15" fill="#A8BCBE" opacity=".22"/>
+    <rect x="-76" y="2" width="152" height="20" rx="10" fill="url(#hcB)"/>
+    <ellipse cx="-42" cy="6" rx="34" ry="18" fill="url(#hcB)"/>
+    <ellipse cx="40" cy="8" rx="30" ry="16" fill="url(#hcB)"/>
+    <ellipse cx="0" cy="-2" rx="56" ry="25" fill="url(#hcA)"/>
+    <ellipse cx="-16" cy="-15" rx="30" ry="19" fill="url(#hcA)"/>
+    <ellipse cx="24" cy="-9" rx="22" ry="15" fill="url(#hcA)"/>
+    <ellipse cx="-24" cy="-7" rx="22" ry="13" fill="#FFFFFF" opacity=".7"/>
+    <ellipse cx="6" cy="15" rx="58" ry="7" fill="#B9CCCC" opacity=".38"/>
+  </g></g></g>`;
+  const clouds=cloud(600,116,1.12,.86,88)+cloud(672,54,.46,.46,72)+cloud(846,86,.86,.74,82)+cloud(884,164,.7,.5,76)+cloud(1116,104,1,.56,92)+cloud(1324,206,.68,.32,68);
+  /* trees */
+  const tree=(x,y,s,a,b,d)=>`<g transform="translate(${x} ${y}) scale(${s})">
+    <ellipse cx="0" cy="1" rx="19" ry="4" fill="#16330F" opacity=".3"/>
+    <rect x="-2.4" y="-20" width="4.8" height="21" rx="2" fill="#43301C"/>
+    <g class="tr" style="animation-duration:${d}s"><circle cx="0" cy="-31" r="16" fill="${a}"/><circle cx="-12" cy="-23" r="12" fill="${b}"/><circle cx="12" cy="-23" r="12" fill="${b}"/><circle cx="0" cy="-40" r="9.5" fill="${a}"/><circle cx="-7" cy="-35" r="7" fill="#FFFFFF" opacity=".1"/><path d="M-13 -31 a 13 13 0 0 1 12 -12" fill="none" stroke="#DDEBC8" stroke-opacity=".22" stroke-width="2.2" stroke-linecap="round"/><ellipse cx="1" cy="-17" rx="17" ry="5" fill="#12300D" opacity=".28"/></g></g>`;
+  const palm=(x,y,s,d)=>`<g transform="translate(${x} ${y}) scale(${s})">
+    <path d="M0 0 C -2 -15 1 -29 6 -43" fill="none" stroke="#4C3820" stroke-width="4" stroke-linecap="round"/>
+    <g class="tr" style="animation-duration:${d}s" fill="#4E7A2F">
+      <path d="M6 -44 C -4 -53 -16 -54 -24 -48 C -14 -49 -3 -47 6 -41 Z"/>
+      <path d="M6 -44 C 16 -54 29 -55 37 -49 C 26 -50 15 -47 6 -41 Z"/>
+      <path d="M6 -44 C 2 -57 -3 -66 -12 -70 C -9 -59 -2 -50 4 -42 Z"/>
+      <path d="M6 -44 C 12 -57 18 -64 27 -67 C 21 -58 13 -50 7 -41 Z"/>
+      <path d="M6 -44 C -2 -40 -12 -40 -19 -36 C -11 -34 -1 -37 5 -42 Z" fill="#3E6326"/>
+      <path d="M6 -44 C 14 -39 24 -37 31 -41 C 22 -34 12 -36 6 -41 Z" fill="#3E6326"/>
+    </g></g>`;
+  const tl=[[24,404,11],[70,402,14],[116,406,10],[162,400,15],[208,404,12],[254,402,14],[300,406,10],[346,402,13],[392,404,11],[438,406,12],[484,402,14],[530,404,11],[576,402,13],[622,406,10],[668,404,12],[714,402,14],[760,406,11],[806,404,13],[852,402,10],[898,406,12],[944,404,14],[990,402,11],[1036,404,13],[1082,406,10],[1128,402,14],[1174,404,11],[1220,406,12],[1266,402,13],[1312,404,10],[1358,402,14],[1404,406,11]];
+  const treesDistant=tl.map(([x,y,r],i)=>`<circle cx="${x}" cy="${y-r*.7}" r="${r}" fill="${['#20451A','#285021','#193C16'][i%3]}"/>`).join('');
+  const treesFar=
+    tree(338,406,1.25,'#2A5A22','#1E4719',10.4)+tree(408,404,1.05,'#25521F','#1A4217',9.2)+tree(470,406,1.15,'#285822','#1C4519',10.8)+
+    tree(526,404,.95,'#285822','#1C4519',9.4)+tree(556,406,1.05,'#2C6124','#1F4B1C',10.6)+tree(584,404,.9,'#23501E','#194016',8.8)+
+    tree(654,406,.85,'#25521F','#1A4217',10.2)+tree(700,404,.95,'#23501E','#194016',9.6)+tree(748,406,.9,'#285822','#1C4519',10.9)+tree(790,404,.8,'#25521F','#1A4217',9.1)+
+    tree(824,408,1.3,'#285822','#194016',9.8)+palm(852,408,.95,8.6)+tree(872,410,1.2,'#22501D','#173D14',11.2)+
+    tree(1002,406,1.2,'#2A5A22','#1E4719',10.1)+tree(1096,404,1.35,'#25521F','#1A4217',9.4)+tree(1190,408,1.5,'#285822','#1C4519',11.4)+tree(1286,404,1.2,'#2A5A22','#1E4719',10.2)+tree(1382,406,1.35,'#25521F','#1A4217',9.7)+
+    `<g fill="#1F4322"><ellipse cx="640" cy="410" rx="24" ry="9"/><ellipse cx="806" cy="410" rx="22" ry="8"/><ellipse cx="470" cy="410" rx="20" ry="8"/><ellipse cx="980" cy="410" rx="18" ry="7"/></g>`;
+  /* bridge */
+  const bridge=(x1,x2,y,id)=>{
+    const mx=(x1+x2)/2, pk=y-32, d=`M${x1} ${y} Q ${mx} ${pk} ${x2} ${y}`;
+    let s=`<g id="${id}">
+      <path d="${d}" fill="none" stroke="#DCE4DA" stroke-width="22" opacity=".38"/>
+      <path d="${d}" fill="none" stroke="#EDF0E7" stroke-width="15" stroke-linecap="round"/>
+      <path d="${d}" fill="none" stroke="#FAFBF6" stroke-width="3.2" stroke-linecap="round" transform="translate(0 -5)" opacity=".9"/>`;
+    for(let t=.04;t<.98;t+=.05){
+      const mt=1-t, px=mt*mt*x1+2*mt*t*mx+t*t*x2, py=mt*mt*y+2*mt*t*pk+t*t*y;
+      s+=`<rect x="${(px-1.9).toFixed(1)}" y="${(py-18).toFixed(1)}" width="3.8" height="19" rx="1.7" fill="#F3F5EE"/>`;
+    }
+    return s+`<path d="M${x1} ${y-15} Q ${mx} ${pk-15} ${x2} ${y-15}" fill="none" stroke="#F6F8F1" stroke-width="4" stroke-linecap="round"/></g>`;
+  };
+  /* pagoda */
+  const tiers=[[128,6],[154,10],[180,14],[206,18],[232,23],[258,28],[284,33],[310,39],[336,46]];
+  let meru='';
+  tiers.forEach(([y,hw],i)=>{
+    const R=hw+12, bw=Math.max(4,hw*.45);
+    if(i>0){
+      const by=tiers[i-1][0]+7;
+      meru+=`<path d="M${cx-bw} ${by} L${cx+bw} ${by} L${cx+bw*.92} ${y-7} L${cx-bw*.92} ${y-7} Z" fill="#5B4028"/>
+        <path d="M${cx-bw} ${by} L${cx-bw*.55} ${by} L${cx-bw*.5} ${y-7} L${cx-bw*.92} ${y-7} Z" fill="#6A4C2F" opacity=".9"/>
+        <path d="M${cx+bw*.5} ${by} L${cx+bw} ${by} L${cx+bw*.92} ${y-7} L${cx+bw*.44} ${y-7} Z" fill="#43301C" opacity=".85"/>`;
+    }
+    const wedge=(tipY,topY,botY)=>`M${cx-R} ${tipY} L${cx-R*.72} ${topY+2.6} L${cx} ${topY} L${cx+R*.72} ${topY+2.6} L${cx+R} ${tipY} L${cx+R*.8} ${botY-2.2} L${cx+R*.3} ${botY} L${cx-R*.3} ${botY} L${cx-R*.8} ${botY-2.2} Z`;
+    meru+=`<path d="${wedge(y-8,y-13.6,y+8.5)}" fill="#7A5333"/>
+      <path d="${wedge(y-8,y-13,y+4.5)}" fill="#3B2A1C"/>
+      <path d="M${cx-R*.6} ${y-11.4} L${cx-R*.3} ${y-12.6} L${cx+R*.3} ${y-12.6} L${cx+R*.6} ${y-11.4}" fill="none" stroke="#57402B" stroke-width="1.7" opacity=".55"/>
+      <path d="M${cx-R} ${y-8} l -5 -3.6 l .4 5.8 Z" fill="#2F2015"/><path d="M${cx+R} ${y-8} l 5 -3.6 l -.4 5.8 Z" fill="#2F2015"/>`;
+  });
+  meru+=`<path d="M${cx-50} 350 C${cx-30} 342 ${cx+30} 342 ${cx+50} 350 C${cx+30} 358 ${cx-30} 358 ${cx-50} 350 Z" fill="#30221A"/>
+    <path d="M${cx-50} 350 C${cx-30} 358 ${cx+30} 358 ${cx+50} 350 C${cx+30} 363 ${cx-30} 363 ${cx-50} 350 Z" fill="#6E5133"/>
+    <path d="M${cx-50} 350 C${cx-30} 358 ${cx+30} 358 ${cx+50} 350" fill="none" stroke="#A9854E" stroke-width="1.8" stroke-linecap="round"/>
+    <rect x="${cx-23}" y="354" width="46" height="14" rx="2" fill="#3A2A1B"/>
+    <path d="M${cx-11} 368 h22 v8 h-22 Z" fill="#30221A"/>
+    <rect x="${cx-8}" y="118" width="16" height="12" fill="#4A3520"/>
+    <path d="M${cx-8} 122 h16" stroke="#C09A60" stroke-width="2"/>
+    <rect x="${cx-3.5}" y="96" width="7" height="24" fill="#4A3520"/>
+    <rect x="${cx-9}" y="100" width="18" height="4.5" rx="2" fill="#D2AE72"/>
+    <rect x="${cx-7}" y="107" width="14" height="4" rx="2" fill="#D2AE72"/>
+    <rect x="${cx-5}" y="113" width="10" height="3.5" rx="1.6" fill="#D2AE72"/>
+    <path d="M${cx} 86 l 5 10 h -10 Z" fill="#D9B76F"/>`;
+  /* foreground foliage */
+  const leaves=(x,y,s)=>`<g transform="translate(${x} ${y}) scale(${s})" fill="#1F5A40">
+    <path d="M0 0 C-14 -8 -26 -26 -24 -44 C-8 -36 -1 -18 0 0 Z"/>
+    <path d="M4 0 C18 -10 28 -28 26 -46 C10 -38 4 -18 4 0 Z" fill="#174C36"/>
+    <path d="M-2 2 C-6 -14 -2 -30 6 -40 C8 -22 4 -8 -2 2 Z" fill="#2A6B4A"/></g>`;
+  const clump=(x,y,s,d,dl)=>`<g transform="translate(${x} ${y}) scale(${s})"><g class="lv" style="animation-duration:${d}s;animation-delay:${dl||0}s">${leaves(-13,3,.85)}${leaves(12,4,.78)}${leaves(0,0,1)}</g></g>`;
+  const flyLeaf=(x,y,s,o,d,dl)=>`<g transform="translate(${x} ${y}) scale(${s})" opacity="${o}"><g class="lf" style="animation-duration:${d}s;animation-delay:${dl}s"><path d="M0 0 C-7 -5 -11 -14 -8 -22 C-1 -17 2 -8 0 0 Z" fill="#4C8C5A"/><path d="M0 0 C-7 -5 -11 -14 -8 -22" stroke="#2F6B45" stroke-width="1" fill="none"/></g></g>`;
+  const bird=(x,y,s)=>`<g transform="translate(${x} ${y}) scale(${s})" fill="none" stroke="#2A3C33" stroke-width="2.2" stroke-linecap="round"><g class="wing"><path d="M-10 0 q 5 -6 10 0"/><path d="M0 0 q 5 -6 10 0"/></g></g>`;
+  return `<svg viewBox="0 0 1440 620" preserveAspectRatio="xMidYMin slice" aria-hidden="true">
+    <defs>
+      <linearGradient id="hsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A5D6D"/><stop offset=".22" stop-color="#557A8C"/><stop offset=".42" stop-color="#7A9AA9"/><stop offset=".54" stop-color="#93AEB6"/><stop offset=".72" stop-color="#A9BEC0"/><stop offset="1" stop-color="#B7C9CA"/></linearGradient>
+      <linearGradient id="hwater" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3E7265"/><stop offset=".6" stop-color="#2F5F54"/><stop offset="1" stop-color="#265147"/></linearGradient>
+      <linearGradient id="hhaze" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D3E2DE" stop-opacity="0"/><stop offset=".55" stop-color="#D3E2DE" stop-opacity=".16"/><stop offset="1" stop-color="#D3E2DE" stop-opacity="0"/></linearGradient>
+      <radialGradient id="hsun"><stop offset="0" stop-color="#FFF4DA" stop-opacity=".26"/><stop offset="1" stop-color="#FFF4DA" stop-opacity="0"/></radialGradient>
+      <linearGradient id="hcA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#F1F6F4"/><stop offset="1" stop-color="#D3E1DF"/></linearGradient>
+      <linearGradient id="hcB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F8FBF9"/><stop offset=".6" stop-color="#E3EDEB"/><stop offset="1" stop-color="#C6D6D4"/></linearGradient>
+      <linearGradient id="hg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7FA34F"/><stop offset=".42" stop-color="#5C8338"/><stop offset="1" stop-color="#3F6426"/></linearGradient>
+      <linearGradient id="hg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6E9642"/><stop offset=".5" stop-color="#4C7027"/><stop offset="1" stop-color="#33551D"/></linearGradient>
+      <linearGradient id="hwat" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A8072"/><stop offset=".45" stop-color="#37685C"/><stop offset="1" stop-color="#265147"/></linearGradient>
+    </defs>
+    <rect width="1440" height="620" fill="url(#hsky)"/>
+    <ellipse cx="1080" cy="96" rx="330" ry="220" fill="url(#hsun)"/>
+    ${clouds}
+    <path d="M0 414 C130 388 240 368 350 362 C448 356 520 336 620 330 L820 330 C918 332 1000 326 1092 334 C1200 346 1320 372 1440 398 L1440 470 L0 470 Z" fill="#5E7A45" opacity=".36"/>
+    <path d="M0 470 L0 392 C60 374 140 356 230 350 C320 344 400 350 470 368 C520 380 570 396 620 404 L620 470 Z" fill="url(#hg1)"/>
+    <path d="M1440 470 L1440 388 C1370 370 1290 356 1200 352 C1110 348 1040 356 980 370 C930 384 880 396 840 402 L840 470 Z" fill="url(#hg2)"/>
+    <path d="M420 470 C436 386 478 340 548 324 C602 312 658 318 700 334 L700 470 Z" fill="url(#hg1)"/>
+    <path d="M766 470 C778 384 820 332 894 318 C962 306 1032 316 1082 336 C1120 352 1180 372 1240 384 L1240 470 Z" fill="url(#hg2)"/>
+    <path d="M470 470 C498 402 540 366 594 352 C640 342 690 346 720 356 L720 470 Z" fill="#466826" opacity=".7"/>
+    <g fill="none" stroke="#BBD882" stroke-opacity=".26" stroke-width="2.2" stroke-linecap="round">
+      <path d="M420 470 C436 386 478 340 548 324 C602 312 658 318 700 334"/>
+      <path d="M766 470 C778 384 820 332 894 318 C962 306 1032 316 1082 336"/>
+      <path d="M1440 388 C1370 370 1290 356 1200 352"/>
+    </g>
+    <g fill="#3E5E1D" opacity=".55"><circle cx="512" cy="392" r="13"/><circle cx="556" cy="380" r="10"/><circle cx="600" cy="372" r="12"/><circle cx="648" cy="366" r="9"/><circle cx="838" cy="368" r="12"/><circle cx="884" cy="358" r="9"/><circle cx="932" cy="356" r="12"/><circle cx="976" cy="364" r="10"/><circle cx="1020" cy="372" r="12"/><circle cx="1068" cy="384" r="9"/><circle cx="1120" cy="394" r="11"/></g>
+    <g fill="#62842C" opacity=".45"><circle cx="540" cy="404" r="10"/><circle cx="640" cy="388" r="8"/><circle cx="900" cy="380" r="9"/><circle cx="1010" cy="392" r="10"/></g>
+    <g><rect x="884" y="330" width="32" height="26" rx="2" fill="#E8DCC3"/><path d="M876 332 L900 310 L924 332 Z" fill="#6E4628"/><rect x="895" y="340" width="8" height="10" fill="#8A6A45"/><rect x="907" y="340" width="6" height="8" fill="#8A6A45"/>
+      <rect x="918" y="338" width="24" height="18" rx="2" fill="#E4D7BD"/><path d="M912 340 L930 324 L948 340 Z" fill="#654126"/><rect x="927" y="346" width="7" height="8" fill="#8A6A45"/></g>
+    <rect x="0" y="360" width="1440" height="74" fill="url(#hhaze)"/>
+    ${meru}
+    <ellipse cx="${cx}" cy="380" rx="92" ry="15" fill="#3E6B2B"/>
+    <path d="M0 396 C140 388 300 390 452 396 C620 402 840 400 1008 392 C1168 384 1330 388 1440 396 L1440 416 C1330 408 1168 406 1008 412 C840 420 620 422 452 416 C300 410 140 408 0 416 Z" fill="#4C732C"/>
+    <path d="M440 412 C480 394 530 386 590 388 C650 390 700 382 760 384 C820 386 870 380 920 384 C960 387 990 392 1004 400 L1004 414 L440 414 Z" fill="#1F471B"/>
+    ${treesDistant}
+    ${treesFar}
+    <rect x="0" y="414" width="1440" height="88" fill="url(#hwat)"/>
+    <ellipse cx="721" cy="432" rx="84" ry="8" fill="#123A30" opacity=".16"/>
+    <g class="wv" opacity=".5">
+      <rect x="556" y="420" width="120" height="2.6" rx="1.3" fill="#CFE4D6" opacity=".5"/><rect x="700" y="430" width="82" height="2.6" rx="1.3" fill="#CFE4D6" opacity=".36"/>
+      <rect x="840" y="422" width="110" height="2.6" rx="1.3" fill="#CFE4D6" opacity=".46"/><rect x="880" y="432" width="70" height="2.6" rx="1.3" fill="#CFE4D6" opacity=".32"/>
+      <rect x="360" y="424" width="96" height="2.6" rx="1.3" fill="#CFE4D6" opacity=".3"/><rect x="1090" y="426" width="104" height="2.6" rx="1.3" fill="#CFE4D6" opacity=".3"/>
+      <rect x="196" y="436" width="72" height="2.2" rx="1.1" fill="#CFE4D6" opacity=".26"/><rect x="1204" y="438" width="86" height="2.2" rx="1.1" fill="#CFE4D6" opacity=".26"/>
+    </g>
+    <g fill="#F4FBF4"><rect class="gl" x="1038" y="419" width="86" height="2.4" rx="1.2" style="animation-delay:-1.5s"/><rect class="gl" x="1066" y="426" width="46" height="2" rx="1" style="animation-delay:-4.5s"/><rect class="gl" x="1026" y="433" width="62" height="2" rx="1" style="animation-delay:-6.8s"/><rect class="gl" x="1058" y="440" width="34" height="1.8" rx=".9" style="animation-delay:-2.9s"/></g>
+    <ellipse cx="584" cy="440" rx="62" ry="5" fill="#1E4A3E" opacity=".3"/><ellipse cx="877" cy="442" rx="62" ry="5" fill="#1E4A3E" opacity=".3"/>
+    ${bridge(533,635,436,'brL')}${bridge(824,930,438,'brR')}
+    <path d="M0 620 L0 470 C100 462 220 458 340 462 C460 466 560 474 650 478 C760 480 850 478 950 476 C1080 472 1240 462 1440 460 L1440 620 Z" fill="#2A5F2B"/>
+    <path d="M0 470 C100 462 220 458 340 462 C460 466 560 474 650 478 C760 480 850 478 950 476 C1080 472 1240 462 1440 460 L1440 486 C1240 488 1080 496 950 500 C850 502 760 504 650 502 C560 498 460 490 340 486 C220 482 100 486 0 494 Z" fill="#376E2F" opacity=".85"/>
+    <path d="M0 620 L0 548 C160 542 320 540 470 544 C620 548 780 550 940 548 C1100 546 1280 542 1440 540 L1440 620 Z" fill="#1F5641" opacity=".22"/>
+    <g fill="#326A2E" opacity=".5"><ellipse cx="620" cy="500" rx="90" ry="16"/><ellipse cx="760" cy="530" rx="120" ry="20"/><ellipse cx="900" cy="492" rx="70" ry="13"/><ellipse cx="450" cy="520" rx="80" ry="15"/><ellipse cx="1060" cy="488" rx="90" ry="15"/><ellipse cx="260" cy="512" rx="110" ry="17"/></g>
+    <g fill="#255926" opacity=".45"><ellipse cx="690" cy="560" rx="130" ry="18"/><ellipse cx="380" cy="552" rx="90" ry="15"/><ellipse cx="980" cy="556" rx="100" ry="16"/><ellipse cx="1200" cy="540" rx="110" ry="16"/></g>
+    <g stroke="#4E8C3A" stroke-width="2.4" stroke-linecap="round" fill="none" opacity=".85">
+      <path d="M540 500 l 5 -16 l 5 16 M548 502 l 7 -12 l 1 12"/><path d="M610 486 l 5 -15 l 4 15 M618 488 l 7 -11 l 1 11"/><path d="M665 520 l 4 -14 l 5 14"/><path d="M700 492 l 5 -16 l 5 16 M708 494 l 7 -12 l 1 12"/>
+      <path d="M760 508 l 4 -14 l 4 14"/><path d="M806 488 l 5 -15 l 4 15"/><path d="M860 520 l 5 -16 l 5 16 M868 522 l 7 -12 l 1 12"/><path d="M905 498 l 4 -14 l 5 14"/>
+      <path d="M930 512 l 5 -15 l 4 15"/><path d="M300 500 l 5 -15 l 4 15 M308 502 l 7 -11 l 1 11"/><path d="M380 520 l 4 -14 l 5 14"/><path d="M1100 495 l 5 -15 l 4 15"/><path d="M1180 515 l 4 -14 l 5 14 M1188 517 l 7 -11 l 1 11"/>
+      <path d="M520 560 l 5 -18 l 5 18 M529 562 l 8 -14 l 1 14"/><path d="M640 548 l 4 -16 l 5 16"/><path d="M710 566 l 5 -17 l 4 17"/><path d="M790 552 l 4 -15 l 5 15 M798 554 l 7 -11 l 1 11"/>
+      <path d="M880 562 l 5 -17 l 4 17"/><path d="M950 546 l 4 -15 l 5 15"/><path d="M360 556 l 5 -17 l 4 17"/><path d="M1120 552 l 4 -15 l 5 15"/><path d="M240 566 l 5 -18 l 4 18 M248 568 l 8 -13 l 1 13"/>
+      <path d="M600 572 l 4 -15 l 5 15"/><path d="M840 570 l 5 -17 l 4 17"/><path d="M1030 564 l 4 -15 l 5 15"/><path d="M450 574 l 5 -18 l 4 18"/>
+    </g>
+    <g fill="#23552A"><ellipse cx="600" cy="470" rx="40" ry="12"/><ellipse cx="872" cy="466" rx="34" ry="11"/><ellipse cx="330" cy="478" rx="36" ry="11"/><ellipse cx="1080" cy="474" rx="40" ry="12"/><ellipse cx="140" cy="470" rx="42" ry="12"/><ellipse cx="1310" cy="472" rx="38" ry="11"/></g>
+    <g fill="#2F6B45"><circle cx="566" cy="470" r="15"/><circle cx="596" cy="474" r="11"/><circle cx="918" cy="468" r="13"/><circle cx="946" cy="472" r="16"/></g>
+    <g fill="#2C6A2D" opacity=".6"><ellipse cx="660" cy="548" rx="60" ry="14"/><ellipse cx="820" cy="556" rx="70" ry="15"/><ellipse cx="1040" cy="540" rx="70" ry="14"/><ellipse cx="380" cy="548" rx="66" ry="14"/></g>
+    <g fill="#1F5124" opacity=".55"><ellipse cx="560" cy="586" rx="80" ry="17"/><ellipse cx="760" cy="592" rx="90" ry="18"/><ellipse cx="980" cy="586" rx="76" ry="16"/><ellipse cx="1200" cy="578" rx="80" ry="16"/><ellipse cx="240" cy="584" rx="78" ry="16"/></g>
+    ${clump(505,578,1.15,10.2,-1.4)}${clump(938,574,1.2,11.6,-3.1)}${clump(208,588,1.15,9.4,-2.2)}${clump(1244,586,1.2,12.1,-4.6)}${clump(560,602,1,10.8,-.7)}${clump(1000,600,1.05,9.9,-3.8)}
+    ${flyLeaf(1064,282,1.05,.42,16,-2)}${flyLeaf(1198,338,.8,.34,20,-7)}${flyLeaf(330,346,.9,.4,18,-5)}${flyLeaf(1236,196,.68,.26,23,-11)}
+    <g class="bk" opacity=".5">${bird(800,196,.8)}${bird(832,184,.62)}${bird(864,200,.46)}</g>
+  </svg>`;
+}
+function heroCurveSVG(){
+  return `<svg viewBox="0 0 1440 64" preserveAspectRatio="none" aria-hidden="true"><path d="M0 46 C140 52 300 54 450 50 C600 46 760 34 900 22 C980 15 1060 14 1140 20 C1230 27 1340 36 1440 40 L1440 64 L0 64 Z" fill="#F3F6F3"/></svg>`;
+}
+function pgHome(){
+  app.innerHTML=`
+  <section class="hero"><div class="hero-art" aria-hidden="true">${heroSceneSVG()}</div>
+    <div class="hero-in"><span class="wxwrap"><span class="wxship" aria-hidden="true"><svg viewBox="0 0 46 30"><g fill="#EAF4F1" opacity=".62"><ellipse cx="9" cy="26" rx="9" ry="2.6"/><ellipse cx="35" cy="26.8" rx="7" ry="2.2"/><ellipse cx="22" cy="27.4" rx="13" ry="2.4"/></g><path d="M7 20.6 Q10 25.6 17 25.6 H31 Q38 25.6 40 20.6 Z" fill="#6B4729"/><path d="M7 20.6 Q10 23.2 17 23.2 H31 Q38 23.2 40 20.6 Z" fill="#86592F"/><path d="M5.6 20 H41.4 L40 22 H7 Z" fill="#A4713F"/><rect x="22" y="6.6" width="1.8" height="14" rx=".9" fill="#6B4729"/><path d="M23.2 6.6 L20 11.4 L23.2 11.4 Z" fill="#D8443A"/><path d="M21.2 8.2 L12.4 19 H21.2 Z" fill="#F7F0DE"/><path d="M21.2 8.2 L17 19 H21.2 Z" fill="#FFFFFF" opacity=".6"/><path d="M24 9.4 L33.8 19 H24 Z" fill="#FBF7EC"/><path d="M24 9.4 V19 H28.8 Z" fill="#DCCFB4" opacity=".7"/></svg></span><span class="wx" id="wx"><span class="sun"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.4v2.4M12 19.2v2.4M2.4 12h2.4M19.2 12h2.4M5.2 5.2l1.7 1.7M17.1 17.1l1.7 1.7M18.8 5.2l-1.7 1.7M6.9 17.1l-1.7 1.7"/></svg></span><b id="wxT">24°C</b><s></s><span id="wxD">${L('Cerah Sejuk','Cool & Clear')}</span></span></span>
+      <h1>${L('Mau seru-seruan di Lembah Pandawa hari ini?','Ready for fun at Pandawa Valley today?')}</h1>
+      <p>${L('Satu tiket buat semua petualangan seru. Pilih wahananya, bayar, langsung scan QR—tanpa ribet!','One ticket for all the fun. Pick your rides, pay, then scan the QR—no hassle!')}</p>
+      <div class="search"><div class="sbar" id="sbar"><input id="q" autocomplete="off" placeholder="${L('Lagi pengen main wahana apa nih...','Which ride are you in the mood for?')}" aria-label="${L('Cari wahana','Search rides')}"><button class="sgo" onclick="doSearch()" aria-label="${L('Cari','Search')}">${ico('search',21,2.4)}</button></div><div class="sug" id="sug"></div></div>
+    </div>
+    <div class="hero-curve">${heroCurveSVG()}</div></section>
+  <div class="page">
+    ${order?`<a class="mytix" href="#/tunggu"><span>${ico('ticket',17,2.2)} ${L('Kamu punya pesanan aktif','You have an active order')}</span><span class="r">${L('Lihat','View')} ${ico('right',16,2.6)}</span></a>`:''}
+    <section class="sec" style="margin-top:24px"><div class="sec-h"><div><h2>${L('Paket hemat wisata','Money-saving packages')}</h2><p class="sub">${L('Diskon s/d '+Math.max(...CAT.paket.map(disc))+'% buat liburan seru','Up to '+Math.max(...CAT.paket.map(disc))+'% off for a fun holiday')}</p></div></div>
+      <div class="pgrid">${CAT.paket.map(paketHTML).join('')}</div></section>
+    <section class="sec"><div class="card pop" id="pop"></div></section>
+  </div>
+  <section class="favband bleed"><div class="in">
+    <div class="fh"><div><h2>${L('Wahana favorit','Favorite rides')}</h2><p class="sub">${L('Pilihan seru & paling diminati','Fun picks & crowd favorites')}</p></div><span class="geser">${L('Geser','Swipe')} ${ico('right',16,2.4)}</span></div>
+    <div class="fav">${CAT.wahana.filter(w=>w.favorit).map(favHTML).join('')}</div>
+  </div></section>
+  <div class="page">
+    <section class="sec" style="margin-top:30px"><div class="sec-h"><div><h2>${L('Semua wahana','All rides')}</h2></div><span class="side" id="wcount"></span></div>
+      <div class="tabs" id="tabs"></div><div class="wgrid" id="wg"></div></section>
+    <section class="card loc"><div class="txt"><span class="eyebrow">${L('Lokasi & akses','Location & access')}</span><h3>${L('Gerbang utama & area parkir','Main gate & parking area')}</h3><p>${L('Temukan titik gerbang, parkir, dan sebaran 13 wahana lewat peta kawasan.','Find the gate, parking, and all 13 rides on the area map.')}</p>
+      <div class="acts"><button class="btn btn-blue" onclick="openLokasi()">${ico('map',17,2.2)} ${L('Lihat peta lokasi','View location map')}</button><button class="btn btn-out" onclick="openPark()">${ico('pin',17,2.2)} ${L('Peta kawasan','Area map')}</button></div></div>
+      <div class="mini">${miniMapSVG()}</div></section>
+  </div>`;
+  renderTabs();renderGrid();bindSearch();loadWx();loadPop();
+}
 function addCart(type,id,qty){const x=cart.find(c=>c.type===type&&c.id===id);if(x)x.qty=clampQ(x.qty+qty);else cart.push({type,id,qty});saveCart()}
-function buyPaket(id){addCart('paket',id,window._pq[id]);go('/bayar')}
-function renderTabs(){const cats=['Semua','Favorit',...new Set(CAT.wahana.map(w=>w.kategori))];$('#tabs').innerHTML=cats.map(c=>`<button class="tb2 ${c===curCat?'on':''}" onclick="curCat='${c}';renderTabs();renderGrid()">${c}</button>`).join('')}
-function renderGrid(){const l=CAT.wahana.filter(w=>curCat==='Semua'||(curCat==='Favorit'?w.favorit:w.kategori===curCat));$('#wg').innerHTML=l.map((w,i)=>cardHTML(w).replace('class="card wc"',`class="card wc" style="animation-delay:${i*40}ms"`)).join('')}
+function buyPaket(id){addCart('paket',id,1);go('/bayar')}
+function renderTabs(){const cats=[['all',L('Semua','All')],['fav',L('Favorit','Favorites')],...[...new Set(CAT.wahana.map(w=>w.kategori))].map(c=>[c,ct(c)])];$('#tabs').innerHTML=cats.map(([k,label])=>`<button class="tb2 ${k===curCat?'on':''}" onclick="curCat='${k}';renderTabs();renderGrid()">${esc(label)}</button>`).join('')}
+function renderGrid(){const l=CAT.wahana.filter(w=>curCat==='all'||(curCat==='fav'?w.favorit:w.kategori===curCat));$('#wg').innerHTML=l.map(cardHTML).join('');const c=$('#wcount');if(c)c.textContent=L(l.length+' wahana',l.length+' rides')}
 let sugIdx=-1,sugList=[];
 function bindSearch(){
   const q=$('#q'),sug=$('#sug');
   const render=()=>{const s=q.value.trim().toLowerCase();if(!s){sug.classList.remove('show');$('#sbar').classList.remove('open');return}
-    sugList=CAT.wahana.filter(w=>(w.nama+' '+w.kategori+' '+w.desc).toLowerCase().includes(s)).slice(0,6);sugIdx=-1;
-    sug.innerHTML=sugList.length?sugList.map((w,i)=>`<button class="si" data-i="${i}" onclick="go('/w/${w.id}')"><div class="th" style="${img(w.id,'sm')};background-repeat:no-repeat"></div><div class="t"><b>${esc(w.nama)}</b><span>${w.kategori} · ${w.durasi} · ${w.tinggi}</span></div><em>${rp(w.harga)}</em></button>`).join(''):`<div class="snone">Wahana “${esc(q.value)}” tidak ditemukan</div>`;
+    sugList=CAT.wahana.filter(w=>(wn(w)+' '+ct(w.kategori)+' '+wd(w)+' '+w.kategori).toLowerCase().includes(s)).slice(0,6);sugIdx=-1;
+    sug.innerHTML=sugList.length?sugList.map((w,i)=>`<button class="si" data-i="${i}" onclick="go('/w/${w.id}')"><div class="th" style="${img(w.id)}"></div><div class="t"><b>${esc(wn(w))}</b><span>${ct(w.kategori)} · ${hTxt(w.tinggi)}</span></div><em>${rp(w.harga)}</em></button>`).join(''):`<div class="snone">${L(`Wahana “${q.value}” tidak ditemukan`,`No rides found for “${q.value}”.`)}</div>`;
     sug.classList.add('show');$('#sbar').classList.add('open')};
   q.addEventListener('input',render);q.addEventListener('focus',render);
   q.addEventListener('keydown',e=>{const items=$$('.si',sug);
     if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();if(!items.length)return;sugIdx=(sugIdx+(e.key==='ArrowDown'?1:-1)+items.length)%items.length;items.forEach((x,i)=>x.classList.toggle('on',i===sugIdx))}
     else if(e.key==='Enter'){e.preventDefault();doSearch()}else if(e.key==='Escape'){sug.classList.remove('show');$('#sbar').classList.remove('open')}});
-  document.addEventListener('click',e=>{if(!e.target.closest('.search')){sug.classList.remove('show');$('#sbar')&&$('#sbar').classList.remove('open')}});
+  if(!window.__sbDocClick){window.__sbDocClick=1;document.addEventListener('click',e=>{if(!e.target.closest('.search')){const s2=$('#sug');if(s2)s2.classList.remove('show');const b=$('#sbar');if(b)b.classList.remove('open')}})}
 }
-function doSearch(){const w=sugList[sugIdx>=0?sugIdx:0];if(w)go('/w/'+w.id);else $('#q').focus()}
-async function loadWx(){try{const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=-7.65&longitude=112.69&current=temperature_2m,weather_code&timezone=Asia%2FJakarta');const j=await r.json();const c=j.current,t=Math.round(c.temperature_2m),k=c.weather_code;
-  const d=k===0?'Cerah':k<4?'Cerah Berawan':k<50?'Berkabut':k<70?'Hujan':k<80?'Hujan Ringan':'Hujan Petir';const a=$('#wxT');if(a){a.textContent=t+'°C';$('#wxD').textContent=d}}catch(e){}}
-
+function doSearch(){const w=sugList[sugIdx>=0?sugIdx:0];if(w)go('/w/'+w.id);else{const q=$('#q');if(q)q.focus()}}
+let WX=null;
+async function loadWx(){
+  if(!WX){try{const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=-7.6703&longitude=112.6810&current=temperature_2m,weather_code&timezone=Asia%2FJakarta');const j=await r.json();const c=j.current;WX={t:Math.round(c.temperature_2m),k:c.weather_code}}catch(e){WX=null}}
+  if(!WX)return;
+  const k=WX.k;
+  const d=k===0?L('Cerah','Clear'):k<4?L('Cerah Berawan','Partly Cloudy'):k<50?L('Berkabut','Foggy'):k<70?L('Hujan','Rainy'):k<80?L('Hujan Ringan','Light Rain'):L('Hujan Petir','Thunderstorm');
+  const a=$('#wxT');if(a){a.textContent=WX.t+'°C';const e=$('#wxD');if(e)e.textContent=d}
+}
+/* ---------- popularitas ---------- */
+const POP_HUES=[['#1B6B44','#4F9C74'],['#13809F','#3FB0CC'],['#8B5E3C','#C79A6B'],['#3B3F9A','#7C80D6'],['#C7372F','#E0766E'],['#2E6B40','#8FC8A9'],['#0D3722','#1B6B44'],['#5A3B24','#D2B196']];
+async function loadPop(silent){
+  const el=$('#pop');if(!el)return;
+  if(!silent&&!POP)el.innerHTML=`<div class="phead"><div><h3>${ico('chart',18,2.2)} ${L('Wahana paling sering dikunjungi','Most visited rides')}</h3><p>${L('Memuat data kunjungan…','Loading visit data…')}</p></div></div><div class="empty"><span class="spin" style="width:22px;height:22px;border-color:var(--p-200);border-top-color:var(--p)"></span></div>`;
+  popBusy=true;
+  try{POP=await api('/api/popularity?range='+popRange);drawPop()}catch(e){if(!silent||!POP){const e2=$('#pop');if(e2)e2.innerHTML=`<div class="phead"><div><h3>${ico('chart',18,2.2)} ${L('Wahana paling sering dikunjungi','Most visited rides')}</h3><p>${L('Data kunjungan belum dapat dimuat.','Visit data could not be loaded.')}</p></div><button class="btn btn-out btn-sm" onclick="loadPop()">${ico('refresh',15,2.2)} ${L('Coba lagi','Try again')}</button></div>`}}
+  popBusy=false;
+}
+function drawPop(){
+  const el=$('#pop');if(!el||!POP)return;
+  const d=POP,rows=d.rows,max=Math.max(1,...rows.map(r=>r[d.basis])),unit=L(d.basis==='kunjungan'?'kunjungan':'tiket',d.basis==='kunjungan'?'visits':'tickets');
+  const body=!d.totalKunjungan&&!d.totalTiket
+    ? `<div class="empty">${ico('chart',22,2)}${L('Belum ada kunjungan. Peringkat terisi otomatis setelah tiket dipakai di wahana.','No visits yet. The ranking fills in automatically once tickets are used at rides.')}</div>`
+    : `<div class="rows">${rows.map((r,i)=>{const h=POP_HUES[i%POP_HUES.length],v=r[d.basis];
+        return `<div class="prow ${i===0?'lead':''}"><span class="rk">${i+1}</span><div><div class="lbl"><b>${esc(rowName(r))}</b><span class="v">${v}<i>${unit}</i></span></div><div class="track"><div class="fill" style="--c1:${h[0]};--c2:${h[1]};width:${Math.max(v/max*100,v?4:0)}%;animation-delay:${i*70}ms"></div></div></div></div>`}).join('')}</div>`;
+  el.innerHTML=`<div class="phead"><div><h3>${ico('chart',18,2.2)} ${L('Wahana paling sering dikunjungi','Most visited rides')}</h3><p>${d.basis==='kunjungan'?L('Dihitung dari scan valid petugas wahana.','Based on valid ride-operator scans.'):L('Belum ada scan — ditampilkan dari jumlah tiket yang terbit.','No scans yet — shown from the number of issued tickets.')}</p></div></div>
+  ${body}<div class="foot"><span>${L(d.totalKunjungan+' kunjungan · '+d.totalTiket+' tiket terbit',d.totalKunjungan+' visits · '+d.totalTiket+' tickets issued')}</span><span>${L('Diperbarui otomatis · '+fTime(d.updatedAt)+' WIB','Auto-updated · '+fTime(d.updatedAt)+' WIB')}</span></div>`;
+}
+setInterval(()=>{if(document.visibilityState==='visible'&&!popBusy&&$('#pop'))loadPop(true)},30000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&!popBusy&&$('#pop'))loadPop(true)});
 /* ---------- DETAIL ---------- */
 let dq=1;
 function pgDetail(id){
   const w=wById(id);if(!w)return go('/');dq=1;
-  app.innerHTML=`<div class="page narrow" style="max-width:1100px"><a class="back" href="#/">${ico('left',20,2.2)} Kembali ke beranda</a><div class="dgrid"><div class="dimg" style="${img(w.id)}"><div class="in"><span class="tag ${w.kategori}">${w.kategori}</span><h1>${esc(w.nama)}</h1></div></div><div class="right">
-  <div class="pills"><span class="pill">${ico('timer',18,2)}Durasi ${w.durasi==='Bebas'?'bebas':w.durasi}</span><span class="pill">${ico('vert',18,2)}${/^\d/.test(w.tinggi)?'Syarat tinggi '+w.tinggi:w.tinggi}</span><span class="pill">${ico('waves',18,2)}Kategori ${w.kategori}</span></div>
-  <div class="card about"><h3>Tentang Wahana</h3><p>${esc(w.desc)}</p><hr><div class="sf">${ico('shield',16,2)}Diawasi instruktur bersertifikat &amp; standar K3 resmi</div></div>
-  <div class="card buy"><div class="t"><div><small>Harga per tiket</small><div class="pr">${rp(w.harga)}</div></div>${stepperHTML('ds',1,'dqty')}</div><div class="sub"><span>Subtotal</span><b id="dsub">${rp(w.harga)}</b></div><button class="btn block" onclick="addCart('wahana','${w.id}',dq);go('/bayar')">Lanjut ke pembayaran ${ico('right',18,2.5)}</button></div></div></div></div>`;
+  app.innerHTML=`<div class="page"><a class="back" href="#/">${ico('left',19,2.4)} ${L('Kembali ke beranda','Back to home')}</a>
+  <div class="dgrid"><div class="dimg" style="${img(w.id)}"><div class="in"><span class="tag ${w.kategori}">${ct(w.kategori)}</span><h1>${esc(wn(w))}</h1></div></div>
+  <div class="right"><div class="pills"><span class="pill">${ico('vert',17,2)} ${hReq(w.tinggi)}</span><button class="pill" onclick="openPark('${w.id}')">${ico('map',17,2)} ${L('Lihat di peta','View on map')}</button></div>
+  <div class="card about"><h3>${L('Tentang Wahana','About This Ride')}</h3><p>${esc(wd(w))}</p><hr><div class="sf">${ico('shield',16,2)} ${L('Diawasi instruktur bersertifikasi & standar K3 resmi','Supervised by certified instructors to official safety standards')}</div></div>
+  <div class="card buy"><div class="t"><div><small>${L('Harga per tiket','Price per ticket')}</small><div class="pr">${rp(w.harga)}</div></div>${stepperHTML('ds',1,'dqty')}</div>
+  <div class="sub"><span>${L('Subtotal','Subtotal')}</span><b id="dsub">${rp(w.harga)}</b></div>
+  <button class="btn block" onclick="addCart('wahana','${w.id}',dq);go('/bayar')">${L('Lanjut ke pembayaran','Continue to payment')} ${ico('right',18,2.6)}</button></div></div></div></div>`;
 }
 function dqty(d,el){const w=wById(location.hash.split('/')[2]);dq=el?(el.value===''?dq:clampQ(el.value)):clampQ(dq+d);if(!el||el.value!=='')$('#ds input').value=dq;$('#dsub').textContent=rp(w.harga*dq);if(d)bump('ds')}
-
 /* ---------- BAYAR ---------- */
-const METHODS=[['tunai','Tunai','Bayar langsung di loket','cash'],['qris','QRIS','Scan pakai aplikasi apa saja','qr']];
-const calc=()=>{const sub=cart.reduce((s,c)=>s+ref(c.type,c.id).harga*c.qty,0);return{sub,fee:CAT.fee,total:sub+CAT.fee}};
+const METHODS=[['tunai','Tunai','Bayar langsung di loket','cash','Cash','Pay directly at the counter'],['qris','QRIS','Scan pakai aplikasi apa saja','qr','QRIS','Scan with any payment app']];
+const mName=m=>LANG==='en'?m[4]:m[1],mSub=m=>LANG==='en'?m[5]:m[2];
+const calc=()=>{const sub=cart.reduce((s,c)=>s+ref(c.type,c.id).harga*c.qty,0);return{sub,fee:cart.length?CAT.fee:0,total:sub+(cart.length?CAT.fee:0)}};
 function pgBayar(){
   cart=cart.filter(c=>ref(c.type,c.id));saveCart();
-  if(!cart.length){toast('Keranjang masih kosong, pilih wahana dulu.');return go('/')}
-  app.innerHTML=`<div class="page narrow" style="max-width:1100px"><a class="back" href="#/">${ico('left',20,2.2)} Kembali ke beranda</a><h1 class="h1">Pembayaran</h1><p class="sub1">Selesaikan pemesanan tiket wahana Anda</p><div class="pgr"><div style="display:grid;gap:14px">
-  <section class="card box"><h3>Ringkasan pesanan</h3><div id="ols"></div><button class="btn btn-out block" onclick="go('/')">${ico('plusc',18,2)} Pilih wahana lain</button></section>
-  <section class="card box"><div class="bh"><h3>Data pemesan</h3><span>Wajib diisi</span></div><div class="field"><label for="nm">Nama lengkap</label><input class="inp" id="nm" placeholder="cth. Carmenita" maxlength="60" autocomplete="name" value="${esc(payNama)}"><span class="errtxt" id="nmE" hidden>Nama lengkap wajib diisi.</span></div></section>
-  <section class="card box"><h3>Metode pembayaran</h3><div class="ml" id="mls"></div></section></div>
-  <div class="rt" style="display:grid;gap:14px"><section class="card nota"><div class="nh"><h3>Nota Pemesanan</h3><span class="chip">Siap Bayar</span></div><div class="nm"><span>Draf pemesanan</span><span>${fDate(Date.now())}</span></div><div id="nrs"></div></section>
-  <div><button class="btn block" id="pay" onclick="bayar()">Bayar sekarang ${ico('right',18,2.5)}</button><div class="secure">${ico('shield',18,2)}Transaksi aman &amp; terenkripsi oleh PANDATIX Gateway</div></div></div></div></div>`;
+  if(!cart.length&&!undoBuf){toast(L('Keranjang masih kosong. Pilih wahana dulu.','Your cart is empty. Pick a ride first.'),true);return go('/')}
+  app.innerHTML=`<div class="page"><a class="back" href="#/">${ico('left',19,2.4)} ${L('Kembali ke beranda','Back to home')}</a>
+  <h1 class="h1">${L('Pembayaran','Payment')}</h1><p class="sub1">${L('Selesaikan pemesanan tiket wahana Anda','Complete your ride ticket order')}</p>
+  <div class="pgr"><div style="display:grid;gap:16px">
+    <section class="card box"><h3>${L('Ringkasan pesanan','Order summary')}</h3><div id="ols"></div><button class="btn btn-out block" onclick="go('/')">${ico('plusc',17,2.2)} ${L('Pilih wahana lain','Pick another ride')}</button></section>
+    <section class="card box"><div class="bh"><h3>${L('Data pemesan','Visitor details')}</h3><span>${L('Wajib diisi','Required')}</span></div><div class="field" style="margin-top:12px"><label for="nm">${L('Nama lengkap','Full name')}</label><input class="inp" id="nm" placeholder="${L('cth. Carmenita','e.g. Carmenita')}" maxlength="60" autocomplete="name" value="${esc(payNama)}"><span class="errtxt" id="nmE" hidden>${L('Nama lengkap wajib diisi.','Full name is required.')}</span></div></section>
+    <section class="card box"><h3>${L('Metode pembayaran','Payment method')}</h3><div class="ml" id="mls"></div></section></div>
+  <div class="rt" style="display:grid;gap:16px"><section class="card nota"><div class="nh"><h3>${L('Nota Pemesanan','Order Receipt')}</h3><span class="chip">${L('Siap Bayar','Ready to Pay')}</span></div><div class="nm"><span>${L('Draf pemesanan','Order draft')}</span><span>${fDate(Date.now())}</span></div><div id="nrs"></div></section>
+  <button class="btn block" id="pay" onclick="bayar()">${L('Bayar sekarang','Pay now')} ${ico('right',18,2.6)}</button></div></div></div>`;
   $('#nm').addEventListener('input',e=>{payNama=e.target.value;e.target.classList.remove('err');$('#nmE').hidden=true});
   drawPay();
 }
 function drawPay(){
-  $('#ols').innerHTML=cart.map((c,i)=>{const r=ref(c.type,c.id);return `<div class="ol"><div class="th" style="${thumbStyle(c)}"></div><div class="i"><b>${esc(r.nama)}</b><span>${c.qty} × ${rp(r.harga)}</span></div><div class="a">${rp(r.harga*c.qty)}<button onclick="rmCart(${i})">Hapus</button></div></div>`}).join('');
-  $('#mls').innerHTML=METHODS.map(m=>`<button class="mo ${payMethod===m[0]?'on':''}" onclick="payMethod='${m[0]}';drawPay()"><span class="mi">${ico(m[3],22,1.8)}</span><span><b>${m[1]}${m[0]==='qris'?'<i class="ins">Instan</i>':''}</b><span>${m[2]}</span></span></button>`).join('');
+  const empty=!cart.length;
+  $('#ols').innerHTML=empty?`<p class="ecart">${L('Keranjang kosong. Tambahkan wahana atau urungkan penghapusan.','Your cart is empty. Add a ride or undo the removal.')}</p>`:cart.map((c,i)=>{const r=ref(c.type,c.id),nm=itemName(r);
+    return `<div class="ol"><div class="th" style="${thumbStyle(c)}"></div><div class="i"><b>${esc(nm)}</b><span>${c.qty} × ${rp(r.harga)}</span></div><div class="a">${rp(r.harga*c.qty)}<br><button class="del" onclick="rmCart(${i})" aria-label="${L('Hapus '+nm+' dari pesanan','Remove '+nm+' from order')}">${ico('trash',13,2.2)} ${L('Hapus','Remove')}</button></div></div>`}).join('');
+  $('#mls').innerHTML=METHODS.map(m=>`<button class="mo ${payMethod===m[0]?'on':''}" onclick="payMethod='${m[0]}';drawPay()" aria-pressed="${payMethod===m[0]}"><span class="mi">${ico(m[3],23,1.9)}</span><span class="tx"><span class="nm"><b>${esc(mName(m))}</b>${m[0]==='qris'?`<i class="ins">${L('Instan','Instant')}</i>`:''}</span><span class="sb">${esc(mSub(m))}</span></span><span class="rd"></span></button>`).join('');
   const t=calc(),M=METHODS.find(m=>m[0]===payMethod);
-  $('#nrs').innerHTML=cart.map(c=>{const r=ref(c.type,c.id);return `<div class="nr"><span>${esc(r.nama)} × ${c.qty}</span><b>${rp(r.harga*c.qty)}</b></div>`}).join('')+`<div class="nr"><span>Biaya admin</span><b>${rp(t.fee)}</b></div><div class="nr"><span>Metode</span><span class="mt">${ico(M[3],18,2)}${M[0]==='qris'?'QRIS':M[1]}</span></div><div class="nt" style="border-top:1px solid var(--line);padding-top:14px;margin-top:8px"><span>Total</span><b>${rp(t.total)}</b></div>`;
+  $('#nrs').innerHTML=(empty?'':cart.map(c=>{const r=ref(c.type,c.id);return `<div class="nr"><span>${esc(itemName(r))} × ${c.qty}</span><b>${rp(r.harga*c.qty)}</b></div>`}).join(''))
+    +`<div class="nr"><span>${L('Biaya admin','Admin fee')}</span><b>${rp(t.fee)}</b></div><div class="nr"><span>${L('Metode','Method')}</span><span class="mt">${ico(M[3],17,2)}${M[0]==='qris'?'QRIS':esc(mName(M))}</span></div><div class="nt"><span>Total</span><b>${rp(t.total)}</b></div>`;
+  const b=$('#pay');if(b)b.disabled=empty;
 }
-function rmCart(i){cart.splice(i,1);saveCart();if(!cart.length){toast('Keranjang kosong');return go('/')}drawPay()}
+function rmCart(i){
+  const el=$$('#ols .ol')[i];if(el)el.classList.add('removing');
+  setTimeout(()=>{if(!cart[i])return;undoBuf={item:cart[i],index:i};cart.splice(i,1);saveCart();drawPay();showUndo(undoBuf.item)},170);
+}
+function showUndo(item){
+  let t=$('#ut');if(!t){t=document.createElement('div');t.className='ut';t.id='ut';document.body.appendChild(t)}
+  const r=ref(item.type,item.id),nm=itemName(r);
+  t.innerHTML=`<span>${esc(nm)} ${L('dihapus.','removed.')}</span><button onclick="undoRm()">${L('Urungkan','Undo')}</button>`;
+  requestAnimationFrame(()=>t.classList.add('show'));
+  clearTimeout(undoTimer);undoTimer=setTimeout(()=>{t.classList.remove('show');undoBuf=null},6500);
+}
+function undoRm(){
+  if(!undoBuf)return;const b=undoBuf;undoBuf=null;clearTimeout(undoTimer);
+  const t=$('#ut');if(t)t.classList.remove('show');
+  cart.splice(Math.min(b.index,cart.length),0,b.item);saveCart();
+  if(!$('#ols')){go('/bayar');return}
+  drawPay();toast(L('Item dikembalikan ke pesanan.','Item restored to your order.'));
+}
 async function bayar(){
+  if(!cart.length)return;
   const nm=$('#nm');if(nm.value.trim().length<2){nm.classList.add('err');$('#nmE').hidden=false;nm.focus();nm.style.animation='shake .4s';setTimeout(()=>nm.style.animation='',450);return}
-  const b=$('#pay');b.disabled=true;b.innerHTML='<span class="spin"></span> Memproses…';
+  const b=$('#pay');b.disabled=true;b.innerHTML=`<span class="spin"></span> ${L('Memproses…','Processing…')}`;
   try{const o=await api('/api/orders',{method:'POST',body:{nama:nm.value.trim(),method:payMethod,items:cart.map(c=>({type:c.type,id:c.id,qty:c.qty}))}});
-    order={id:o.id,key:o.key,code:o.code};ls.set('ptx_order',order);cart=[];saveCart();payNama='';go('/tunggu')}
-  catch(e){toast(e.message,true);b.disabled=false;b.innerHTML='Bayar sekarang '+ico('right',18,2.5)}
+    order={id:o.id,key:o.key,code:o.code};ls.set('ptx_order',order);cart=[];saveCart();payNama='';undoBuf=null;go('/tunggu')}
+  catch(e){toast(e.message,true);b.disabled=false;b.innerHTML=L('Bayar sekarang','Pay now')+' '+ico('right',18,2.6)}
 }
-
-/* ---------- order realtime ---------- */
-let cur=null;
+/* ---------- realtime ---------- */
 function subscribe(onUpdate){
   if(ES)ES.close();
   ES=listen(`/api/orders/${order.id}/stream?key=${encodeURIComponent(order.key)}`,{order:o=>{const first=cur&&cur.status!==o.status;cur=o;onUpdate(o,first)}});
-  // cadangan bila SSE terblokir proxy
   ES._poll=setInterval(async()=>{try{const o=await api(`/api/orders/${order.id}?key=${encodeURIComponent(order.key)}`);if(!cur||JSON.stringify(o)!==JSON.stringify(cur)){const first=cur&&cur.status!==o.status;cur=o;onUpdate(o,first)}}catch(e){}},4000);
   const c=ES.close;ES.close=()=>{clearInterval(ES._poll);c.call(ES)};
 }
@@ -338,83 +927,116 @@ function badOrder(){ls.del('ptx_order');order=null;cur=null;go('/')}
 /* ---------- TUNGGU ---------- */
 async function pgTunggu(){
   if(!order)return go('/');
-  app.innerHTML=`<div class="page narrow" style="max-width:620px"><div class="card wait" id="wt"><div style="height:360px;display:grid;place-items:center"><span class="spin" style="border-color:var(--p-200);border-top-color:var(--p);width:30px;height:30px"></span></div></div></div>`;
-  try{cur=await api(`/api/orders/${order.id}?key=${encodeURIComponent(order.key)}`)}catch(e){toast('Pesanan tidak ditemukan.',true);return badOrder()}
+  app.innerHTML=`<div class="page narrow"><div class="card wait" id="wt"><div style="height:340px;display:grid;place-items:center"><span class="spin" style="border-color:var(--p-200);border-top-color:var(--p);width:30px;height:30px"></span></div></div></div>`;
+  try{cur=await api(`/api/orders/${order.id}?key=${encodeURIComponent(order.key)}`)}catch(e){toast(L('Pesanan tidak ditemukan.','Order not found.'),true);return badOrder()}
   if(cur.status==='confirmed')return go('/tiket');
-  drawWait(cur);subscribe((o,ch)=>{if(o.status==='confirmed'){go('/tiket');boom()}else drawWait(o)});
+  drawWait(cur);subscribe(o=>{if(o.status==='confirmed'){go('/tiket');boom()}else drawWait(o)});
 }
 function drawWait(o){
   const el=$('#wt');if(!el)return;
-  if(o.status==='expired'){el.innerHTML=`<div class="hg-c" style="background:var(--e-cont);color:var(--e)">${ico('xc',28,2)}</div><h2>Pesanan kedaluwarsa</h2><p class="s">Pesanan ini tidak dikonfirmasi kasir dalam batas waktu. Silakan buat pesanan baru.</p><button class="btn block" onclick="badOrder()">Pesan ulang</button>`;return}
-  el.innerHTML=`<div class="hg-c">${ico('hourglass',28,2)}</div><h2>Menunggu konfirmasi kasir</h2><p class="s">Tunjukkan QR di bawah ke kasir untuk diverifikasi</p><div class="qrb">${qrSvg(location.origin+'/kasir?order='+o.code,240,0)}</div><span class="scanp"><i></i>Scan QR ini dengan kamera HP kasir</span>
-  <div class="kv"><div><small>Kode Pesanan</small><b>${o.code}</b></div><div class="r"><small>Status</small><span class="chip">Menunggu Kasir</span></div></div>
-  <div class="tipb">${ico('info',20,2)}<span>Halaman konfirmasi akan otomatis terbuka di HP kasir. Setelah kasir menyetujui, tiket Anda akan muncul di sini secara otomatis — tidak perlu refresh.</span></div>`;
+  if(o.status==='expired'){el.innerHTML=`<div class="hg-c" style="background:var(--e-cont);color:var(--e)">${ico('xc',28,2)}</div><h2>${L('Pesanan kedaluwarsa','Order expired')}</h2><p class="s">${L('Kasir tidak mengonfirmasi pesanan ini dalam batas waktu. Buat pesanan baru untuk melanjutkan.','The cashier did not confirm this order in time. Create a new order to continue.')}</p><button class="btn block" onclick="badOrder()">${L('Pesan ulang','Order again')}</button>`;return}
+  el.innerHTML=`<div class="hg-c">${ico('hourglass',28,2)}</div><h2>${L('Menunggu konfirmasi kasir','Waiting for cashier confirmation')}</h2><p class="s">${L('Kasir memindai kode ini untuk menerbitkan tiketmu.','The cashier scans this code to issue your tickets.')}</p>
+  <div class="qrb">${qrSvg(location.origin+'/kasir?order='+o.code,240,0)}</div>
+  <span class="scanp"><i></i>${L('Scan QR ini dengan kamera HP kasir','Scan this QR with the cashier’s phone camera')}</span>
+  <div class="kv"><div><small>${L('Kode Pesanan','Order code')}</small><b>${o.code}</b></div><span class="chip">${L('Menunggu Kasir','Waiting for cashier')}</span></div>
+  <div class="tipb">${ico('info',19,2.1)}<span>${L('Halaman konfirmasi otomatis terbuka di HP kasir. Setelah kasir menyetujui, tiket muncul di sini secara otomatis — tidak perlu refresh.','The confirmation page opens automatically on the cashier’s phone. Once approved, your tickets appear here automatically — no refresh needed.')}</span></div>`;
 }
 function boom(){const c=document.createElement('div');c.className='conf';const cols=['#1B6B44','#4F9C74','#8FC8A9','#8B5E3C','#D2B196'];
   for(let i=0;i<46;i++){const e=document.createElement('i');e.style.cssText=`left:${Math.random()*100}%;background:${cols[i%5]};--x:${(Math.random()-.5)*200}px;animation-delay:${Math.random()*.5}s;animation-duration:${1.4+Math.random()}s`;c.appendChild(e)}
   document.body.appendChild(c);setTimeout(()=>c.remove(),3200)}
-
 /* ---------- TIKET ---------- */
 async function pgTiket(){
   if(!order)return go('/');
   try{cur=await api(`/api/orders/${order.id}?key=${encodeURIComponent(order.key)}`)}catch(e){return badOrder()}
   if(cur.status!=='confirmed')return go('/tunggu');
-  tab='tiket';drawTiket(true);subscribe(o=>{if(o.status==='confirmed')drawTiket(false)});
+  tab='tiket';pinSel=null;drawTiket(true);subscribe(o=>{if(o.status==='confirmed'){drawTiket(false);if(tab==='peta')drawTab(false)}});
 }
 const vdate=d=>fDate(Date.parse(d+'T12:00:00Z'),true);
-const rideTxt=t=>{const u=t.rides.filter(r=>r.used).length;return u===0?['Siap Pakai','']:u===t.rides.length?['Terpakai','brown']:[`${u}/${t.rides.length} Terpakai`,'brown']};
+const rideTxt=t=>{const u=t.rides.filter(r=>r.used).length;return u===0?[L('Siap Pakai','Ready to use'),'']:u===t.rides.length?[L('Terpakai','Used'),'brown']:[L(`${u}/${t.rides.length} Terpakai`,`${u}/${t.rides.length} used`),'brown']};
 function tkHTML(t,i){
   const [st,cl]=rideTxt(t),all=t.rides.every(r=>r.used);
-  return `<article class="card tk ${all?'used':''}" style="animation-delay:${i*90}ms"><div class="top"><span>TIKET #${t.no} · PANDATIX</span><span class="chip ${cl}">${st}</span></div><div><h3>${esc(t.name)}</h3><div class="vd">Berlaku untuk 1 orang · ${vdate(t.validDate)}</div></div>
-  <div class="row"><div><small>Pemesan</small><b>${esc(cur.nama)}</b></div><div><small>Tiket ke-</small><b>${t.no} dari ${t.total}</b></div><div style="text-align:right"><small>Harga</small><b class="pr">${rp(t.price)}</b></div></div>
-  ${t.type==='paket'?`<div class="rides">${t.rides.map(r=>`<span class="rd ${r.used?'u':''}">${r.used?ico('check',13,3):''}${esc(r.nama)}</span>`).join('')}</div>`:''}
-  <div class="bt"><button class="qrs" onclick="bigQr('${t.code}')" aria-label="Perbesar QR">${qrSvg(t.code,64,0)}</button><div class="kd"><small>Kode Verifikasi</small><b>${t.code}</b><small>Tunjukkan di loket gate</small></div><button class="btn btn-out btn-sm" onclick="dlOne(${i},this)">${ico('dl',16,2)} JPG</button></div></article>`;
+  return `<article class="card tk ${all?'used':''}" style="animation-delay:${i*90}ms"><div class="top"><span>${L('TIKET','TICKET')} #${t.no} · PANDATIX</span><span class="chip ${cl}">${st}</span></div>
+  <div><h3>${esc(txName(t.name))}</h3><div class="vd">${L('Berlaku untuk 1 orang','Valid for 1 person')} · ${vdate(t.validDate)}</div></div>
+  <div class="row"><div><small>${L('Pemesan','Visitor')}</small><b>${esc(cur.nama)}</b></div><div><small>${L('Tiket ke-','Ticket')}</small><b>${t.no} ${L('dari','of')} ${t.total}</b></div><div style="text-align:right"><small>${L('Harga','Price')}</small><b class="pr">${rp(t.price)}</b></div></div>
+  ${t.rides.length>1?`<div class="rides">${t.rides.map(r=>`<span class="rd ${r.used?'u':''}">${r.used?ico('check',12,3):''}${esc(rowName(r))}</span>`).join('')}</div>`:''}
+  <div class="bt"><button class="qrs" onclick="bigQr('${t.code}')" aria-label="${L('Perbesar QR tiket '+t.code,'Enlarge QR for ticket '+t.code)}">${qrSvg(t.code,64,0)}</button><div class="kd"><small>${L('Kode Verifikasi','Verification code')}</small><b>${t.code}</b><small>${L('Ketuk QR untuk memperbesar','Tap the QR to enlarge')}</small></div><button class="btn btn-out btn-sm" onclick="dlOne(${i},this)">${ico('dl',16,2.2)} JPG</button></div></article>`;
 }
 function drawTiket(first){
-  const o=cur,list=o.tickets;
-  const sc=window.scrollY;
-  app.innerHTML=`<div class="page narrow" style="max-width:640px"><div class="ok-e">${ico('checkc',20,2.2)}TRANSAKSI BERHASIL</div><h1 class="h1" style="font-size:31px;margin-top:6px">Tiket kamu sudah terbit</h1><p class="sub1" style="margin-bottom:0">Setiap tiket punya QR sendiri. Klik Download JPG untuk mengunduh kartu tiket lengkap.</p>
-  <button class="btn block dlall" id="dlall" onclick="dlAll()">${ico('dl',20,2)} Download semua tiket (JPG)</button><div class="cnt">${ico('ticket',18,2)}${list.length} tiket diterbitkan · ${esc(o.nama)}</div>
-  <div class="seg2" data-t="${tab}"><span class="knob"></span><button class="${tab==='tiket'?'on':''}" onclick="setTab('tiket')">Tiket</button><button class="${tab==='nota'?'on':''}" onclick="setTab('nota')">Nota</button></div><div id="tbody"></div></div>`;
-  drawTab(first);window.scrollTo({top:sc});
+  const o=cur,list=o.tickets,sc=window.scrollY;
+  app.innerHTML=`<div class="page narrow"><div class="ok-e">${ico('checkc',19,2.3)} ${L('Transaksi berhasil','Payment successful')}</div>
+  <h1 class="h1">${L('Tiket kamu sudah terbit','Your tickets are ready')}</h1><p class="sub1" style="margin-bottom:0">${L('Setiap tiket punya QR sendiri. Klik Download JPG untuk mengunduh kartu tiket lengkap.','Each ticket has its own QR. Tap Download JPG to save the full ticket card.')}</p>
+  <button class="btn block dlall" id="dlall" onclick="dlAll()">${ico('dl',19,2.2)} ${L('Download semua tiket (JPG)','Download all tickets (JPG)')}</button>
+  <div class="cnt">${ico('ticket',17,2.1)} ${L(list.length+' tiket diterbitkan',list.length+' tickets issued')} · ${esc(o.nama)}</div>
+  <div class="seg3" data-t="${tab}" role="tablist"><span class="knob"></span>
+    <button role="tab" data-tab="tiket" class="${tab==='tiket'?'on':''}" onclick="setTab('tiket')">${L('Tiket','Tickets')}</button>
+    <button role="tab" data-tab="nota" class="${tab==='nota'?'on':''}" onclick="setTab('nota')">${L('Nota','Receipt')}</button>
+    <button role="tab" data-tab="peta" class="${tab==='peta'?'on':''}" onclick="setTab('peta')">${L('Peta','Map')}</button></div>
+  <div id="tbody"></div></div>`;
+  drawTab(first);window.scrollTo({top:sc,behavior:'instant'});
 }
-function setTab(t){tab=t;const s=$('.seg2');s.dataset.t=t;$$('button',s).forEach((b,i)=>b.classList.toggle('on',(i===0)===(t==='tiket')));drawTab(true)}
+function setTab(t){tab=t;const s=$('.seg3');if(!s)return;s.dataset.t=t;$$('button',s).forEach(b=>b.classList.toggle('on',b.dataset.tab===t));drawTab(true)}
+function myRides(){
+  const mine=new Set(),used=new Set();
+  if(cur&&cur.tickets)for(const t of cur.tickets)for(const r of t.rides){mine.add(r.id);if(r.used)used.add(r.id)}
+  return{mine:[...mine],used:[...used]};
+}
+function parkInner(o){
+  const sel=o.sel,w=sel?wById(sel):null,pin=sel?parkPin(sel):null,mine=new Set(o.mine),used=new Set(o.used);
+  return `<div class="parkcols"><div class="pmain"><div class="parkmap">${parkMapSVG({mine:o.mine,used:o.used,sel,wahana:CAT.wahana})}</div>
+  <div class="legend">${Object.keys(PARK_COL).map(k=>`<span><i style="background:${PARK_COL[k]}"></i>${ct(k)}</span>`).join('')}<span><i style="background:#EBCF8E"></i>${L('Tiketmu','In your tickets')}</span>${o.used.length?`<span><i style="background:#7B837E"></i>${L('Sudah dikunjungi','Visited')}</span>`:''}</div>
+  ${w?`<div class="info"><div class="im" style="${img(w.id)}"></div><div class="t"><b>${pin.n}. ${esc(wn(w))}</b><p>${esc(zt(pin.zona))} · ${ct(w.kategori)} · ${rp(w.harga)}</p>
+    <div class="st">${mine.has(w.id)?`<span class="chip ${used.has(w.id)?'brown':''}">${used.has(w.id)?L('Sudah dikunjungi','Visited'):L('Termasuk tiketmu','Included in your tickets')}</span>`:`<span class="chip blue">${L('Beli terpisah','Buy separately')}</span>`}</div></div></div>`:''}</div>
+  <div class="pside"><div class="plist">${PARK.pins.map(p=>{const ww=wById(p.id);return `<button class="${sel===p.id?'sel':''}" onclick="pickPin('${p.id}')"><span class="num" style="background:${PARK_COL[ww.kategori]}">${p.n}</span><span class="nm">${esc(wn(ww))}</span><span class="zn">${mine.has(p.id)?(used.has(p.id)?L('Terpakai','Used'):L('Tiketmu','Yours')):esc(zt(p.zona))}</span></button>`}).join('')}</div>
+  <div class="acts">${w&&!mine.has(w.id)?`<button class="btn btn-blue btn-sm" onclick="closeModal('parkModal');addCart('wahana','${w.id}',1);go('/bayar')">${ico('plus',15,2.4)} ${L('Tambah ke pesanan','Add to order')}</button>`:''}${w?`<button class="btn btn-out btn-sm" onclick="closeModal('parkModal');go('/w/${w.id}')">${ico('right',15,2.4)} ${L('Detail wahana','Ride details')}</button>`:''}<a class="btn btn-out btn-sm" href="${PLACE.dir}" target="_blank" rel="noopener">${ico('nav',15,2.2)} ${L('Petunjuk arah','Directions')}</a></div></div></div>`;
+}
+function fillParkModal(){const r=myRides();$('#parkBody').innerHTML=`<div class="peta" style="padding:0">${parkInner({mine:r.mine,used:r.used,sel:pinSel})}</div>`;const s=$('#parkBody .plist .sel');if(s)s.scrollIntoView({block:'nearest'})}
+function openPark(sel){if(!CAT)return;const r=myRides();pinSel=sel||r.mine[0]||PARK.pins[0].id;fillParkModal();showModal('parkModal')}
+function pickPin(id){pinSel=id;if($('#parkModal').classList.contains('show'))fillParkModal();if(tab==='peta'&&$('#tbody'))drawTab(false)}
 function drawTab(anim){
-  const o=cur,b=$('#tbody');
-  if(tab==='tiket'){b.innerHTML=`<div class="tkts">${o.tickets.map((t,i)=>tkHTML(t,anim?i:0)).join('')}</div><div class="petunjuk"><span style="color:var(--p)">${ico('pin',24,2)}</span><div><b>Petunjuk Masuk Wahana</b><p>Pindai QR langsung dari layar handphone pada pintu putar otomatis (Turnstile) zona wahana yang dituju. Pastikan kecerahan layar maksimal saat scan.</p></div></div>`}
-  else{b.innerHTML=`<div class="card pnota"><div class="h"><h3>Nota Pemesanan</h3><span class="chip">Lunas</span></div><div class="meta"><div><small>Nomor Pesanan</small><b>${o.nota}</b></div><div style="text-align:right"><small>Waktu Transaksi</small><span>${fDate(o.confirmedAt)}, ${fTime(o.confirmedAt).replace('.',':')}</span></div></div>
-  ${o.items.map(i=>`<div class="nr"><span>${esc(i.name)} × ${i.qty}</span><b>${rp(i.price*i.qty)}</b></div>`).join('')}<div class="nr"><span>Biaya admin</span><b>${rp(o.fee)}</b></div><div class="nr"><span>Metode pembayaran</span><span class="mt">${ico(METHODS.find(m=>m[0]===o.method)[3],18,2)}${o.method==='qris'?'QRIS':METHODS.find(m=>m[0]===o.method)[1]}</span></div>
-  <div class="nt" style="border-top:1px solid var(--line);padding-top:14px;margin-top:8px"><span>Total dibayar</span><b>${rp(o.total)}</b></div></div><button class="btn btn-out block again" onclick="dlNota(this)">${ico('dl',18,2)} Download nota (JPG)</button>`}
+  const o=cur,b=$('#tbody');if(!b)return;
+  if(tab==='tiket'){b.innerHTML=`<div class="tkts">${o.tickets.map((t,i)=>tkHTML(t,anim?i:0)).join('')}</div>
+    <div class="petunjuk">${ico('pin',24,2)}<div><b>${L('Petunjuk Masuk Wahana','Ride Entry Guide')}</b><p>${L('Pindai QR langsung dari layar handphone pada pintu putar otomatis (Turnstile) zona wahana yang dituju. Pastikan kecerahan layar maksimal saat scan.','Scan the QR straight from your phone screen at the automatic turnstile of the ride zone you are heading to. Keep your screen brightness at maximum when scanning.')}</p></div></div>
+    <button class="btn btn-out block again" onclick="openPark()">${ico('map',17,2.2)} ${L('Buka peta kawasan','Open area map')}</button>`}
+  else if(tab==='nota'){const M=METHODS.find(m=>m[0]===o.method)||METHODS[0];
+    b.innerHTML=`<div class="card pnota"><div class="h"><h3>${L('Nota Pemesanan','Order Receipt')}</h3><span class="chip">${L('Lunas','Paid')}</span></div>
+    <div class="meta"><div><small>${L('Nomor Pesanan','Order number')}</small><b>${o.nota}</b></div><div style="text-align:right"><small>${L('Waktu Transaksi','Transaction time')}</small><span>${fDate(o.confirmedAt)}, ${fTime(o.confirmedAt).replace('.',':')}</span></div></div>
+    ${o.items.map(i=>`<div class="nr"><span>${esc(txName(i.name))} × ${i.qty}</span><b>${rp(i.price*i.qty)}</b></div>`).join('')}
+    <div class="nr"><span>${L('Biaya admin','Admin fee')}</span><b>${rp(o.fee)}</b></div><div class="nr"><span>${L('Metode pembayaran','Payment method')}</span><span class="mt">${ico(M[3],17,2)}${o.method==='qris'?'QRIS':esc(mName(M))}</span></div>
+    <div class="nt"><span>${L('Total dibayar','Total paid')}</span><b>${rp(o.total)}</b></div></div>
+    <button class="btn btn-out block again" onclick="dlNota(this)">${ico('dl',17,2.2)} ${L('Download nota (JPG)','Download receipt (JPG)')}</button>
+    <button class="btn btn-out block again" onclick="badOrder()">${ico('bag',17,2.2)} ${L('Pesan tiket lagi','Order tickets again')}</button>`}
+  else{const r=myRides();if(!pinSel||!wById(pinSel))pinSel=r.mine[0]||PARK.pins[0].id;
+    b.innerHTML=`<div class="card peta"><div class="phead"><div><h3>${ico('map',18,2.2)} ${L('Peta Lembah Pandawa','Pandawa Valley Map')}</h3><p>${L(r.mine.length+' wahana tercakup dalam tiketmu · ketuk titik untuk detail',r.mine.length+' rides included in your tickets · tap a pin for details')}</p></div><span class="chip gold">${L(r.used.length+'/'+r.mine.length+' dikunjungi',r.used.length+'/'+r.mine.length+' visited')}</span></div>${parkInner({mine:r.mine,used:r.used,sel:pinSel})}</div>`}
 }
-function bigQr(code){$('#qmQr').innerHTML=qrSvg(code,320,1);$('#qmCode').textContent=code;$('#qm').classList.add('show')}
-$('#qm').addEventListener('click',e=>{if(e.target.id==='qm')e.target.classList.remove('show')});
-/* JPG kartu tiket */
+function bigQr(code){$('#qmQr').innerHTML=qrSvg(code,320,1);$('#qmCode').textContent=code;showModal('qm')}
+/* ---------- JPG kartu tiket ---------- */
 function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
 async function ticketBlob(t){
   try{await document.fonts.load('700 30px "Schibsted Grotesk"');await document.fonts.load('500 20px "Schibsted Grotesk"')}catch(e){}
-  const F='"Schibsted Grotesk",system-ui,sans-serif',W=1200,rides=t.type==='paket'?1:0,H=620+rides*70,cv=document.createElement('canvas');cv.width=W;cv.height=H;const c=cv.getContext('2d');
+  const F='"Schibsted Grotesk",system-ui,sans-serif',W=1200,rides=t.rides.length>1?1:0,H=620+rides*70,cv=document.createElement('canvas');cv.width=W;cv.height=H;const c=cv.getContext('2d');
   c.fillStyle='#F3F6F3';c.fillRect(0,0,W,H);c.fillStyle='#fff';rr(c,40,40,W-80,H-80,36);c.fill();c.strokeStyle='#E1EAE3';c.lineWidth=3;c.stroke();
   c.fillStyle='#1B6B44';rr(c,40,40,W-80,110,36);c.fill();c.fillRect(40,100,W-80,50);
   c.fillStyle='#fff';c.font=`800 46px ${F}`;c.fillText('PANDATIX',84,115);c.font=`500 24px ${F}`;c.textAlign='right';c.fillText('Lembah Pandawa, Pandaan',W-84,112);c.textAlign='left';
-  c.fillStyle='#7B837E';c.font=`600 22px ${F}`;c.fillText(`TIKET #${t.no} DARI ${t.total}`,84,215);
-  c.fillStyle='#181C19';c.font=`700 56px ${F}`;c.fillText(t.name,84,285);
-  c.fillStyle='#4A524D';c.font=`500 26px ${F}`;c.fillText('Berlaku untuk 1 orang · '+vdate(t.validDate),84,332);
+  c.fillStyle='#7B837E';c.font=`600 22px ${F}`;c.fillText(`${L('TIKET','TICKET')} #${t.no} ${L('DARI','OF')} ${t.total}`,84,215);
+  c.fillStyle='#181C19';c.font=`700 56px ${F}`;c.fillText(txName(t.name),84,285);
+  c.fillStyle='#4A524D';c.font=`500 26px ${F}`;c.fillText(L('Berlaku untuk 1 orang','Valid for 1 person')+' · '+vdate(t.validDate),84,332);
   c.strokeStyle='#E1EAE3';c.beginPath();c.moveTo(84,370);c.lineTo(W-440,370);c.stroke();
-  c.fillStyle='#7B837E';c.font=`500 22px ${F}`;c.fillText('Pemesan',84,418);c.fillText('Harga',470,418);
+  c.fillStyle='#7B837E';c.font=`500 22px ${F}`;c.fillText(L('Pemesan','Visitor'),84,418);c.fillText(L('Harga','Price'),470,418);
   c.fillStyle='#181C19';c.font=`700 32px ${F}`;c.fillText(cur.nama.slice(0,22),84,462);c.fillStyle='#1B6B44';c.fillText(rp(t.price),470,462);
-  c.fillStyle='#7B837E';c.font=`500 22px ${F}`;c.fillText('Kode Verifikasi',84,520);c.fillStyle='#181C19';c.font=`800 40px ${F}`;c.fillText(t.code,84,566);
-  if(rides){c.fillStyle='#4A524D';c.font=`600 22px ${F}`;c.fillText('Berlaku di: '+t.rides.map(r=>r.nama).join(' · '),84,620+rides*20)}
+  c.fillStyle='#7B837E';c.font=`500 22px ${F}`;c.fillText(L('Kode Verifikasi','Verification code'),84,520);c.fillStyle='#181C19';c.font=`800 40px ${F}`;c.fillText(t.code,84,566);
+  if(rides){c.fillStyle='#4A524D';c.font=`600 22px ${F}`;c.fillText(L('Berlaku di: ','Valid at: ')+t.rides.map(r=>rowName(r)).join(' · '),84,640)}
   c.setLineDash([10,10]);c.strokeStyle='#8FC8A9';c.lineWidth=3;c.beginPath();c.moveTo(W-400,170);c.lineTo(W-400,H-60);c.stroke();c.setLineDash([]);
-  const qs=300,qx=W-400+(360-qs)/2+0,qy=(H-qs)/2+40;c.fillStyle='#fff';rr(c,qx-18,qy-18,qs+36,qs+36,24);c.fill();c.strokeStyle='#E1EAE3';c.lineWidth=3;c.stroke();qrCanvas(c,t.code,qx,qy,qs);
-  c.fillStyle='#7B837E';c.font=`500 20px ${F}`;c.textAlign='center';c.fillText('Pindai di pintu wahana',qx+qs/2,qy+qs+60);c.textAlign='left';
+  const qs=300,qx=W-400+(360-qs)/2,qy=(H-qs)/2+40;c.fillStyle='#fff';rr(c,qx-18,qy-18,qs+36,qs+36,24);c.fill();c.strokeStyle='#E1EAE3';c.lineWidth=3;c.stroke();qrCanvas(c,t.code,qx,qy,qs);
+  c.fillStyle='#7B837E';c.font=`500 20px ${F}`;c.textAlign='center';c.fillText(L('Pindai di pintu wahana','Scan at the ride gate'),qx+qs/2,qy+qs+60);c.textAlign='left';
   return new Promise(r=>cv.toBlob(r,'image/jpeg',.93));
 }
 function save(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
-async function dlOne(i,btn){const t=cur.tickets[i];btn.disabled=true;const h=btn.innerHTML;btn.innerHTML='<span class="spin" style="border-color:var(--p-200);border-top-color:var(--p)"></span>';try{save(await ticketBlob(t),`PANDATIX-${t.code}.jpg`)}finally{btn.disabled=false;btn.innerHTML=h}}
-async function dlAll(){const b=$('#dlall');b.disabled=true;const o=$('#dlo');o.classList.add('show');const L=cur.tickets;
-  for(let i=0;i<L.length;i++){$('#dlt').textContent=`Mengunduh tiket ${i+1} dari ${L.length}`;$('#dlp').style.width=((i+1)/L.length*100)+'%';save(await ticketBlob(L[i]),`PANDATIX-${L[i].code}.jpg`);await new Promise(r=>setTimeout(r,450))}
-  setTimeout(()=>{o.classList.remove('show');$('#dlp').style.width=0;b.disabled=false},500)}
-/* JPG nota pemesanan */
+async function dlOne(i,btn){const t=cur.tickets[i];btn.disabled=true;const h=btn.innerHTML;btn.innerHTML='<span class="spin" style="border-color:var(--p-200);border-top-color:var(--p)"></span>';try{save(await ticketBlob(t),`PANDATIX-${t.code}.jpg`)}catch(e){toast(L('Gagal mengunduh tiket.','Failed to download the ticket.'),true)}finally{btn.disabled=false;btn.innerHTML=h}}
+async function dlAll(){const b=$('#dlall');b.disabled=true;const o=$('#dlo');o.classList.add('show');const TK=cur.tickets;
+  try{for(let i=0;i<TK.length;i++){$('#dlt').textContent=L(`Mengunduh tiket ${i+1} dari ${TK.length}`,`Downloading ticket ${i+1} of ${TK.length}`);$('#dlp').style.width=((i+1)/TK.length*100)+'%';save(await ticketBlob(TK[i]),`PANDATIX-${TK[i].code}.jpg`);await new Promise(r=>setTimeout(r,450))}}
+  catch(e){toast(L('Sebagian tiket gagal diunduh.','Some tickets failed to download.'),true)}
+  setTimeout(()=>{o.classList.remove('show');$('#dlp').style.width='0';b.disabled=false},500)}
+/* ---------- JPG nota ---------- */
 async function notaBlob(o){
   try{await document.fonts.load('800 38px "Schibsted Grotesk"');await document.fonts.load('700 28px "Schibsted Grotesk"');await document.fonts.load('600 20px "Schibsted Grotesk"');await document.fonts.load('500 18px "Schibsted Grotesk"')}catch(e){}
   const F='"Schibsted Grotesk",system-ui,sans-serif',W=800,items=o.items||[],H=790+items.length*42,cv=document.createElement('canvas');cv.width=W;cv.height=H;const c=cv.getContext('2d');
@@ -423,44 +1045,44 @@ async function notaBlob(o){
   c.fillStyle='#1B6B44';rr(c,36,36,W-72,100,28);c.fill();c.fillRect(36,90,W-72,46);
   c.fillStyle='#FFFFFF';c.font=`800 38px ${F}`;c.textAlign='left';c.fillText('PANDATIX',70,102);
   c.font=`500 20px ${F}`;c.textAlign='right';c.fillText('Lembah Pandawa, Pandaan',W-70,98);
-  c.textAlign='left';c.fillStyle='#181C19';c.font=`700 28px ${F}`;c.fillText('Nota Pemesanan',70,182);
-  const chipW=90,chipH=34,chipX=W-70-chipW,chipY=156;c.fillStyle='#E2F2E9';rr(c,chipX,chipY,chipW,chipH,17);c.fill();
-  c.fillStyle='#1B6B44';c.font=`700 16px ${F}`;c.textAlign='center';c.fillText('Lunas',chipX+chipW/2,chipY+23);
+  c.textAlign='left';c.fillStyle='#181C19';c.font=`700 28px ${F}`;c.fillText(L('Nota Pemesanan','Order Receipt'),70,182);
+  const chipW=90,chipH=34,chipX=W-70-chipW,chipY=156;c.fillStyle='#E4F3EA';rr(c,chipX,chipY,chipW,chipH,17);c.fill();
+  c.fillStyle='#1B6B44';c.font=`700 16px ${F}`;c.textAlign='center';c.fillText(L('Lunas','Paid'),chipX+chipW/2,chipY+23);
   c.strokeStyle='#E1EAE3';c.lineWidth=1.5;c.beginPath();c.moveTo(70,208);c.lineTo(W-70,208);c.stroke();
-  c.textAlign='left';c.fillStyle='#7B837E';c.font=`500 16px ${F}`;c.fillText('Nomor Pesanan',70,240);
-  c.textAlign='right';c.fillText('Waktu Transaksi',W-70,240);
+  c.textAlign='left';c.fillStyle='#7B837E';c.font=`500 16px ${F}`;c.fillText(L('Nomor Pesanan','Order number'),70,240);
+  c.textAlign='right';c.fillText(L('Waktu Transaksi','Transaction time'),W-70,240);
   c.textAlign='left';c.fillStyle='#181C19';c.font=`700 22px ${F}`;c.fillText(o.nota||o.code||'-',70,270);
   c.textAlign='right';c.fillStyle='#4A524D';c.font=`600 17px ${F}`;
   const txTime=o.confirmedAt?`${fDate(o.confirmedAt)}, ${fTime(o.confirmedAt).replace('.',':')}`:(o.createdAt?`${fDate(o.createdAt)}, ${fTime(o.createdAt).replace('.',':')}`:'-');
   c.fillText(txTime,W-70,270);
-  c.textAlign='left';c.fillStyle='#7B837E';c.font=`500 16px ${F}`;c.fillText('Pemesan',70,308);
+  c.textAlign='left';c.fillStyle='#7B837E';c.font=`500 16px ${F}`;c.fillText(L('Pemesan','Visitor'),70,308);
   c.fillStyle='#181C19';c.font=`700 20px ${F}`;c.fillText(o.nama||'-',70,334);
-  c.setLineDash([6,6]);c.strokeStyle='#D5DFD8';c.lineWidth=1.5;c.beginPath();c.moveTo(70,360);c.lineTo(W-70,360);c.stroke();c.setLineDash([]);
+  c.setLineDash([6,6]);c.strokeStyle='#D0DAD3';c.lineWidth=1.5;c.beginPath();c.moveTo(70,360);c.lineTo(W-70,360);c.stroke();c.setLineDash([]);
   let y=398;
-  items.forEach(it=>{c.textAlign='left';c.fillStyle='#181C19';c.font=`500 20px ${F}`;c.fillText(`${it.name} × ${it.qty}`,70,y);c.textAlign='right';c.font=`700 20px ${F}`;c.fillText(rp(it.price*it.qty),W-70,y);y+=42});
+  items.forEach(it=>{c.textAlign='left';c.fillStyle='#181C19';c.font=`500 20px ${F}`;c.fillText(`${txName(it.name)} × ${it.qty}`,70,y);c.textAlign='right';c.font=`700 20px ${F}`;c.fillText(rp(it.price*it.qty),W-70,y);y+=42});
   y+=4;c.strokeStyle='#E1EAE3';c.lineWidth=1.5;c.beginPath();c.moveTo(70,y);c.lineTo(W-70,y);c.stroke();
-  y+=34;c.textAlign='left';c.fillStyle='#7B837E';c.font=`500 18px ${F}`;c.fillText('Biaya admin',70,y);
+  y+=34;c.textAlign='left';c.fillStyle='#7B837E';c.font=`500 18px ${F}`;c.fillText(L('Biaya admin','Admin fee'),70,y);
   c.textAlign='right';c.fillStyle='#181C19';c.font=`600 18px ${F}`;c.fillText(rp(o.fee||0),W-70,y);
-  y+=34;const mObj=METHODS.find(m=>m[0]===o.method),mLabel=o.method==='qris'?'QRIS':(mObj?mObj[1]:(o.method||'-'));
-  c.textAlign='left';c.fillStyle='#7B837E';c.font=`500 18px ${F}`;c.fillText('Metode pembayaran',70,y);
+  y+=34;const mObj=METHODS.find(m=>m[0]===o.method),mLabel=o.method==='qris'?'QRIS':(mObj?mName(mObj):(o.method||'-'));
+  c.textAlign='left';c.fillStyle='#7B837E';c.font=`500 18px ${F}`;c.fillText(L('Metode pembayaran','Payment method'),70,y);
   c.textAlign='right';c.fillStyle='#181C19';c.font=`600 18px ${F}`;c.fillText(mLabel,W-70,y);
   y+=18;c.strokeStyle='#E1EAE3';c.lineWidth=1.5;c.beginPath();c.moveTo(70,y);c.lineTo(W-70,y);c.stroke();
-  y+=40;c.textAlign='left';c.fillStyle='#181C19';c.font=`700 22px ${F}`;c.fillText('Total dibayar',70,y);
+  y+=40;c.textAlign='left';c.fillStyle='#181C19';c.font=`700 22px ${F}`;c.fillText(L('Total dibayar','Total paid'),70,y);
   c.textAlign='right';c.fillStyle='#1B6B44';c.font=`800 30px ${F}`;c.fillText(rp(o.total||0),W-70,y);
-  y+=24;c.setLineDash([6,6]);c.strokeStyle='#D5DFD8';c.lineWidth=1.5;c.beginPath();c.moveTo(70,y);c.lineTo(W-70,y);c.stroke();c.setLineDash([]);
+  y+=24;c.setLineDash([6,6]);c.strokeStyle='#D0DAD3';c.lineWidth=1.5;c.beginPath();c.moveTo(70,y);c.lineTo(W-70,y);c.stroke();c.setLineDash([]);
   y+=24;const qrSz=110,qx=(W-qrSz)/2;
   c.fillStyle='#fff';rr(c,qx-8,y-8,qrSz+16,qrSz+16,12);c.fill();c.strokeStyle='#E1EAE3';c.lineWidth=1.5;c.stroke();
   qrCanvas(c,o.code,qx,y,qrSz);
-  y+=qrSz+24;c.textAlign='center';c.fillStyle='#181C19';c.font=`700 17px ${F}`;c.fillText('Kode Pesanan: '+o.code,W/2,y);
-  y+=24;c.fillStyle='#7B837E';c.font=`500 14.5px ${F}`;c.fillText('Simpan nota digital ini sebagai bukti transaksi resmi.',W/2,y);
+  y+=qrSz+24;c.textAlign='center';c.fillStyle='#181C19';c.font=`700 17px ${F}`;c.fillText(L('Kode Pesanan: ','Order code: ')+o.code,W/2,y);
+  y+=24;c.fillStyle='#7B837E';c.font=`500 14.5px ${F}`;c.fillText(L('Simpan nota digital ini sebagai bukti transaksi resmi.','Keep this digital receipt as official proof of transaction.'),W/2,y);
   return new Promise(r=>cv.toBlob(r,'image/jpeg',.93));
 }
 async function dlNota(btn){
   btn.disabled=true;const h=btn.innerHTML;
-  btn.innerHTML='<span class="spin" style="border-color:var(--p-200);border-top-color:var(--p)"></span> Mengunduh…';
-  try{save(await notaBlob(cur),`NOTA-${cur.nota||cur.code}.jpg`)}catch(e){toast('Gagal mengunduh nota.',true)}finally{btn.disabled=false;btn.innerHTML=h}
+  btn.innerHTML=`<span class="spin" style="border-color:var(--p-200);border-top-color:var(--p)"></span> ${L('Mengunduh…','Downloading…')}`;
+  try{save(await notaBlob(cur),`NOTA-${cur.nota||cur.code}.jpg`)}catch(e){toast(L('Gagal mengunduh nota.','Failed to download the receipt.'),true)}finally{btn.disabled=false;btn.innerHTML=h}
 }
-route();
+renderShell();route();
 </script>
 </body>
 </html>

@@ -29,7 +29,19 @@ link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><pa
 trash:'<path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
 user:'<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
 flash:'<path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/>',
-keyboard:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"/>'
+keyboard:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"/>',
+star:'<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+crown:'<path d="M3 7l4.5 3.5L12 4l4.5 6.5L21 7l-1.8 11H4.8z"/><path d="M4.8 18h14.4"/>',
+sparkle:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M18.5 16.5l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/>',
+map:'<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/>',
+nav:'<path d="M3 11l18-8-8 18-2-8z"/>',
+ext:'<path d="M15 3h6v6M10 14 21 3"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/>',
+meru:'<path d="M12 2 8.5 5h7zM12 6.5 7 10h10zM12 11.5 5.5 15h13zM12 16.5 4 20h16z"/><path d="M12 20v2"/>',
+chart:'<path d="M3 3v18h18"/><path d="M7 15v3M12 10v8M17 6v12"/>',
+gate:'<path d="M4 21V8l8-5 8 5v13"/><path d="M9 21v-7h6v7"/><path d="M2 21h20"/>',
+leaf:'<path d="M11 20A7 7 0 0 1 4 13c0-6 7-10 16-10 0 9-4 16-9 17z"/><path d="M4 21c2-6 6-9 10-11"/>',
+globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.4 3 14.6 0 18M12 3c-3 3.4-3 14.6 0 18"/>',
+chevd:'<path d="m6 9 6 6 6-6"/>'
 };
 const ico=(n,s=18,sw=2)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${IC[n]||''}</svg>`;
 const rp=n=>'Rp '+Math.round(n).toLocaleString('id-ID');
@@ -39,16 +51,20 @@ const BL=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des
 const BF=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 const HR=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
 const HF=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+const EN_BL=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const EN_BF=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const fLang=()=>window.LANG==='en'?'en':'id';
 const W=t=>new Date(+t+7*3600e3); // WIB via getUTC*
-const fDate=(t,full)=>{const d=W(t);return d.getUTCDate()+' '+(full?BF:BL)[d.getUTCMonth()]+' '+d.getUTCFullYear()};
+const fDate=(t,full)=>{const d=W(t),en=fLang()==='en',M=en?(full?EN_BF:EN_BL):(full?BF:BL);return d.getUTCDate()+' '+M[d.getUTCMonth()]+' '+d.getUTCFullYear()};
 const fTime=t=>{const d=W(t);return String(d.getUTCHours()).padStart(2,'0')+'.'+String(d.getUTCMinutes()).padStart(2,'0')};
 const fTimeS=t=>fTime(t)+'.'+String(W(t).getUTCSeconds()).padStart(2,'0');
+const API_EN={'Jumlah tiket tidak valid.':'Invalid ticket quantity.','Item tidak ditemukan.':'Item not found.','Tiket tidak ditemukan.':'Ticket not found.','Pesanan tidak ditemukan.':'Order not found.','Kode pesanan tidak ditemukan.':'Order code not found.','Pesanan ini sudah dikonfirmasi sebelumnya.':'This order has already been confirmed.','Pesanan sudah kedaluwarsa. Minta pelanggan membuat pesanan baru.':'This order has expired. Please create a new order.'};
 async function api(url,opt={}){
   const o={method:opt.method||'GET',headers:{...(opt.headers||{})},cache:'no-store'};
   if(opt.body!==undefined){o.body=JSON.stringify(opt.body);o.headers['Content-Type']='application/json'}
-  let r;try{r=await fetch(url,o)}catch(e){throw new Error('Tidak dapat terhubung ke server.')}
+  let r;try{r=await fetch(url,o)}catch(e){throw new Error(fLang()==='en'?'Could not reach the server.':'Tidak dapat terhubung ke server.')}
   const j=await r.json().catch(()=>({}));
-  if(!r.ok){const e=new Error(j.error||'Terjadi kesalahan');e.status=r.status;throw e}
+  if(!r.ok){const en=fLang()==='en'?API_EN[j.error]:null;const e=new Error(en||j.error||(fLang()==='en'?'Something went wrong.':'Terjadi kesalahan'));e.status=r.status;throw e}
   return j;
 }
 function toast(msg,bad){let t=$('.toast');if(!t){t=document.createElement('div');t.className='toast';document.body.appendChild(t)}
