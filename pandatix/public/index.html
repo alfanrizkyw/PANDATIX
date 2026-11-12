@@ -100,6 +100,58 @@
       transform: scale(.96)
     }
 
+    .lang-flags {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 3px 4px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .62), rgba(255, 255, 255, .38));
+      border: 1px solid rgba(255, 255, 255, .7);
+      -webkit-backdrop-filter: blur(14px) saturate(1.6);
+      backdrop-filter: blur(14px) saturate(1.6);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8), 0 6px 16px -13px rgba(8, 34, 24, .5);
+      flex-shrink: 0
+    }
+
+    .flag-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 32px;
+      padding: 0 8px;
+      border-radius: 999px;
+      border: 1.5px solid transparent;
+      background: transparent;
+      cursor: pointer;
+      opacity: .52;
+      transition: opacity .15s, background .15s, transform .15s, border-color .15s, box-shadow .15s
+    }
+
+    .flag-btn:hover {
+      opacity: .85;
+      background: rgba(255, 255, 255, .42)
+    }
+
+    .flag-btn.on {
+      opacity: 1;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .95), rgba(240, 248, 243, .85));
+      border-color: rgba(27, 107, 68, .35);
+      box-shadow: 0 2px 8px -2px rgba(10, 40, 30, .28), inset 0 1px 0 #fff;
+      transform: scale(1.03)
+    }
+
+    .flag-btn:active {
+      transform: scale(.95)
+    }
+
+    .flag-svg {
+      border-radius: 3px;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, .15);
+      overflow: hidden;
+      display: block
+    }
+
     .lang {
       position: relative;
       flex-shrink: 0
@@ -370,11 +422,12 @@
       max-width: 1100px;
       margin: 0 auto;
       min-height: 530px;
+      min-height: 480px;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
       gap: 14px;
-      padding: 26px 20px 80px
+      padding: 26px 20px 80px padding: 26px 20px 60px
     }
 
     .hero-curve {
@@ -630,7 +683,8 @@
     @media(max-width:700px) {
       .hero-in {
         min-height: 544px;
-        padding-bottom: 106px
+        padding-bottom: 106px min-height: 460px;
+        padding-bottom: 54px
       }
 
       .hero-curve svg {
@@ -3303,6 +3357,8 @@
     const itemName = r => LANG === 'en' ? ((EN_W[r.id] && EN_W[r.id].nama) || (EN_P[r.id] && EN_P[r.id].nama) || r.nama) : r.nama;
     const txName = n => { if (LANG !== 'en' || !CAT) return n; const w = CAT.wahana.find(x => x.nama === n); if (w) return wn(w); const p = CAT.paket.find(x => x.nama === n); return p ? pn(p) : n };
     window.PTX = { wn, ct, zt, L };
+    const flagID = () => `<svg class="flag-svg" viewBox="0 0 24 16" width="22" height="15" aria-hidden="true"><rect width="24" height="8" fill="#E70011"/><rect y="8" width="24" height="8" fill="#FFFFFF"/></svg>`;
+    const flagGB = () => `<svg class="flag-svg" viewBox="0 0 60 30" width="24" height="15" aria-hidden="true"><rect width="60" height="30" fill="#012169"/><path d="M0 0 L60 30 M60 0 L0 30" stroke="#FFFFFF" stroke-width="6"/><path d="M0 0 L25 12.5 M35 17.5 L60 30 M60 0 L35 12.5 M25 17.5 L0 30" stroke="#C8102E" stroke-width="2"/><path d="M30 0 v30 M0 15 h60" stroke="#FFFFFF" stroke-width="10"/><path d="M30 0 v30 M0 15 h60" stroke="#C8102E" stroke-width="6"/></svg>`;
     function setLang(v) {
       if (!['id', 'en'].includes(v)) return;
       closeLang();
@@ -3317,6 +3373,8 @@
     function toggleLang(e) { if (e) { e.stopPropagation() } const w = $('#langWrap'); if (!w) return; const on = w.classList.toggle('open'); $('#langBtn').setAttribute('aria-expanded', on) }
     function closeLang() { const w = $('#langWrap'); if (!w || !w.classList.contains('open')) return; w.classList.remove('open'); const b = $('#langBtn'); if (b) b.setAttribute('aria-expanded', 'false') }
     document.addEventListener('click', e => { if (!e.target.closest('.lang')) closeLang() });
+    function toggleLang() { }
+    function closeLang() { }
     /* ---------- shell ---------- */
     function renderShell() {
       $('#shellTop').innerHTML = `<header class="hdr"><div class="wrap hwrap">
@@ -3329,6 +3387,9 @@
           <button role="option" class="langopt ${LANG === 'id' ? 'on' : ''}" aria-selected="${LANG === 'id'}" onclick="setLang('id')"><span class="lgtxt"><b>Bahasa Indonesia</b><i>ID</i></span>${LANG === 'id' ? ico('check', 16, 3) : ''}</button>
           <button role="option" class="langopt ${LANG === 'en' ? 'on' : ''}" aria-selected="${LANG === 'en'}" onclick="setLang('en')"><span class="lgtxt"><b>English</b><i>EN</i></span>${LANG === 'en' ? ico('check', 16, 3) : ''}</button>
         </div>
+      <div class="lang-flags" role="group" aria-label="${L('Pilih bahasa', 'Choose language')}">
+        <button type="button" class="flag-btn ${LANG === 'id' ? 'on' : ''}" onclick="setLang('id')" aria-pressed="${LANG === 'id'}" aria-label="Bahasa Indonesia" title="Bahasa Indonesia">${flagID()}</button>
+        <button type="button" class="flag-btn ${LANG === 'en' ? 'on' : ''}" onclick="setLang('en')" aria-pressed="${LANG === 'en'}" aria-label="English" title="English">${flagGB()}</button>
       </div>
     </div>
   </div></header>`;
@@ -3568,6 +3629,7 @@
       app.innerHTML = `
   <section class="hero"><div class="hero-art" aria-hidden="true">${heroSceneSVG()}</div>
     <div class="hero-in"><span class="wxwrap"><span class="wxship" aria-hidden="true"><svg viewBox="0 0 46 30"><g fill="#EAF4F1" opacity=".62"><ellipse cx="9" cy="26" rx="9" ry="2.6"/><ellipse cx="35" cy="26.8" rx="7" ry="2.2"/><ellipse cx="22" cy="27.4" rx="13" ry="2.4"/></g><path d="M7 20.6 Q10 25.6 17 25.6 H31 Q38 25.6 40 20.6 Z" fill="#6B4729"/><path d="M7 20.6 Q10 23.2 17 23.2 H31 Q38 23.2 40 20.6 Z" fill="#86592F"/><path d="M5.6 20 H41.4 L40 22 H7 Z" fill="#A4713F"/><rect x="22" y="6.6" width="1.8" height="14" rx=".9" fill="#6B4729"/><path d="M23.2 6.6 L20 11.4 L23.2 11.4 Z" fill="#D8443A"/><path d="M21.2 8.2 L12.4 19 H21.2 Z" fill="#F7F0DE"/><path d="M21.2 8.2 L17 19 H21.2 Z" fill="#FFFFFF" opacity=".6"/><path d="M24 9.4 L33.8 19 H24 Z" fill="#FBF7EC"/><path d="M24 9.4 V19 H28.8 Z" fill="#DCCFB4" opacity=".7"/></svg></span><span class="wx" id="wx"><span class="sun"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.4v2.4M12 19.2v2.4M2.4 12h2.4M19.2 12h2.4M5.2 5.2l1.7 1.7M17.1 17.1l1.7 1.7M18.8 5.2l-1.7 1.7M6.9 17.1l-1.7 1.7"/></svg></span><b id="wxT">24°C</b><s></s><span id="wxD">${L('Cerah Sejuk', 'Cool & Clear')}</span></span></span>
+    <div class="hero-in">
       <h1>${L('Mau seru-seruan di Lembah Pandawa hari ini?', 'Ready for fun at Pandawa Valley today?')}</h1>
       <p>${L('Satu tiket buat semua petualangan seru. Pilih wahananya, bayar, langsung scan QR—tanpa ribet!', 'One ticket for all the fun. Pick your rides, pay, then scan the QR—no hassle!')}</p>
       <div class="search"><div class="sbar" id="sbar"><input id="q" autocomplete="off" placeholder="${L('Lagi pengen main wahana apa nih...', 'Which ride are you in the mood for?')}" aria-label="${L('Cari wahana', 'Search rides')}"><button class="sgo" onclick="doSearch()" aria-label="${L('Cari', 'Search')}">${ico('search', 21, 2.4)}</button></div><div class="sug" id="sug"></div></div>
@@ -3587,6 +3649,7 @@
       <div class="tabs" id="tabs"></div><div class="wgrid" id="wg"></div></section>
   </div>`;
       renderTabs(); renderGrid(); bindSearch(); loadWx();
+      renderTabs(); renderGrid();
     }
     function addCart(type, id, qty) { const x = cart.find(c => c.type === type && c.id === id); if (x) x.qty = clampQ(x.qty + qty); else cart.push({ type, id, qty }); saveCart() }
     function buyPaket(id) { addCart('paket', id, 1); go('/bayar') }
