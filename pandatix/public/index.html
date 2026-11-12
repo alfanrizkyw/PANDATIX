@@ -941,12 +941,15 @@
       display: flex;
       flex-direction: column;
       border-width: 2px;
-      transition: transform .3s cubic-bezier(.22, .61, .36, 1), box-shadow .3s cubic-bezier(.22, .61, .36, 1)
+      transition: transform .45s cubic-bezier(.22, .9, .3, 1), box-shadow .45s cubic-bezier(.22, .9, .3, 1), border-color .3s;
+      will-change: transform, box-shadow;
     }
 
-    .pk:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 20px 38px -20px rgba(18, 72, 46, .4)
+    .pk:hover,
+    .pk.centered {
+      transform: scale(1.035);
+      box-shadow: 0 22px 42px -18px rgba(18, 72, 46, .45), 0 0 0 2px rgba(27, 107, 68, .28);
+      z-index: 5;
     }
 
     .pk.murah {
@@ -961,70 +964,87 @@
       border-color: #C7CBF0
     }
 
-    .strip {
+    .pk-shots {
       position: relative;
-      height: 152px;
-      overflow: hidden;
+      display: flex;
+      gap: 10px;
+      padding: 14px 14px 0;
       isolation: isolate;
-      border-radius: 0 0 20px 20px
     }
 
-    .pk.murah .strip {
-      background: #FBF4E2
+    .shot-box {
+      position: relative;
+      flex: 1;
+      height: 108px;
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--p-cont);
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08), 0 3px 8px -3px rgba(10, 40, 30, .14);
+      transition: box-shadow .35s;
     }
 
-    .pk.reguler .strip {
-      background: var(--p-cont)
-    }
-
-    .pk.premium .strip {
-      background: #EEF0FB
-    }
-
-    .shot {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: calc((100% + 68px)/3);
-      background-color: var(--p-cont);
-      background-size: cover;
-      background-position: center;
-      transition: transform .7s cubic-bezier(.22, .61, .36, 1)
-    }
-
-    .shot:nth-child(1) {
-      left: 0;
-      z-index: 3;
-      -webkit-mask-image: linear-gradient(90deg, #000 0 62%, rgba(0, 0, 0, 0) 100%);
-      mask-image: linear-gradient(90deg, #000 0 62%, rgba(0, 0, 0, 0) 100%)
-    }
-
-    .shot:nth-child(2) {
-      left: calc((100% + 68px)/3 - 34px);
-      z-index: 2;
-      -webkit-mask-image: linear-gradient(90deg, #000 0 62%, rgba(0, 0, 0, 0) 100%);
-      mask-image: linear-gradient(90deg, #000 0 62%, rgba(0, 0, 0, 0) 100%)
-    }
-
-    .shot:nth-child(3) {
-      left: calc((100% + 68px)*2/3 - 68px);
-      z-index: 1
-    }
-
-    .strip::after {
-      content: "";
+    .shot-img {
       position: absolute;
       inset: 0;
-      z-index: 4;
-      pointer-events: none;
-      background:
-        linear-gradient(180deg, rgba(10, 34, 24, .26) 0%, rgba(10, 34, 24, .02) 30%, rgba(10, 34, 24, 0) 62%, rgba(10, 34, 24, .22) 100%),
-        linear-gradient(90deg, rgba(10, 34, 24, .2), rgba(10, 34, 24, 0) 22%, rgba(10, 34, 24, 0) 78%, rgba(10, 34, 24, .2)),
-        linear-gradient(0deg, rgba(18, 72, 46, .14), rgba(18, 72, 46, .14))
+      background-size: cover;
+      background-position: center;
+      transition: opacity .85s cubic-bezier(.22, .9, .3, 1), transform .85s cubic-bezier(.22, .9, .3, 1);
+      will-change: opacity, transform;
     }
 
-    .pk:hover .shot {
-      transform: scale(1.035)
+    .shot-a {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .shot-b {
+      opacity: 0;
+      transform: scale(1.08);
+    }
+
+    .pk.second-img .shot-a {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+
+    .pk.second-img .shot-b {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .pk-badge {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 6;
+      background: #92400e;
+      color: #fff;
+      font-weight: 800;
+      font-size: 11.5px;
+      letter-spacing: .02em;
+      padding: 3.5px 10px;
+      border-radius: 999px;
+      box-shadow: 0 4px 12px -2px rgba(0, 0, 0, .4);
+      pointer-events: none;
+    }
+
+    @media(max-width: 480px) {
+      .pk-shots {
+        gap: 8px;
+        padding: 11px 11px 0;
+      }
+
+      .shot-box {
+        height: 88px;
+        border-radius: 12px;
+      }
+
+      .pk-badge {
+        top: 17px;
+        left: 17px;
+        font-size: 10.5px;
+        padding: 3px 8px;
+      }
     }
 
     .pbody {
@@ -3447,12 +3467,42 @@
       const list = LANG === 'en' ? (PK_FEATS_EN[p.id] || null) : (PK_FEATS[p.id] || null);
       return list || p.wahanaIds.map(i => wn(wById(i)));
     };
+    function paketShots(p) {
+      const ids = p.wahanaIds;
+      if (p.id === 'paket-murah') {
+        return {
+          a: [heroImg, img('komidi-putar'), img('dunia-air-cilik')],
+          b: [img('dunia-air-cilik'), heroImg, img('komidi-putar')]
+        };
+      }
+      if (p.id === 'paket-reguler') {
+        return {
+          a: [img('kereta-mini'), heroImg, img('rumah-cermin')],
+          b: [img('komidi-putar'), img('rumah-cermin'), img('kereta-mini')]
+        };
+      }
+      if (p.id === 'paket-mahal') {
+        return {
+          a: [img('kapal-karam'), img('bumper-boat'), img('taman-lumba')],
+          b: [img('taman-lumba'), heroImg, img('bumper-boat')]
+        };
+      }
+      return {
+        a: [img(ids[0]), heroImg, img(ids[1] || ids[0])],
+        b: [img(ids[1] || ids[0]), img(ids[0]), heroImg]
+      };
+    }
     function paketHTML(p) {
-      const d = disc(p), ids = p.wahanaIds;
-      const shots = [img(ids[0]), heroImg, img(ids[1] || ids[0])];
+      const d = disc(p);
+      const s = paketShots(p);
       const chip = p.kelas === 'premium' ? `<span class="tchip indigo">All Access VIP</span>` : p.kelas === 'reguler' ? `<span class="tchip green">${L('Paling Populer', 'Most Popular')}</span>` : '';
-      return `<article class="card pk ${p.kelas}">
-    <div class="strip"><div class="shot" style="${shots[0]}"></div><div class="shot" style="${shots[1]}"></div><div class="shot" style="${shots[2]}"></div></div>
+      return `<article class="card pk ${p.kelas}" data-pk="${p.id}">
+    <div class="pk-shots">
+      <span class="pk-badge">${L('Hemat ' + d + '%', 'Save ' + d + '%')}</span>
+      <div class="shot-box"><div class="shot-img shot-a" style="${s.a[0]}"></div><div class="shot-img shot-b" style="${s.b[0]}"></div></div>
+      <div class="shot-box"><div class="shot-img shot-a" style="${s.a[1]}"></div><div class="shot-img shot-b" style="${s.b[1]}"></div></div>
+      <div class="shot-box"><div class="shot-img shot-a" style="${s.a[2]}"></div><div class="shot-img shot-b" style="${s.b[2]}"></div></div>
+    </div>
     <div class="pbody">
       <div class="ptitle"><h3>${esc(pn(p))}</h3>${chip}</div>
       <p class="d">${esc(pd(p))}</p>
@@ -3628,11 +3678,9 @@
     function pgHome() {
       app.innerHTML = `
   <section class="hero"><div class="hero-art" aria-hidden="true">${heroSceneSVG()}</div>
-    <div class="hero-in"><span class="wxwrap"><span class="wxship" aria-hidden="true"><svg viewBox="0 0 46 30"><g fill="#EAF4F1" opacity=".62"><ellipse cx="9" cy="26" rx="9" ry="2.6"/><ellipse cx="35" cy="26.8" rx="7" ry="2.2"/><ellipse cx="22" cy="27.4" rx="13" ry="2.4"/></g><path d="M7 20.6 Q10 25.6 17 25.6 H31 Q38 25.6 40 20.6 Z" fill="#6B4729"/><path d="M7 20.6 Q10 23.2 17 23.2 H31 Q38 23.2 40 20.6 Z" fill="#86592F"/><path d="M5.6 20 H41.4 L40 22 H7 Z" fill="#A4713F"/><rect x="22" y="6.6" width="1.8" height="14" rx=".9" fill="#6B4729"/><path d="M23.2 6.6 L20 11.4 L23.2 11.4 Z" fill="#D8443A"/><path d="M21.2 8.2 L12.4 19 H21.2 Z" fill="#F7F0DE"/><path d="M21.2 8.2 L17 19 H21.2 Z" fill="#FFFFFF" opacity=".6"/><path d="M24 9.4 L33.8 19 H24 Z" fill="#FBF7EC"/><path d="M24 9.4 V19 H28.8 Z" fill="#DCCFB4" opacity=".7"/></svg></span><span class="wx" id="wx"><span class="sun"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.4v2.4M12 19.2v2.4M2.4 12h2.4M19.2 12h2.4M5.2 5.2l1.7 1.7M17.1 17.1l1.7 1.7M18.8 5.2l-1.7 1.7M6.9 17.1l-1.7 1.7"/></svg></span><b id="wxT">24°C</b><s></s><span id="wxD">${L('Cerah Sejuk', 'Cool & Clear')}</span></span></span>
     <div class="hero-in">
       <h1>${L('Mau seru-seruan di Lembah Pandawa hari ini?', 'Ready for fun at Pandawa Valley today?')}</h1>
       <p>${L('Satu tiket buat semua petualangan seru. Pilih wahananya, bayar, langsung scan QR—tanpa ribet!', 'One ticket for all the fun. Pick your rides, pay, then scan the QR—no hassle!')}</p>
-      <div class="search"><div class="sbar" id="sbar"><input id="q" autocomplete="off" placeholder="${L('Lagi pengen main wahana apa nih...', 'Which ride are you in the mood for?')}" aria-label="${L('Cari wahana', 'Search rides')}"><button class="sgo" onclick="doSearch()" aria-label="${L('Cari', 'Search')}">${ico('search', 21, 2.4)}</button></div><div class="sug" id="sug"></div></div>
     </div>
     <div class="hero-curve">${heroCurveSVG()}</div></section>
   <div class="page">
@@ -3648,39 +3696,81 @@
     <section class="sec" style="margin-top:30px"><div class="sec-h"><div><h2>${L('Semua wahana', 'All rides')}</h2></div><span class="side" id="wcount"></span></div>
       <div class="tabs" id="tabs"></div><div class="wgrid" id="wg"></div></section>
   </div>`;
-      renderTabs(); renderGrid(); bindSearch(); loadWx();
-      renderTabs(); renderGrid();
+      renderTabs(); renderGrid(); initPaketAnimations();
+    }
+    let pkScrollTick = null;
+    function initPaketAnimations() {
+      const cards = $$('.card.pk');
+      if (!cards.length) return;
+
+      function updateCentered() {
+        const vH = window.innerHeight;
+        const vMid = vH / 2;
+        const isSingleCol = window.innerWidth < 640;
+        let closestCard = null, closestDist = Infinity;
+
+        if (isSingleCol) {
+          cards.forEach(card => {
+            const rect = card.getBoundingClientRect();
+            if (rect.bottom > vH * 0.12 && rect.top < vH * 0.88) {
+              const dist = Math.abs((rect.top + rect.bottom) / 2 - vMid);
+              if (dist < closestDist) {
+                closestDist = dist;
+                closestCard = card;
+              }
+            }
+          });
+        }
+
+        cards.forEach(card => {
+          const rect = card.getBoundingClientRect();
+          const cardMid = (rect.top + rect.bottom) / 2;
+          const isCentered = isSingleCol
+            ? (card === closestCard && closestDist < vH * 0.36)
+            : (Math.abs(cardMid - vMid) < vH * 0.32 && rect.bottom > vH * 0.15 && rect.top < vH * 0.85);
+
+          if (isCentered) {
+            if (!card.classList.contains('centered')) {
+              card.classList.add('centered');
+              clearTimeout(card._switchTimer);
+              clearInterval(card._switchInterval);
+              card._switchTimer = setTimeout(() => {
+                card.classList.add('second-img');
+                card._switchInterval = setInterval(() => {
+                  card.classList.toggle('second-img');
+                }, 3200);
+              }, 2200);
+            }
+          } else {
+            if (card.classList.contains('centered')) {
+              card.classList.remove('centered');
+              card.classList.remove('second-img');
+              clearTimeout(card._switchTimer);
+              clearInterval(card._switchInterval);
+            }
+          }
+        });
+      }
+
+      if (!window.__pkScrollBound) {
+        window.__pkScrollBound = true;
+        window.addEventListener('scroll', () => {
+          if (!pkScrollTick) {
+            pkScrollTick = requestAnimationFrame(() => {
+              pkScrollTick = null;
+              updateCentered();
+            });
+          }
+        }, { passive: true });
+        window.addEventListener('resize', updateCentered, { passive: true });
+      }
+
+      setTimeout(updateCentered, 150);
     }
     function addCart(type, id, qty) { const x = cart.find(c => c.type === type && c.id === id); if (x) x.qty = clampQ(x.qty + qty); else cart.push({ type, id, qty }); saveCart() }
     function buyPaket(id) { addCart('paket', id, 1); go('/bayar') }
     function renderTabs() { const cats = [['all', L('Semua', 'All')], ['fav', L('Favorit', 'Favorites')], ...[...new Set(CAT.wahana.map(w => w.kategori))].map(c => [c, ct(c)])]; $('#tabs').innerHTML = cats.map(([k, label]) => `<button class="tb2 ${k === curCat ? 'on' : ''}" onclick="curCat='${k}';renderTabs();renderGrid()">${esc(label)}</button>`).join('') }
     function renderGrid() { const l = CAT.wahana.filter(w => curCat === 'all' || (curCat === 'fav' ? w.favorit : w.kategori === curCat)); $('#wg').innerHTML = l.map(cardHTML).join(''); const c = $('#wcount'); if (c) c.textContent = L(l.length + ' wahana', l.length + ' rides') }
-    let sugIdx = -1, sugList = [];
-    function bindSearch() {
-      const q = $('#q'), sug = $('#sug');
-      const render = () => {
-        const s = q.value.trim().toLowerCase(); if (!s) { sug.classList.remove('show'); $('#sbar').classList.remove('open'); return }
-        sugList = CAT.wahana.filter(w => (wn(w) + ' ' + ct(w.kategori) + ' ' + wd(w) + ' ' + w.kategori).toLowerCase().includes(s)).slice(0, 6); sugIdx = -1;
-        sug.innerHTML = sugList.length ? sugList.map((w, i) => `<button class="si" data-i="${i}" onclick="go('/w/${w.id}')"><div class="th" style="${img(w.id)}"></div><div class="t"><b>${esc(wn(w))}</b><span>${ct(w.kategori)} · ${hTxt(w.tinggi)}</span></div><em>${rp(w.harga)}</em></button>`).join('') : `<div class="snone">${L(`Wahana “${q.value}” tidak ditemukan`, `No rides found for “${q.value}”.`)}</div>`;
-        sug.classList.add('show'); $('#sbar').classList.add('open')
-      };
-      q.addEventListener('input', render); q.addEventListener('focus', render);
-      q.addEventListener('keydown', e => {
-        const items = $$('.si', sug);
-        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); if (!items.length) return; sugIdx = (sugIdx + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length; items.forEach((x, i) => x.classList.toggle('on', i === sugIdx)) }
-        else if (e.key === 'Enter') { e.preventDefault(); doSearch() } else if (e.key === 'Escape') { sug.classList.remove('show'); $('#sbar').classList.remove('open') }
-      });
-      if (!window.__sbDocClick) { window.__sbDocClick = 1; document.addEventListener('click', e => { if (!e.target.closest('.search')) { const s2 = $('#sug'); if (s2) s2.classList.remove('show'); const b = $('#sbar'); if (b) b.classList.remove('open') } }) }
-    }
-    function doSearch() { const w = sugList[sugIdx >= 0 ? sugIdx : 0]; if (w) go('/w/' + w.id); else { const q = $('#q'); if (q) q.focus() } }
-    let WX = null;
-    async function loadWx() {
-      if (!WX) { try { const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-7.6703&longitude=112.6810&current=temperature_2m,weather_code&timezone=Asia%2FJakarta'); const j = await r.json(); const c = j.current; WX = { t: Math.round(c.temperature_2m), k: c.weather_code } } catch (e) { WX = null } }
-      if (!WX) return;
-      const k = WX.k;
-      const d = k === 0 ? L('Cerah', 'Clear') : k < 4 ? L('Cerah Berawan', 'Partly Cloudy') : k < 50 ? L('Berkabut', 'Foggy') : k < 70 ? L('Hujan', 'Rainy') : k < 80 ? L('Hujan Ringan', 'Light Rain') : L('Hujan Petir', 'Thunderstorm');
-      const a = $('#wxT'); if (a) { a.textContent = WX.t + '°C'; const e = $('#wxD'); if (e) e.textContent = d }
-    }
     /* ---------- DETAIL ---------- */
     let dq = 1;
     function pgDetail(id) {
