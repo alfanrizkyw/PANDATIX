@@ -3247,7 +3247,7 @@
     };
     /* ---------- state ---------- */
     let CAT = null, cart = [], order = null, ES = null, curCat = 'all', payMethod = 'qris', payNama = '', tab = 'tiket', cur = null, pinSel = null;
-    let undoBuf = null, undoTimer = null, modalOpen = null, mapTimer = null;
+    let undoBuf = null, undoTimer = null, modalOpen = null;
     const ls = { get(k) { try { return JSON.parse(localStorage.getItem(k)) } catch (e) { return null } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)) } catch (e) { } }, del(k) { try { localStorage.removeItem(k) } catch (e) { } } };
     cart = ls.get('ptx_cart') || []; order = ls.get('ptx_order');
     const saveCart = () => ls.set('ptx_cart', cart);
@@ -3330,7 +3330,6 @@
           <button role="option" class="langopt ${LANG === 'en' ? 'on' : ''}" aria-selected="${LANG === 'en'}" onclick="setLang('en')"><span class="lgtxt"><b>English</b><i>EN</i></span>${LANG === 'en' ? ico('check', 16, 3) : ''}</button>
         </div>
       </div>
-      <button class="locbtn" onclick="openLokasi()">${ico('map', 16, 2.2)} ${L('Lokasi', 'Location')}</button>
     </div>
   </div></header>`;
       $('#ftr').innerHTML = `<div class="fwave" aria-hidden="true"><svg viewBox="0 0 1440 96" preserveAspectRatio="none">
@@ -3347,12 +3346,6 @@
     <p class="cp">© 2026 PANDATIX. All rights reserved.</p>
   </div></div>`;
       $('#modals').innerHTML = `
-  <div class="modal" id="locModal"><div class="in">
-    <div class="mh"><div><h3>${L('Lokasi wisata', 'Visitor location')}</h3><p>${L('Titik gerbang utama Lembah Pandawa', 'Main gate point of Pandawa Valley')}</p></div><button class="xbtn" onclick="closeModal('locModal')" aria-label="${L('Tutup', 'Close')}">${ico('x', 18, 2.4)}</button></div>
-    <div class="mapbox" id="mapbox"><div class="fb" id="mapfb">${L('Memuat peta…', 'Loading map…')}</div></div>
-    <div class="locinfo">${ico('pin', 20, 2.1)}<div><b>${esc(PLACE.nama)}</b><p>${esc(PLACE.alamat)}</p></div></div>
-    <div class="locacts"><a class="btn" href="${PLACE.maps}" target="_blank" rel="noopener">${ico('ext', 17, 2.2)} ${L('Buka di Google Maps', 'Open in Google Maps')}</a><a class="btn btn-blue" href="${PLACE.dir}" target="_blank" rel="noopener">${ico('nav', 17, 2.2)} ${L('Petunjuk arah', 'Directions')}</a></div>
-  </div></div>
   <div class="modal" id="parkModal"><div class="in" style="width:min(96vw,900px)">
     <div class="mh"><div><h3>${L('Peta kawasan Lembah Pandawa', 'Pandawa Valley Area Map')}</h3><p>${L('Ketuk titik bernomor untuk melihat wahana', 'Tap a numbered pin to see the ride')}</p></div><button class="xbtn" onclick="closeModal('parkModal')" aria-label="${L('Tutup', 'Close')}">${ico('x', 18, 2.4)}</button></div>
     <div id="parkBody"></div>
@@ -3366,14 +3359,6 @@
     }
     function showModal(id) { $('#' + id).classList.add('show'); document.body.style.overflow = 'hidden'; modalOpen = id }
     function closeModal(id) { const m = $('#' + id); if (!m) return; m.classList.remove('show'); if (modalOpen === id) { modalOpen = null; document.body.style.overflow = '' } }
-    function openLokasi() {
-      showModal('locModal'); const box = $('#mapbox'); if (box.dataset.loaded) return; box.dataset.loaded = '1';
-      const f = document.createElement('iframe');
-      f.title = L('Peta lokasi ', 'Location map ') + PLACE.nama; f.referrerPolicy = 'no-referrer-when-downgrade'; f.allowFullscreen = true; f.src = PLACE.embed;
-      f.addEventListener('load', () => { clearTimeout(mapTimer); const fb = $('#mapfb'); if (fb) fb.remove() });
-      box.appendChild(f);
-      mapTimer = setTimeout(() => { const fb = $('#mapfb'); if (fb) fb.innerHTML = L('Peta tidak dapat dimuat di jaringan ini.', 'The map could not load on this network.') + `<br><a href="${PLACE.maps}" target="_blank" rel="noopener" style="color:var(--p);font-weight:800">${L('Buka langsung di Google Maps', 'Open Google Maps directly')}</a>` }, 9000);
-    }
     /* ---------- router ---------- */
     const app = $('#app');
     function go(h) { location.hash = h }
@@ -3417,25 +3402,6 @@
     }
     const cardHTML = (w, i) => `<button class="card wc" style="animation-delay:${i * 35}ms" onclick="go('/w/${w.id}')"><div class="im" style="${img(w.id)}"><span class="tag ${w.kategori}">${ct(w.kategori)}</span></div><div class="bd"><span class="k">${ct(w.kategori)}</span><h3>${esc(wn(w))}</h3><span class="ds">${esc(wd(w))}</span><div class="ft"><div><small>${L('Harga', 'Price')}</small><b>${rp(w.harga)}</b></div><span class="go">${L('Lihat', 'View')} ${ico('right', 13, 2.6)}</span></div></div></button>`;
     const favHTML = w => `<article class="fc" tabindex="0" role="link" aria-label="${esc(wn(w))}" onclick="go('/w/${w.id}')" onkeydown="if(event.key==='Enter')go('/w/${w.id}')"><div class="im" style="${img(w.id)}"><span class="tag ${w.kategori}">${w.favorit && w.kategori !== 'Ekstrem' ? L('Favorit', 'Favorite') : ct(w.kategori)}</span></div><div class="bd"><h3>${esc(wn(w))}</h3><p class="ds">${esc(wd(w))}</p><span class="mt">${/^\d/.test(w.tinggi) ? L('Min. ', 'Min. ') + w.tinggi : hTxt(w.tinggi)}</span><div class="ft"><div><small>${L('Harga', 'Price')}</small><b>${rp(w.harga)}</b></div><span class="lh">${L('Lihat', 'View')} ${ico('right', 13, 2.6)}</span></div></div></article>`;
-    function miniMapSVG() {
-      return `<svg viewBox="0 0 420 260" preserveAspectRatio="xMidYMid slice" role="img" aria-label="${L('Peta jalan menuju Lembah Pandawa', 'Road map to Pandawa Valley')}">
-  <rect width="420" height="260" fill="#EAF3EC"/>
-  <g fill="#DCEAE0"><rect x="14" y="16" width="118" height="72" rx="8"/><rect x="150" y="16" width="120" height="52" rx="8"/><rect x="292" y="16" width="112" height="90" rx="8"/><rect x="14" y="150" width="96" height="94" rx="8"/><rect x="300" y="150" width="104" height="94" rx="8"/></g>
-  <g fill="#C2E3D0"><ellipse cx="205" cy="196" rx="72" ry="46"/><ellipse cx="70" cy="118" rx="40" ry="20"/></g>
-  <path d="M0 128 H420" stroke="#FFFFFF" stroke-width="17"/><path d="M0 128 H420" stroke="#8FC8A9" stroke-width="2" stroke-dasharray="12 10"/>
-  <path d="M140 0 V260" stroke="#FFFFFF" stroke-width="12"/><path d="M284 0 V260" stroke="#FFFFFF" stroke-width="12"/>
-  <path d="M0 240 Q 120 214 210 236 T 420 214" stroke="#7FC4D6" stroke-width="9" fill="none"/>
-  <g font-family="Schibsted Grotesk,system-ui,sans-serif" font-weight="700" fill="#7B837E" font-size="9.5" letter-spacing="1.1">
-    <text x="16" y="122">JL. SEDAP MALAM</text><text x="146" y="252" transform="rotate(-90 146 252)">PANDAAN</text><text x="316" y="46">DURENSEWU</text>
-  </g>
-  <g transform="translate(210 176)">
-    <circle r="30" fill="#1B6B44" opacity=".14"><animate attributeName="r" values="20;34;20" dur="3.4s" repeatCount="indefinite"/><animate attributeName="opacity" values=".22;0;.22" dur="3.4s" repeatCount="indefinite"/></circle>
-    <path d="M0 12 C -13 -2 -13 -12 -13 -14 A 13 13 0 1 1 13 -14 C 13 -12 13 -2 0 12 Z" fill="#1B6B44" stroke="#fff" stroke-width="2"/>
-    <circle cy="-14" r="5" fill="#fff"/>
-  </g>
-  <g font-family="Schibsted Grotesk,system-ui,sans-serif" font-weight="800" font-size="11" fill="#12482E"><text x="210" y="212" text-anchor="middle">Lembah Pandawa</text></g>
-</svg>`;
-    }
     function heroSceneSVG() {
       const cx = 720;
       /* clouds */
@@ -3619,9 +3585,6 @@
   <div class="page">
     <section class="sec" style="margin-top:30px"><div class="sec-h"><div><h2>${L('Semua wahana', 'All rides')}</h2></div><span class="side" id="wcount"></span></div>
       <div class="tabs" id="tabs"></div><div class="wgrid" id="wg"></div></section>
-    <section class="card loc"><div class="txt"><span class="eyebrow">${L('Lokasi & akses', 'Location & access')}</span><h3>${L('Gerbang utama & area parkir', 'Main gate & parking area')}</h3><p>${L('Temukan titik gerbang, parkir, dan sebaran 13 wahana lewat peta kawasan.', 'Find the gate, parking, and all 13 rides on the area map.')}</p>
-      <div class="acts"><button class="btn btn-blue" onclick="openLokasi()">${ico('map', 17, 2.2)} ${L('Lihat peta lokasi', 'View location map')}</button><button class="btn btn-out" onclick="openPark()">${ico('pin', 17, 2.2)} ${L('Peta kawasan', 'Area map')}</button></div></div>
-      <div class="mini">${miniMapSVG()}</div></section>
   </div>`;
       renderTabs(); renderGrid(); bindSearch(); loadWx();
     }
