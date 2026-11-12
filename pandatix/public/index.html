@@ -887,15 +887,14 @@
       display: flex;
       flex-direction: column;
       border-width: 2px;
-      transition: transform .45s cubic-bezier(.22, .9, .3, 1), box-shadow .45s cubic-bezier(.22, .9, .3, 1), border-color .3s;
-      will-change: transform, box-shadow;
+      transition: box-shadow .35s ease, border-color .3s;
+      transform: none !important;
     }
 
     .pk:hover,
     .pk.centered {
-      transform: scale(1.035);
-      box-shadow: 0 22px 42px -18px rgba(18, 72, 46, .45), 0 0 0 2px rgba(27, 107, 68, .28);
-      z-index: 5;
+      transform: none !important;
+      box-shadow: 0 16px 36px -14px rgba(18, 72, 46, .28), 0 0 0 1.5px rgba(27, 107, 68, .2);
     }
 
     .pk.murah {
@@ -916,17 +915,21 @@
       gap: 10px;
       padding: 14px 14px 0;
       isolation: isolate;
+      overflow: hidden;
     }
 
     .shot-box {
       position: relative;
-      flex: 1;
-      height: 108px;
+      flex: 1 1 0;
+      min-width: 0;
+      height: 112px;
       border-radius: 14px;
       overflow: hidden;
       background: var(--p-cont);
       box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08), 0 3px 8px -3px rgba(10, 40, 30, .14);
-      transition: box-shadow .35s;
+      transition: flex .7s cubic-bezier(.22, 1, .36, 1), box-shadow .4s ease, filter .5s ease;
+      will-change: flex;
+      cursor: pointer;
     }
 
     .shot-img {
@@ -934,36 +937,55 @@
       inset: 0;
       background-size: cover;
       background-position: center;
-      transition: opacity .85s cubic-bezier(.22, .9, .3, 1), transform .85s cubic-bezier(.22, .9, .3, 1);
-      will-change: opacity, transform;
-    }
-
-    .shot-a {
-      opacity: 1;
+      transition: transform .7s cubic-bezier(.22, 1, .36, 1);
+      will-change: transform;
       transform: scale(1);
     }
 
-    .shot-b {
-      opacity: 0;
-      transform: scale(1.08);
+    /* Active image enlarges while the other two shrink */
+    .pk[data-active-shot] .shot-box {
+      flex: 0.72 1 0;
+      filter: brightness(0.9);
     }
 
-    .pk.second-img .shot-a {
-      opacity: 0;
-      transform: scale(0.95);
+    .pk[data-active-shot="0"] .shot-box[data-idx="0"],
+    .pk[data-active-shot="1"] .shot-box[data-idx="1"],
+    .pk[data-active-shot="2"] .shot-box[data-idx="2"] {
+      flex: 2.35 1 0;
+      filter: brightness(1);
+      box-shadow: inset 0 0 0 1.5px rgba(27, 107, 68, .38), 0 8px 18px -4px rgba(18, 72, 46, .24);
     }
 
-    .pk.second-img .shot-b {
-      opacity: 1;
-      transform: scale(1);
+    .pk[data-active-shot="0"] .shot-box[data-idx="0"] .shot-img,
+    .pk[data-active-shot="1"] .shot-box[data-idx="1"] .shot-img,
+    .pk[data-active-shot="2"] .shot-box[data-idx="2"] .shot-img {
+      transform: scale(1.06);
+    }
+
+    /* Desktop hover support: hovering an image enlarges it and shrinks the others */
+    @media(hover: hover) {
+      .pk-shots:hover .shot-box {
+        flex: 0.72 1 0;
+        filter: brightness(0.9);
+      }
+
+      .pk-shots:hover .shot-box:hover {
+        flex: 2.35 1 0;
+        filter: brightness(1);
+        box-shadow: inset 0 0 0 1.5px rgba(27, 107, 68, .38), 0 8px 18px -4px rgba(18, 72, 46, .24);
+      }
+
+      .pk-shots:hover .shot-box:hover .shot-img {
+        transform: scale(1.06);
+      }
     }
 
     .pk-badge {
       position: absolute;
-      top: 20px;
-      left: 20px;
+      top: 22px;
+      left: 22px;
       z-index: 6;
-      background: #92400e;
+      background: #9A3B11;
       color: #fff;
       font-weight: 800;
       font-size: 11.5px;
@@ -977,19 +999,19 @@
     @media(max-width: 480px) {
       .pk-shots {
         gap: 8px;
-        padding: 11px 11px 0;
+        padding: 12px 12px 0;
       }
 
       .shot-box {
-        height: 88px;
+        height: 92px;
         border-radius: 12px;
       }
 
       .pk-badge {
-        top: 17px;
-        left: 17px;
+        top: 19px;
+        left: 19px;
         font-size: 10.5px;
-        padding: 3px 8px;
+        padding: 3px 8.5px;
       }
     }
 
@@ -3407,29 +3429,17 @@
       return list || p.wahanaIds.map(i => wn(wById(i)));
     };
     function paketShots(p) {
-      const ids = p.wahanaIds;
       if (p.id === 'paket-murah') {
-        return {
-          a: [heroImg, img('komidi-putar'), img('dunia-air-cilik')],
-          b: [img('dunia-air-cilik'), heroImg, img('komidi-putar')]
-        };
+        return [heroImg, img('komidi-putar'), img('dunia-air-cilik')];
       }
       if (p.id === 'paket-reguler') {
-        return {
-          a: [img('kereta-mini'), heroImg, img('rumah-cermin')],
-          b: [img('komidi-putar'), img('rumah-cermin'), img('kereta-mini')]
-        };
+        return [heroImg, img('komidi-putar'), img('kereta-mini')];
       }
       if (p.id === 'paket-mahal') {
-        return {
-          a: [img('kapal-karam'), img('bumper-boat'), img('taman-lumba')],
-          b: [img('taman-lumba'), heroImg, img('bumper-boat')]
-        };
+        return [heroImg, img('kapal-karam'), img('bumper-boat')];
       }
-      return {
-        a: [img(ids[0]), heroImg, img(ids[1] || ids[0])],
-        b: [img(ids[1] || ids[0]), img(ids[0]), heroImg]
-      };
+      const ids = p.wahanaIds || [];
+      return [heroImg, img(ids[0] || 'komidi-putar'), img(ids[1] || 'kereta-mini')];
     }
     function paketHTML(p) {
       const d = disc(p);
@@ -3438,9 +3448,9 @@
       return `<article class="card pk ${p.kelas}" data-pk="${p.id}">
     <div class="pk-shots">
       <span class="pk-badge">${L('Hemat ' + d + '%', 'Save ' + d + '%')}</span>
-      <div class="shot-box"><div class="shot-img shot-a" style="${s.a[0]}"></div><div class="shot-img shot-b" style="${s.b[0]}"></div></div>
-      <div class="shot-box"><div class="shot-img shot-a" style="${s.a[1]}"></div><div class="shot-img shot-b" style="${s.b[1]}"></div></div>
-      <div class="shot-box"><div class="shot-img shot-a" style="${s.a[2]}"></div><div class="shot-img shot-b" style="${s.b[2]}"></div></div>
+      <div class="shot-box" data-idx="0" onclick="setCardActiveShot(this)"><div class="shot-img" style="${s[0]}"></div></div>
+      <div class="shot-box" data-idx="1" onclick="setCardActiveShot(this)"><div class="shot-img" style="${s[1]}"></div></div>
+      <div class="shot-box" data-idx="2" onclick="setCardActiveShot(this)"><div class="shot-img" style="${s[2]}"></div></div>
     </div>
     <div class="pbody">
       <div class="ptitle"><h3>${esc(pn(p))}</h3>${chip}</div>
@@ -3638,6 +3648,21 @@
       renderTabs(); renderGrid(); initPaketAnimations(); loadWx();
     }
     let pkScrollTick = null;
+    function setCardActiveShot(el) {
+      const card = el.closest('.card.pk');
+      if (!card) return;
+      card.dataset.activeShot = el.dataset.idx || '0';
+      if (card._switchInterval) {
+        clearInterval(card._switchInterval);
+        card._curShot = parseInt(el.dataset.idx || '0', 10);
+        card._switchInterval = setInterval(() => {
+          card._curShot = ((card._curShot || 0) + 1) % 3;
+          card.dataset.activeShot = String(card._curShot);
+        }, 2500);
+      }
+    }
+    window.setCardActiveShot = setCardActiveShot;
+
     function initPaketAnimations() {
       const cards = $$('.card.pk');
       if (!cards.length) return;
@@ -3671,20 +3696,20 @@
           if (isCentered) {
             if (!card.classList.contains('centered')) {
               card.classList.add('centered');
-              clearTimeout(card._switchTimer);
+              // The image enlarges, other two shrink; the card itself does not scale
+              card._curShot = 0;
+              card.dataset.activeShot = '0';
               clearInterval(card._switchInterval);
-              card._switchTimer = setTimeout(() => {
-                card.classList.add('second-img');
-                card._switchInterval = setInterval(() => {
-                  card.classList.toggle('second-img');
-                }, 3200);
-              }, 2200);
+              // Switch to the second image, then third, cycling
+              card._switchInterval = setInterval(() => {
+                card._curShot = ((card._curShot || 0) + 1) % 3;
+                card.dataset.activeShot = String(card._curShot);
+              }, 2500);
             }
           } else {
             if (card.classList.contains('centered')) {
               card.classList.remove('centered');
-              card.classList.remove('second-img');
-              clearTimeout(card._switchTimer);
+              delete card.dataset.activeShot;
               clearInterval(card._switchInterval);
             }
           }
