@@ -2,7 +2,13 @@ home page:
 when i manually scroll horizontally on any of the auto scrolls. it will stop automatically scrolling for a set time
 make the dotted scrollbars white
 
-add cart icon
+make only one auto scroll at any time, basically whichever is closest to center of the screen gets to auto scroll 
+
+add cart icon to the right of the language icon. pressing will go to the pembayaran page
+
+for the language selection do like just only one flag. and when pressing it will just change into that language's flag. basically simplify it to make room for the cart icon
+
+add a scrollbar on the category slider
 
 pembayaran page:
 remove the description under pembayaran
