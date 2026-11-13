@@ -13,4 +13,6 @@ add a scrollbar on the category slider
 pembayaran page:
 remove the description under pembayaran
 remove the "wajib diisi" instead add red asterisk on nama field
-
+remove the siap bayar badge
+remove the instan badge on qris
+remove the selection circle on the right of payment methods selection 
