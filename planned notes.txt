@@ -1,0 +1,8 @@
+when i manually scroll horizontally on any of the auto scrolls. it will stop automatically stop for a set time
+
+add cart icon
+
+pemabayaran page
+remove the description under pembayaran
+remove the "wajib diisi" instead add red asterisk on nama field
+
