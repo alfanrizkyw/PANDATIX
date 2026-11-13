@@ -387,21 +387,38 @@
       position: relative;
       z-index: 2;
       isolation: isolate;
-      background: #026068;
+      background: #143A2B;
       margin-top: calc(-1 * var(--hh));
       padding-top: var(--hh);
       overflow: hidden;
       border-bottom: 1px solid rgba(0, 0, 0, .06);
     }
 
-    .hero-banner-wrap {
+    .hero-slider {
       position: relative;
       width: 100%;
       max-width: 1024px;
       margin: 0 auto;
-      line-height: 0;
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      scroll-behavior: smooth;
+    }
+
+    .hero-slider::-webkit-scrollbar {
+      display: none;
+    }
+
+    .hero-slide {
+      flex: 0 0 100%;
+      width: 100%;
+      scroll-snap-align: center;
+      scroll-snap-stop: always;
       display: flex;
       justify-content: center;
+      line-height: 0;
     }
 
     .hero-banner-img {
@@ -409,6 +426,62 @@
       max-width: 1024px;
       height: auto;
       display: block;
+    }
+
+    .slider-dots {
+      position: absolute;
+      bottom: 12px;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      z-index: 5;
+      pointer-events: auto;
+    }
+
+    .s-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .42);
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: width .28s cubic-bezier(.22, 1, .36, 1), background .25s ease, transform .25s ease;
+    }
+
+    .s-dot:hover {
+      background: rgba(255, 255, 255, .78);
+    }
+
+    .s-dot.on {
+      width: 22px;
+      background: #ffffff;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, .35);
+    }
+
+    .fav-dots-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 14px 0 4px;
+    }
+
+    .fav-dots-wrap .s-dot {
+      background: rgba(255, 255, 255, .32);
+    }
+
+    .fav-dots-wrap .s-dot:hover {
+      background: rgba(255, 255, 255, .6);
+    }
+
+    .fav-dots-wrap .s-dot.on {
+      width: 22px;
+      background: #A3E635;
+      box-shadow: 0 1px 6px rgba(163, 230, 53, .45);
     }
 
     .wxwrap {
@@ -774,6 +847,27 @@
       box-shadow: 0 16px 36px -14px rgba(18, 72, 46, .28), 0 0 0 1.5px rgba(27, 107, 68, .2);
     }
 
+    .pk.popular {
+      border-color: rgba(27, 107, 68, .48);
+      box-shadow: 0 14px 34px -12px rgba(18, 72, 46, .25), 0 0 0 1.5px rgba(27, 107, 68, .22);
+    }
+
+    .pk-pop-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 800;
+      color: #14532D;
+      background: #DCFCE7;
+      border: 1px solid #86EFAC;
+      padding: 3.5px 10px;
+      border-radius: 999px;
+      letter-spacing: .01em;
+      white-space: nowrap;
+      box-shadow: 0 2px 6px -2px rgba(20, 83, 45, .15);
+    }
+
     .pk-shots {
       position: relative;
       display: flex;
@@ -833,11 +927,13 @@
         flex: 0.72 1 0;
         filter: brightness(0.9);
       }
+
       .pk-shots:hover .shot-box:hover {
         flex: 2.35 1 0;
         filter: brightness(1);
         box-shadow: inset 0 0 0 1.5px rgba(27, 107, 68, .38), 0 8px 18px -4px rgba(18, 72, 46, .24);
       }
+
       .pk-shots:hover .shot-box:hover .shot-img {
         transform: scale(1.06);
       }
@@ -924,22 +1020,22 @@
     }
 
     .feats .st {
-      width: 26px;
-      height: 26px;
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
       display: grid;
       place-items: center;
       flex-shrink: 0;
-      margin-top: 0;
-      background: var(--p-cont);
-      color: var(--p)
+      margin-top: 1px;
+      background: #DCFCE7;
+      color: #15803D;
     }
 
     .feats .st svg {
       width: 14px;
       height: 14px;
-      fill: currentColor;
-      stroke: none
+      fill: none;
+      stroke: currentColor;
     }
 
     .pprice {
@@ -964,13 +1060,18 @@
     .disc {
       display: inline-flex;
       align-items: center;
-      height: 21px;
-      padding: 0 9px;
-      border-radius: 7px;
-      font-size: 11.5px;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 11px;
       font-weight: 800;
-      background: #FBEFC9;
-      color: var(--s-dark);
+      background: #DC2626;
+      color: #ffffff;
+      line-height: 1;
+      letter-spacing: -.02em;
+      box-shadow: 0 3px 8px -2px rgba(220, 38, 38, .45);
+      flex-shrink: 0;
     }
 
     .pprice .big {
@@ -3235,6 +3336,11 @@
       if (!CAT) { try { CAT = await api('/api/catalog') } catch (e) { app.innerHTML = `<div class="page narrow"><div class="card box"><h3>${L('Server tidak dapat dihubungi', 'Server is unreachable')}</h3><p style="color:var(--ink-3);font-size:13.5px;margin-top:8px">${L('Muat ulang halaman beberapa saat lagi.', 'Please reload the page in a moment.')}</p></div></div>`; return } }
       const h = location.hash.slice(1) || '/';
       if (ES && !/^\/(tunggu|tiket)/.test(h)) { ES.close(); ES = null }
+      if (h !== '/') {
+        if (window.__heroTimer) { clearInterval(window.__heroTimer); window.__heroTimer = null; }
+        if (window.__favTimer) { clearInterval(window.__favTimer); window.__favTimer = null; }
+        if (window.__pkIntervals) { window.__pkIntervals.forEach(clearInterval); window.__pkIntervals = []; }
+      }
       window.scrollTo({ top: 0, behavior: 'instant' });
       let m;
       if (h === '/') return pgHome();
@@ -3271,16 +3377,18 @@
     function paketHTML(p) {
       const d = disc(p);
       const s = paketShots(p);
-      return `<article class="card pk" data-pk="${p.id}">
+      const isPopular = p.id === 'paket-reguler';
+      const popBadge = isPopular ? `<span class="pk-pop-badge">⭐ ${L('Paling Populer', 'Most Popular')}</span>` : '';
+      return `<article class="card pk ${isPopular ? 'popular' : ''}" data-pk="${p.id}">
     <div class="pk-shots">
       <div class="shot-box" data-idx="0" onclick="setCardActiveShot(this)"><div class="shot-img" style="${s[0]}"></div></div>
       <div class="shot-box" data-idx="1" onclick="setCardActiveShot(this)"><div class="shot-img" style="${s[1]}"></div></div>
       <div class="shot-box" data-idx="2" onclick="setCardActiveShot(this)"><div class="shot-img" style="${s[2]}"></div></div>
     </div>
     <div class="pbody">
-      <div class="ptitle"><h3>${esc(pn(p))}</h3></div>
+      <div class="ptitle"><h3>${esc(pn(p))}</h3>${popBadge}</div>
       <p class="d">${esc(pd(p))}</p>
-      <ul class="feats">${pkFeats(p).map(f => `<li><span class="st">${ico('star', 15, 2.2)}</span>${esc(f)}</li>`).join('')}</ul>
+      <ul class="feats">${pkFeats(p).map(f => `<li><span class="st">${ico('check', 14, 2.8)}</span>${esc(f)}</li>`).join('')}</ul>
       <div class="pprice"><div class="cor-row"><span class="cor">${rp(p.normal)}</span><span class="disc">-${d}%</span></div><div class="big"><b>${rp(p.harga)}</b><span>${L('/ orang', '/ person')}</span></div></div>
       <button class="btn block" onclick="buyPaket('${p.id}')">${L('Pilih Paket Ini', 'Choose This Package')} ${ico('right', 18, 2.6)}</button>
     </div></article>`;
@@ -3450,10 +3558,18 @@
       return `<svg viewBox="0 0 1440 64" preserveAspectRatio="none" aria-hidden="true"><path d="M0 46 C140 52 300 54 450 50 C600 46 760 34 900 22 C980 15 1060 14 1140 20 C1230 27 1340 36 1440 40 L1440 64 L0 64 Z" fill="#F3F6F3"/></svg>`;
     }
     function pgHome() {
+      const favs = CAT.wahana.filter(w => w.favorit);
       app.innerHTML = `
   <section class="hero">
-    <div class="hero-banner-wrap">
-      <img src="/img/hero-banner.jpg" alt="${L('Paket Terusan Lembah Pandawa Lebih Hemat', 'Pandawa Valley All-Access Package Save More')}" class="hero-banner-img" />
+    <div class="hero-slider" id="heroSlider">
+      <div class="hero-slide"><img src="/img/hero-banner-1.jpg" alt="${L('Selamat Datang di Lembah Pendawa', 'Welcome to Pandawa Valley')}" class="hero-banner-img" /></div>
+      <div class="hero-slide"><img src="/img/hero-banner-2.jpg" alt="${L('Paket Terusan Lembah Pandawa Lebih Hemat', 'Pandawa Valley All-Access Package Save More')}" class="hero-banner-img" /></div>
+      <div class="hero-slide"><img src="/img/hero-banner-3.jpg" alt="${L('Eksplorasi Wahana Seru', 'Explore Exciting Rides')}" class="hero-banner-img" /></div>
+    </div>
+    <div class="slider-dots" id="heroDots">
+      <button type="button" class="s-dot on" onclick="heroGo(0)" aria-label="${L('Slide 1', 'Slide 1')}"></button>
+      <button type="button" class="s-dot" onclick="heroGo(1)" aria-label="${L('Slide 2', 'Slide 2')}"></button>
+      <button type="button" class="s-dot" onclick="heroGo(2)" aria-label="${L('Slide 3', 'Slide 3')}"></button>
     </div>
   </section>
   <div class="page">
@@ -3462,49 +3578,167 @@
       <div class="pgrid">${CAT.paket.map(paketHTML).join('')}</div></section>
   </div>
   <section class="favband bleed"><div class="in">
-    <div class="fh"><div><h2>${L('Wahana favorit', 'Favorite rides')}</h2><p class="sub">${L('Pilihan seru & paling diminati', 'Fun picks & crowd favorites')}</p></div><span class="geser">${L('Geser', 'Swipe')} ${ico('right', 16, 2.4)}</span></div>
-    <div class="fav">${CAT.wahana.filter(w => w.favorit).map(favHTML).join('')}</div>
+    <div class="fh"><div><h2>${L('Wahana favorit', 'Favorite rides')}</h2><p class="sub">${L('Pilihan seru & paling diminati', 'Fun picks & crowd favorites')}</p></div></div>
+    <div class="fav" id="favCarousel">${favs.map(favHTML).join('')}</div>
+    <div class="fav-dots-wrap" id="favDots">${favs.map((_, i) => `<button type="button" class="s-dot ${i === 0 ? 'on' : ''}" onclick="favGo(${i})" aria-label="${L('Favorit ' + (i + 1), 'Favorite ' + (i + 1))}"></button>`).join('')}</div>
   </div></section>
   <div class="page">
     <section class="sec" style="margin-top:30px"><div class="sec-h"><div><h2>${L('Semua wahana', 'All rides')}</h2></div><span class="side" id="wcount"></span></div>
       <div class="tabs" id="tabs"></div><div class="wgrid" id="wg"></div></section>
   </div>`;
-      renderTabs(); renderGrid(); initPaketAnimations();
+      renderTabs(); renderGrid(); initPaketAnimations(); initHeroSlider(); initFavSlider();
     }
-    let pkScrollTick = null;
+
+    function heroGo(idx) {
+      const slider = $('#heroSlider');
+      if (!slider) return;
+      const slides = slider.querySelectorAll('.hero-slide');
+      if (!slides[idx]) return;
+      slider.scrollTo({ left: slides[idx].offsetLeft, behavior: 'smooth' });
+      updateHeroDots(idx);
+    }
+    window.heroGo = heroGo;
+
+    function updateHeroDots(idx) {
+      const dots = $$('#heroDots .s-dot');
+      dots.forEach((d, i) => d.classList.toggle('on', i === idx));
+    }
+
+    function initHeroSlider() {
+      const slider = $('#heroSlider');
+      if (!slider) return;
+      if (window.__heroTimer) clearInterval(window.__heroTimer);
+
+      const slides = Array.from(slider.querySelectorAll('.hero-slide'));
+      if (slides.length <= 1) return;
+
+      let curIdx = 0;
+      let paused = false;
+
+      function getActiveIndex() {
+        const sl = slider.scrollLeft;
+        const w = slider.clientWidth || 1;
+        return Math.min(slides.length - 1, Math.max(0, Math.round(sl / w)));
+      }
+
+      slider.addEventListener('scroll', () => {
+        const idx = getActiveIndex();
+        if (idx !== curIdx) {
+          curIdx = idx;
+          updateHeroDots(curIdx);
+        }
+      }, { passive: true });
+
+      slider.addEventListener('pointerenter', () => { paused = true; });
+      slider.addEventListener('pointerleave', () => { paused = false; });
+      slider.addEventListener('touchstart', () => { paused = true; }, { passive: true });
+      slider.addEventListener('touchend', () => {
+        paused = false;
+        curIdx = getActiveIndex();
+      }, { passive: true });
+
+      window.__heroTimer = setInterval(() => {
+        if (paused) return;
+        curIdx = (getActiveIndex() + 1) % slides.length;
+        heroGo(curIdx);
+      }, 4000);
+    }
+
+    function favGo(idx) {
+      const fav = $('#favCarousel');
+      if (!fav) return;
+      const cards = fav.querySelectorAll('.fc');
+      if (!cards[idx]) return;
+      fav.scrollTo({ left: cards[idx].offsetLeft - fav.offsetLeft, behavior: 'smooth' });
+      updateFavDots(idx);
+    }
+    window.favGo = favGo;
+
+    function updateFavDots(idx) {
+      const dots = $$('#favDots .s-dot');
+      dots.forEach((d, i) => d.classList.toggle('on', i === idx));
+    }
+
+    function initFavSlider() {
+      const fav = $('#favCarousel');
+      if (!fav) return;
+      if (window.__favTimer) clearInterval(window.__favTimer);
+
+      const cards = Array.from(fav.querySelectorAll('.fc'));
+      if (cards.length <= 1) return;
+
+      let paused = false;
+
+      function getFavIndex() {
+        const sl = fav.scrollLeft;
+        let bestIdx = 0, bestDist = Infinity;
+        cards.forEach((c, i) => {
+          const d = Math.abs((c.offsetLeft - fav.offsetLeft) - sl);
+          if (d < bestDist) {
+            bestDist = d;
+            bestIdx = i;
+          }
+        });
+        return bestIdx;
+      }
+
+      fav.addEventListener('scroll', () => {
+        updateFavDots(getFavIndex());
+      }, { passive: true });
+
+      fav.addEventListener('pointerenter', () => { paused = true; });
+      fav.addEventListener('pointerleave', () => { paused = false; });
+      fav.addEventListener('touchstart', () => { paused = true; }, { passive: true });
+      fav.addEventListener('touchend', () => { paused = false; }, { passive: true });
+
+      window.__favTimer = setInterval(() => {
+        if (paused) return;
+        const cur = getFavIndex();
+        const next = (cur + 1) % cards.length;
+        favGo(next);
+      }, 3500);
+    }
+
     function setCardActiveShot(el) {
       const card = el.closest('.card.pk');
       if (!card) return;
-      card.dataset.activeShot = el.dataset.idx || '0';
-      if (card._switchInterval) {
-        clearInterval(card._switchInterval);
-        card._curShot = parseInt(el.dataset.idx || '0', 10);
-        card._switchInterval = setInterval(() => {
-          card._curShot = ((card._curShot || 0) + 1) % 3;
-          card.dataset.activeShot = String(card._curShot);
-        }, 2500);
-      }
+      const idx = parseInt(el.dataset.idx || '0', 10);
+      card.classList.add('centered');
+      card.dataset.activeShot = String(idx);
+      card._curShot = idx;
+      if (card._switchInterval) clearInterval(card._switchInterval);
+      card._switchInterval = setInterval(() => {
+        card._curShot = ((card._curShot || 0) + 1) % 3;
+        card.dataset.activeShot = String(card._curShot);
+      }, 2500);
+      if (window.__pkIntervals) window.__pkIntervals.push(card._switchInterval);
     }
     window.setCardActiveShot = setCardActiveShot;
 
     function initPaketAnimations() {
-      const cards = $$('.card.pk');
-      if (!cards.length) return;
+      if (window.__pkIntervals) {
+        window.__pkIntervals.forEach(clearInterval);
+      }
+      window.__pkIntervals = [];
 
-      function updateCentered() {
-        const vH = window.innerHeight;
+      function checkCards() {
+        const cards = Array.from(document.querySelectorAll('.card.pk'));
+        if (!cards.length) return;
+        const vH = window.innerHeight || 800;
         const vMid = vH / 2;
         const isSingleCol = window.innerWidth < 640;
-        let closestCard = null, closestDist = Infinity;
 
+        let targetCard = null;
         if (isSingleCol) {
+          let minDist = Infinity;
           cards.forEach(card => {
             const rect = card.getBoundingClientRect();
             if (rect.bottom > vH * 0.12 && rect.top < vH * 0.88) {
-              const dist = Math.abs((rect.top + rect.bottom) / 2 - vMid);
-              if (dist < closestDist) {
-                closestDist = dist;
-                closestCard = card;
+              const cardCenter = (rect.top + rect.bottom) / 2;
+              const dist = Math.abs(cardCenter - vMid);
+              if (dist < minDist) {
+                minDist = dist;
+                targetCard = card;
               }
             }
           });
@@ -3512,48 +3746,58 @@
 
         cards.forEach(card => {
           const rect = card.getBoundingClientRect();
-          const cardMid = (rect.top + rect.bottom) / 2;
           const isCentered = isSingleCol
-            ? (card === closestCard && closestDist < vH * 0.36)
-            : (Math.abs(cardMid - vMid) < vH * 0.32 && rect.bottom > vH * 0.15 && rect.top < vH * 0.85);
+            ? (card === targetCard)
+            : (rect.top < vH * 0.72 && rect.bottom > vH * 0.28);
 
           if (isCentered) {
             if (!card.classList.contains('centered')) {
               card.classList.add('centered');
-              // The image enlarges, other two shrink; the card itself does not scale
-              card._curShot = 0;
-              card.dataset.activeShot = '0';
-              clearInterval(card._switchInterval);
-              // Switch to the second image, then third, cycling
+              if (!card.dataset.activeShot) {
+                card.dataset.activeShot = '0';
+                card._curShot = 0;
+              }
+              if (card._switchInterval) clearInterval(card._switchInterval);
               card._switchInterval = setInterval(() => {
-                card._curShot = ((card._curShot || 0) + 1) % 3;
+                card._curShot = (((card._curShot ?? parseInt(card.dataset.activeShot || '0', 10))) + 1) % 3;
                 card.dataset.activeShot = String(card._curShot);
               }, 2500);
+              window.__pkIntervals.push(card._switchInterval);
             }
           } else {
             if (card.classList.contains('centered')) {
               card.classList.remove('centered');
               delete card.dataset.activeShot;
-              clearInterval(card._switchInterval);
+              if (card._switchInterval) {
+                clearInterval(card._switchInterval);
+                card._switchInterval = null;
+              }
             }
           }
         });
       }
 
-      if (!window.__pkScrollBound) {
-        window.__pkScrollBound = true;
-        window.addEventListener('scroll', () => {
-          if (!pkScrollTick) {
-            pkScrollTick = requestAnimationFrame(() => {
-              pkScrollTick = null;
-              updateCentered();
-            });
-          }
-        }, { passive: true });
-        window.addEventListener('resize', updateCentered, { passive: true });
+      if (window.__pkScrollHandler) {
+        window.removeEventListener('scroll', window.__pkScrollHandler);
+        window.removeEventListener('resize', window.__pkResizeHandler);
       }
+      let tick = false;
+      window.__pkScrollHandler = () => {
+        if (!tick) {
+          requestAnimationFrame(() => {
+            tick = false;
+            checkCards();
+          });
+          tick = true;
+        }
+      };
+      window.__pkResizeHandler = () => checkCards();
+      window.addEventListener('scroll', window.__pkScrollHandler, { passive: true });
+      window.addEventListener('resize', window.__pkResizeHandler, { passive: true });
 
-      setTimeout(updateCentered, 150);
+      checkCards();
+      setTimeout(checkCards, 120);
+      setTimeout(checkCards, 350);
     }
     function addCart(type, id, qty) { const x = cart.find(c => c.type === type && c.id === id); if (x) x.qty = clampQ(x.qty + qty); else cart.push({ type, id, qty }); saveCart() }
     function buyPaket(id) { addCart('paket', id, 1); go('/bayar') }
