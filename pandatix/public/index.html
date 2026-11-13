@@ -100,56 +100,6 @@
       transform: scale(.96)
     }
 
-    .wx-hdr {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      height: 34px;
-      padding: 0 12px;
-      border-radius: 999px;
-      background: linear-gradient(180deg, rgba(255, 255, 255, .72), rgba(240, 248, 243, .55));
-      border: 1px solid rgba(255, 255, 255, .75);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8), 0 4px 12px -8px rgba(10, 40, 30, .3);
-      font-size: 12px;
-      color: var(--p-dark);
-      font-weight: 700;
-      -webkit-backdrop-filter: blur(14px) saturate(1.6);
-      backdrop-filter: blur(14px) saturate(1.6);
-      flex-shrink: 0;
-    }
-
-    .wx-hdr .sun {
-      display: inline-flex;
-      align-items: center;
-      color: #E28800;
-    }
-
-    .wx-hdr s {
-      display: inline-block;
-      width: 3px;
-      height: 3px;
-      border-radius: 50%;
-      background: var(--p-300);
-      opacity: .6;
-      text-decoration: none;
-    }
-
-    .wx-hdr #wxD {
-      font-weight: 500;
-      color: var(--ink-2);
-    }
-
-    @media(max-width: 480px) {
-      .wx-hdr {
-        padding: 0 9px;
-        gap: 4px;
-      }
-
-      .wx-hdr #wxD,
-      .wx-hdr s {
-        display: none;
-      }
-    }
 
     .lang-flags {
       display: inline-flex;
@@ -812,7 +762,8 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      border-width: 2px;
+      border-width: 1.5px;
+      border-color: var(--line);
       transition: box-shadow .35s ease, border-color .3s;
       transform: none !important;
     }
@@ -821,18 +772,6 @@
     .pk.centered {
       transform: none !important;
       box-shadow: 0 16px 36px -14px rgba(18, 72, 46, .28), 0 0 0 1.5px rgba(27, 107, 68, .2);
-    }
-
-    .pk.murah {
-      border-color: #EBCF8E
-    }
-
-    .pk.reguler {
-      border-color: var(--p-300)
-    }
-
-    .pk.premium {
-      border-color: #C7CBF0
     }
 
     .pk-shots {
@@ -848,7 +787,7 @@
       position: relative;
       flex: 1 1 0;
       min-width: 0;
-      height: 112px;
+      height: 148px;
       border-radius: 14px;
       overflow: hidden;
       background: var(--p-cont);
@@ -904,22 +843,6 @@
       }
     }
 
-    .pk-badge {
-      position: absolute;
-      top: 22px;
-      left: 22px;
-      z-index: 6;
-      background: #9A3B11;
-      color: #fff;
-      font-weight: 800;
-      font-size: 11.5px;
-      letter-spacing: .02em;
-      padding: 3.5px 10px;
-      border-radius: 999px;
-      box-shadow: 0 4px 12px -2px rgba(0, 0, 0, .4);
-      pointer-events: none;
-    }
-
     @media(max-width: 480px) {
       .pk-shots {
         gap: 8px;
@@ -927,15 +850,8 @@
       }
 
       .shot-box {
-        height: 92px;
+        height: 120px;
         border-radius: 12px;
-      }
-
-      .pk-badge {
-        top: 19px;
-        left: 19px;
-        font-size: 10.5px;
-        padding: 3px 8.5px;
       }
     }
 
@@ -1052,22 +968,9 @@
       padding: 0 9px;
       border-radius: 7px;
       font-size: 11.5px;
-      font-weight: 800
-    }
-
-    .pk.murah .disc {
+      font-weight: 800;
       background: #FBEFC9;
-      color: var(--s-dark)
-    }
-
-    .pk.reguler .disc {
-      background: var(--p-cont);
-      color: var(--p)
-    }
-
-    .pk.premium .disc {
-      background: #E7E8F9;
-      color: #3B3F9A
+      color: var(--s-dark);
     }
 
     .pprice .big {
@@ -3368,16 +3271,14 @@
     function paketHTML(p) {
       const d = disc(p);
       const s = paketShots(p);
-      const chip = p.kelas === 'premium' ? `<span class="tchip indigo">All Access VIP</span>` : p.kelas === 'reguler' ? `<span class="tchip green">${L('Paling Populer', 'Most Popular')}</span>` : '';
-      return `<article class="card pk ${p.kelas}" data-pk="${p.id}">
+      return `<article class="card pk" data-pk="${p.id}">
     <div class="pk-shots">
-      <span class="pk-badge">${L('Hemat ' + d + '%', 'Save ' + d + '%')}</span>
       <div class="shot-box" data-idx="0" onclick="setCardActiveShot(this)"><div class="shot-img" style="${s[0]}"></div></div>
       <div class="shot-box" data-idx="1" onclick="setCardActiveShot(this)"><div class="shot-img" style="${s[1]}"></div></div>
       <div class="shot-box" data-idx="2" onclick="setCardActiveShot(this)"><div class="shot-img" style="${s[2]}"></div></div>
     </div>
     <div class="pbody">
-      <div class="ptitle"><h3>${esc(pn(p))}</h3>${chip}</div>
+      <div class="ptitle"><h3>${esc(pn(p))}</h3></div>
       <p class="d">${esc(pd(p))}</p>
       <ul class="feats">${pkFeats(p).map(f => `<li><span class="st">${ico('star', 15, 2.2)}</span>${esc(f)}</li>`).join('')}</ul>
       <div class="pprice"><div class="cor-row"><span class="cor">${rp(p.normal)}</span><span class="disc">-${d}%</span></div><div class="big"><b>${rp(p.harga)}</b><span>${L('/ orang', '/ person')}</span></div></div>
@@ -3557,7 +3458,7 @@
   </section>
   <div class="page">
     ${order ? `<a class="mytix" href="#/tunggu"><span>${ico('ticket', 17, 2.2)} ${L('Kamu punya pesanan aktif', 'You have an active order')}</span><span class="r">${L('Lihat', 'View')} ${ico('right', 16, 2.6)}</span></a>` : ''}
-    <section class="sec" style="margin-top:24px"><div class="sec-h"><div><h2>${L('Paket hemat wisata', 'Money-saving packages')}</h2><p class="sub">${L('Diskon s/d ' + Math.max(...CAT.paket.map(disc)) + '% buat liburan seru', 'Up to ' + Math.max(...CAT.paket.map(disc)) + '% off for a fun holiday')}</p></div></div>
+    <section class="sec" style="margin-top:24px"><div class="sec-h"><div><h2>${L('Paket hemat wisata', 'Money-saving packages')}</h2></div></div>
       <div class="pgrid">${CAT.paket.map(paketHTML).join('')}</div></section>
   </div>
   <section class="favband bleed"><div class="in">
