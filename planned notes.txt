@@ -1,4 +1,5 @@
 when i manually scroll horizontally on any of the auto scrolls. it will stop automatically stop for a set time
+make the dottet scrollbars white
 
 add cart icon
 
