@@ -73,7 +73,9 @@
       flex-shrink: 0
     }
 
-    .hdr-search-btn {
+    .hdr-search-btn,
+    .hdr-flag-btn,
+    .hdr-cart-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -87,17 +89,42 @@
       backdrop-filter: blur(14px) saturate(1.6);
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, .82), 0 4px 12px -8px rgba(8, 34, 24, .45);
       cursor: pointer;
+      position: relative;
       transition: background .15s, border-color .15s, color .15s, transform .12s;
     }
 
-    .hdr-search-btn:hover {
+    .hdr-search-btn:hover,
+    .hdr-flag-btn:hover,
+    .hdr-cart-btn:hover {
       background: #ffffff;
       color: var(--p);
       border-color: rgba(27, 107, 68, .35);
     }
 
-    .hdr-search-btn:active {
+    .hdr-search-btn:active,
+    .hdr-flag-btn:active,
+    .hdr-cart-btn:active {
       transform: scale(.93);
+    }
+
+    .hdr-cart-badge {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      background: var(--e);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      min-width: 17px;
+      height: 17px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      border: 2px solid #fff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, .2);
+      line-height: 1;
     }
 
     .locbtn {
@@ -497,17 +524,17 @@
     }
 
     .fav-dots-wrap .s-dot {
-      background: rgba(255, 255, 255, .32);
+      background: rgba(255, 255, 255, .45);
     }
 
     .fav-dots-wrap .s-dot:hover {
-      background: rgba(255, 255, 255, .6);
+      background: rgba(255, 255, 255, .8);
     }
 
     .fav-dots-wrap .s-dot.on {
       width: 22px;
-      background: #A3E635;
-      box-shadow: 0 1px 6px rgba(163, 230, 53, .45);
+      background: #ffffff;
+      box-shadow: 0 1px 6px rgba(255, 255, 255, .45);
     }
 
     .wxwrap {
@@ -978,7 +1005,7 @@
     .pk-dots .s-dot.on {
       width: 16px;
       background: #ffffff;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, .4);
+      box-shadow: 0 1px 4px rgba(255, 255, 255, .45);
     }
 
     @media(max-width: 480px) {
@@ -1317,12 +1344,29 @@
       display: flex;
       gap: 9px;
       overflow-x: auto;
-      padding: 2px 2px 14px;
-      scrollbar-width: none
+      padding: 2px 2px 10px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(27, 107, 68, .35) rgba(0, 0, 0, .05);
     }
 
     .tabs::-webkit-scrollbar {
-      display: none
+      height: 5px;
+      display: block;
+    }
+
+    .tabs::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, .05);
+      border-radius: 999px;
+    }
+
+    .tabs::-webkit-scrollbar-thumb {
+      background: rgba(27, 107, 68, .35);
+      border-radius: 999px;
+      transition: background .15s;
+    }
+
+    .tabs::-webkit-scrollbar-thumb:hover {
+      background: var(--p);
     }
 
     .tb2 {
@@ -3509,7 +3553,15 @@
     let undoBuf = null, undoTimer = null, modalOpen = null;
     const ls = { get(k) { try { return JSON.parse(localStorage.getItem(k)) } catch (e) { return null } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)) } catch (e) { } }, del(k) { try { localStorage.removeItem(k) } catch (e) { } } };
     cart = ls.get('ptx_cart') || []; order = ls.get('ptx_order');
-    const saveCart = () => ls.set('ptx_cart', cart);
+    function updateCartBadge() {
+      const b = $('#hdrCartBadge');
+      if (!b) return;
+      const count = cart ? cart.reduce((s, c) => s + c.qty, 0) : 0;
+      b.textContent = count;
+      b.style.display = count > 0 ? 'flex' : 'none';
+    }
+    window.updateCartBadge = updateCartBadge;
+    const saveCart = () => { ls.set('ptx_cart', cart); updateCartBadge(); };
     const wById = id => CAT.wahana.find(w => w.id === id), pById = id => CAT.paket.find(p => p.id === id);
     const ref = (type, id) => type === 'paket' ? pById(id) : wById(id);
     const img = id => `background-image:url('/img/wahana/${id}.jpg');background-size:cover;background-position:center;background-repeat:no-repeat`;
@@ -3575,6 +3627,10 @@
       if (!CAT) { route(); return }
       route();
     }
+    function toggleLangSingle() {
+      setLang(LANG === 'id' ? 'en' : 'id');
+    }
+    window.toggleLangSingle = toggleLangSingle;
     function toggleLang(e) { if (e) { e.stopPropagation() } const w = $('#langWrap'); if (!w) return; const on = w.classList.toggle('open'); $('#langBtn').setAttribute('aria-expanded', on) }
     function closeLang() { const w = $('#langWrap'); if (!w || !w.classList.contains('open')) return; w.classList.remove('open'); const b = $('#langBtn'); if (b) b.setAttribute('aria-expanded', 'false') }
     document.addEventListener('click', e => { if (!e.target.closest('.lang')) closeLang() });
@@ -3640,15 +3696,17 @@
 
     /* ---------- shell ---------- */
     function renderShell() {
+      const cartCount = cart ? cart.reduce((s, c) => s + c.qty, 0) : 0;
       $('#shellTop').innerHTML = `<header class="hdr"><div class="wrap hwrap">
     <a class="logo" href="#/" aria-label="${L('PANDATIX, kembali ke beranda', 'PANDATIX, back to home')}">PANDATIX</a>
     <div class="hspacer"></div>
     <div class="hactions">
       <button type="button" class="hdr-search-btn" onclick="openSearchModal()" aria-label="${L('Cari wahana', 'Search rides')}" title="${L('Cari wahana', 'Search rides')}">${ico('search', 18, 2.3)}</button>
-      <div class="lang-flags" role="group" aria-label="${L('Pilih bahasa', 'Choose language')}">
-        <button type="button" class="flag-btn ${LANG === 'id' ? 'on' : ''}" onclick="setLang('id')" aria-pressed="${LANG === 'id'}" aria-label="Bahasa Indonesia" title="Bahasa Indonesia">${flagID()}</button>
-        <button type="button" class="flag-btn ${LANG === 'en' ? 'on' : ''}" onclick="setLang('en')" aria-pressed="${LANG === 'en'}" aria-label="English" title="English">${flagGB()}</button>
-      </div>
+      <button type="button" class="hdr-flag-btn" onclick="toggleLangSingle()" aria-label="${L('Ganti bahasa', 'Switch language')}" title="${LANG === 'id' ? 'Bahasa Indonesia (Klik untuk English)' : 'English (Click for Bahasa Indonesia)'}">${LANG === 'id' ? flagID() : flagGB()}</button>
+      <button type="button" class="hdr-cart-btn" onclick="go('/bayar')" aria-label="${L('Keranjang & Pembayaran', 'Cart & Payment')}" title="${L('Keranjang & Pembayaran', 'Cart & Payment')}">
+        ${ico('cart', 18, 2.2)}
+        <span class="hdr-cart-badge" id="hdrCartBadge" style="${cartCount > 0 ? '' : 'display:none'}">${cartCount}</span>
+      </button>
     </div></header>`;
       $('#ftr').innerHTML = `<div class="fwave" aria-hidden="true"><svg viewBox="0 0 1440 96" preserveAspectRatio="none">
       <path d="M0 40 C160 26 320 26 470 36 C620 46 760 40 900 30 C1060 18 1240 26 1440 44 L1440 96 L0 96 Z" fill="#1C4836"/>
@@ -3955,12 +4013,94 @@
       renderTabs(); renderGrid(); initPaketSliders(); initHeroSlider(); initFavSlider();
     }
 
+    function getClosestSlider() {
+      const vCenter = window.innerHeight / 2;
+      const candidates = [
+        $('#heroSlider'),
+        $('#favCarousel'),
+        ...(CAT && CAT.paket ? CAT.paket.map(p => $(`#pkSlider_${p.id}`)) : [])
+      ].filter(Boolean);
+
+      let closest = null;
+      let minDist = Infinity;
+
+      candidates.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.bottom > 40 && rect.top < window.innerHeight - 40) {
+          const elCenter = (rect.top + rect.bottom) / 2;
+          const dist = Math.abs(elCenter - vCenter);
+          if (dist < minDist) {
+            minDist = dist;
+            closest = el;
+          }
+        }
+      });
+
+      return closest;
+    }
+
+    function canAutoScroll(slider) {
+      if (!slider) return false;
+      if (slider._isInteracting) return false;
+      if (Date.now() < (slider._manualPauseUntil || 0)) return false;
+      return getClosestSlider() === slider;
+    }
+
+    function attachManualScrollTracker(slider) {
+      if (!slider || slider._hasManualTracker) return;
+      slider._hasManualTracker = true;
+      slider._manualPauseUntil = 0;
+      slider._isInteracting = false;
+      slider._programmaticScroll = false;
+
+      const pauseManual = (ms = 8000) => {
+        slider._manualPauseUntil = Math.max(slider._manualPauseUntil || 0, Date.now() + ms);
+      };
+
+      slider.addEventListener('pointerenter', () => { slider._isHovered = true; });
+      slider.addEventListener('pointerleave', () => { slider._isHovered = false; });
+
+      slider.addEventListener('touchstart', () => {
+        slider._isInteracting = true;
+        pauseManual(8000);
+      }, { passive: true });
+
+      slider.addEventListener('touchend', () => {
+        slider._isInteracting = false;
+        pauseManual(8000);
+      }, { passive: true });
+
+      slider.addEventListener('pointerdown', (e) => {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        slider._isInteracting = true;
+      }, { passive: true });
+
+      slider.addEventListener('pointerup', () => {
+        slider._isInteracting = false;
+      }, { passive: true });
+
+      slider.addEventListener('wheel', (e) => {
+        if (Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.shiftKey) {
+          pauseManual(8000);
+        }
+      }, { passive: true });
+
+      slider.addEventListener('scroll', () => {
+        if (!slider._programmaticScroll) {
+          pauseManual(8000);
+        }
+      }, { passive: true });
+    }
+
     function heroGo(idx) {
       const slider = $('#heroSlider');
       if (!slider) return;
       const slides = slider.querySelectorAll('.hero-slide');
       if (!slides[idx]) return;
+      slider._programmaticScroll = true;
       slider.scrollTo({ left: slides[idx].offsetLeft, behavior: 'smooth' });
+      clearTimeout(slider._progTimer);
+      slider._progTimer = setTimeout(() => { slider._programmaticScroll = false; }, 600);
       updateHeroDots(idx);
     }
     window.heroGo = heroGo;
@@ -3974,12 +4114,12 @@
       const slider = $('#heroSlider');
       if (!slider) return;
       if (window.__heroTimer) clearInterval(window.__heroTimer);
+      attachManualScrollTracker(slider);
 
       const slides = Array.from(slider.querySelectorAll('.hero-slide'));
       if (slides.length <= 1) return;
 
       let curIdx = 0;
-      let paused = false;
 
       function getActiveIndex() {
         const sl = slider.scrollLeft;
@@ -3995,16 +4135,8 @@
         }
       }, { passive: true });
 
-      slider.addEventListener('pointerenter', () => { paused = true; });
-      slider.addEventListener('pointerleave', () => { paused = false; });
-      slider.addEventListener('touchstart', () => { paused = true; }, { passive: true });
-      slider.addEventListener('touchend', () => {
-        paused = false;
-        curIdx = getActiveIndex();
-      }, { passive: true });
-
       window.__heroTimer = setInterval(() => {
-        if (paused) return;
+        if (!canAutoScroll(slider)) return;
         curIdx = (getActiveIndex() + 1) % slides.length;
         heroGo(curIdx);
       }, 4000);
@@ -4015,7 +4147,10 @@
       if (!fav) return;
       const cards = fav.querySelectorAll('.fc');
       if (!cards[idx]) return;
+      fav._programmaticScroll = true;
       fav.scrollTo({ left: cards[idx].offsetLeft - fav.offsetLeft, behavior: 'smooth' });
+      clearTimeout(fav._progTimer);
+      fav._progTimer = setTimeout(() => { fav._programmaticScroll = false; }, 600);
       updateFavDots(idx);
     }
     window.favGo = favGo;
@@ -4029,11 +4164,10 @@
       const fav = $('#favCarousel');
       if (!fav) return;
       if (window.__favTimer) clearInterval(window.__favTimer);
+      attachManualScrollTracker(fav);
 
       const cards = Array.from(fav.querySelectorAll('.fc'));
       if (cards.length <= 1) return;
-
-      let paused = false;
 
       function getFavIndex() {
         const sl = fav.scrollLeft;
@@ -4052,13 +4186,8 @@
         updateFavDots(getFavIndex());
       }, { passive: true });
 
-      fav.addEventListener('pointerenter', () => { paused = true; });
-      fav.addEventListener('pointerleave', () => { paused = false; });
-      fav.addEventListener('touchstart', () => { paused = true; }, { passive: true });
-      fav.addEventListener('touchend', () => { paused = false; }, { passive: true });
-
       window.__favTimer = setInterval(() => {
-        if (paused) return;
+        if (!canAutoScroll(fav)) return;
         const cur = getFavIndex();
         const next = (cur + 1) % cards.length;
         favGo(next);
@@ -4070,7 +4199,10 @@
       if (!slider) return;
       const slides = slider.querySelectorAll('.pk-slide');
       if (!slides[idx]) return;
+      slider._programmaticScroll = true;
       slider.scrollTo({ left: slides[idx].offsetLeft - slider.offsetLeft, behavior: 'smooth' });
+      clearTimeout(slider._progTimer);
+      slider._progTimer = setTimeout(() => { slider._programmaticScroll = false; }, 600);
       updatePkDots(pkId, idx);
     }
     window.pkSlideGo = pkSlideGo;
@@ -4113,21 +4245,18 @@
       CAT.paket.forEach((p, pIdx) => {
         const slider = $(`#pkSlider_${p.id}`);
         if (!slider) return;
+        attachManualScrollTracker(slider);
+
         const slides = Array.from(slider.querySelectorAll('.pk-slide'));
         if (slides.length <= 1) return;
 
-        let paused = false;
         slider.addEventListener('scroll', () => {
           updatePkDots(p.id, getPkSliderIndex(slider, slides));
         }, { passive: true });
-        slider.addEventListener('pointerenter', () => { paused = true; });
-        slider.addEventListener('pointerleave', () => { paused = false; });
-        slider.addEventListener('touchstart', () => { paused = true; }, { passive: true });
-        slider.addEventListener('touchend', () => { paused = false; }, { passive: true });
 
         const delay = 3600 + (pIdx * 500);
         const timer = setInterval(() => {
-          if (paused) return;
+          if (!canAutoScroll(slider)) return;
           const cur = getPkSliderIndex(slider, slides);
           const next = (cur + 1) % slides.length;
           pkSlideGo(p.id, next);
@@ -4178,12 +4307,12 @@
       cart = cart.filter(c => ref(c.type, c.id)); saveCart();
       if (!cart.length && !undoBuf) { toast(L('Keranjang masih kosong. Pilih wahana dulu.', 'Your cart is empty. Pick a ride first.'), true); return go('/') }
       app.innerHTML = `<div class="page"><a class="back" href="#/">${ico('left', 19, 2.4)} ${L('Kembali ke beranda', 'Back to home')}</a>
-  <h1 class="h1">${L('Pembayaran', 'Payment')}</h1><p class="sub1">${L('Selesaikan pemesanan tiket wahana Anda', 'Complete your ride ticket order')}</p>
+  <h1 class="h1">${L('Pembayaran', 'Payment')}</h1>
   <div class="pgr"><div style="display:grid;gap:16px">
     <section class="card box"><h3>${L('Ringkasan pesanan', 'Order summary')}</h3><div id="ols"></div><button class="btn btn-out block" onclick="go('/')">${ico('plusc', 17, 2.2)} ${L('Pilih wahana lain', 'Pick another ride')}</button></section>
-    <section class="card box"><div class="bh"><h3>${L('Data pemesan', 'Visitor details')}</h3><span>${L('Wajib diisi', 'Required')}</span></div><div class="field" style="margin-top:12px"><label for="nm">${L('Nama lengkap', 'Full name')}</label><input class="inp" id="nm" placeholder="${L('cth. Carmenita', 'e.g. Carmenita')}" maxlength="60" autocomplete="name" value="${esc(payNama)}"><span class="errtxt" id="nmE" hidden>${L('Nama lengkap wajib diisi.', 'Full name is required.')}</span></div></section>
+    <section class="card box"><div class="bh"><h3>${L('Data pemesan', 'Visitor details')}</h3></div><div class="field" style="margin-top:12px"><label for="nm">${L('Nama lengkap', 'Full name')} <span style="color:#DC2626">*</span></label><input class="inp" id="nm" placeholder="${L('cth. Carmenita', 'e.g. Carmenita')}" maxlength="60" autocomplete="name" value="${esc(payNama)}"><span class="errtxt" id="nmE" hidden>${L('Nama lengkap wajib diisi.', 'Full name is required.')}</span></div></section>
     <section class="card box"><h3>${L('Metode pembayaran', 'Payment method')}</h3><div class="ml" id="mls"></div></section></div>
-  <div class="rt" style="display:grid;gap:16px"><section class="card nota"><div class="nh"><h3>${L('Nota Pemesanan', 'Order Receipt')}</h3><span class="chip">${L('Siap Bayar', 'Ready to Pay')}</span></div><div class="nm"><span>${L('Draf pemesanan', 'Order draft')}</span><span>${fDate(Date.now())}</span></div><div id="nrs"></div></section>
+  <div class="rt" style="display:grid;gap:16px"><section class="card nota"><div class="nh"><h3>${L('Nota Pemesanan', 'Order Receipt')}</h3></div><div class="nm"><span>${L('Draf pemesanan', 'Order draft')}</span><span>${fDate(Date.now())}</span></div><div id="nrs"></div></section>
   <button class="btn block" id="pay" onclick="bayar()">${L('Bayar sekarang', 'Pay now')} ${ico('right', 18, 2.6)}</button></div></div></div>`;
       $('#nm').addEventListener('input', e => { payNama = e.target.value; e.target.classList.remove('err'); $('#nmE').hidden = true });
       drawPay();
@@ -4194,7 +4323,7 @@
         const r = ref(c.type, c.id), nm = itemName(r);
         return `<div class="ol"><div class="th" style="${thumbStyle(c)}"></div><div class="i"><b>${esc(nm)}</b><span>${c.qty} × ${rp(r.harga)}</span></div><div class="a">${rp(r.harga * c.qty)}<br><button class="del" onclick="rmCart(${i})" aria-label="${L('Hapus ' + nm + ' dari pesanan', 'Remove ' + nm + ' from order')}">${ico('trash', 13, 2.2)} ${L('Hapus', 'Remove')}</button></div></div>`
       }).join('');
-      $('#mls').innerHTML = METHODS.map(m => `<button class="mo ${payMethod === m[0] ? 'on' : ''}" onclick="payMethod='${m[0]}';drawPay()" aria-pressed="${payMethod === m[0]}"><span class="mi">${ico(m[3], 23, 1.9)}</span><span class="tx"><span class="nm"><b>${esc(mName(m))}</b>${m[0] === 'qris' ? `<i class="ins">${L('Instan', 'Instant')}</i>` : ''}</span><span class="sb">${esc(mSub(m))}</span></span><span class="rd"></span></button>`).join('');
+      $('#mls').innerHTML = METHODS.map(m => `<button class="mo ${payMethod === m[0] ? 'on' : ''}" onclick="payMethod='${m[0]}';drawPay()" aria-pressed="${payMethod === m[0]}"><span class="mi">${ico(m[3], 23, 1.9)}</span><span class="tx"><span class="nm"><b>${esc(mName(m))}</b></span><span class="sb">${esc(mSub(m))}</span></span></button>`).join('');
       const t = calc(), M = METHODS.find(m => m[0] === payMethod);
       $('#nrs').innerHTML = (empty ? '' : cart.map(c => { const r = ref(c.type, c.id); return `<div class="nr"><span>${esc(itemName(r))} × ${c.qty}</span><b>${rp(r.harga * c.qty)}</b></div>` }).join(''))
         + `<div class="nr"><span>${L('Biaya admin', 'Admin fee')}</span><b>${rp(t.fee)}</b></div><div class="nr"><span>${L('Metode', 'Method')}</span><span class="mt">${ico(M[3], 17, 2)}${M[0] === 'qris' ? 'QRIS' : esc(mName(M))}</span></div><div class="nt"><span>Total</span><b>${rp(t.total)}</b></div>`;
