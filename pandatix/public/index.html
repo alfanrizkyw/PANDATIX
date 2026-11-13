@@ -1159,6 +1159,10 @@
       color: var(--ink-3)
     }
 
+    .pk .btn {
+      border-radius: 999px;
+    }
+
     /* favorit dark band */
     .favband {
       background: linear-gradient(160deg, #165A39 0%, #12482E 55%, #0D3722 100%);
@@ -1331,8 +1335,8 @@
       align-items: center;
       gap: 3px;
       height: 35px;
-      padding: 0 14px;
-      border-radius: 6px;
+      padding: 0 15px;
+      border-radius: 999px;
       border: 1.5px solid var(--p);
       color: var(--p);
       font-weight: 700;
@@ -4016,7 +4020,6 @@
     function getClosestSlider() {
       const vCenter = window.innerHeight / 2;
       const candidates = [
-        $('#heroSlider'),
         $('#favCarousel'),
         ...(CAT && CAT.paket ? CAT.paket.map(p => $(`#pkSlider_${p.id}`)) : [])
       ].filter(Boolean);
@@ -4043,6 +4046,8 @@
       if (!slider) return false;
       if (slider._isInteracting) return false;
       if (Date.now() < (slider._manualPauseUntil || 0)) return false;
+      // Exception: Hero section always scrolls unless actively swiped
+      if (slider.id === 'heroSlider') return true;
       return getClosestSlider() === slider;
     }
 
@@ -4051,43 +4056,46 @@
       slider._hasManualTracker = true;
       slider._manualPauseUntil = 0;
       slider._isInteracting = false;
-      slider._programmaticScroll = false;
 
-      const pauseManual = (ms = 8000) => {
+      let startX = 0, startY = 0, trackingTouch = false;
+
+      const pauseManual = (ms = 6000) => {
         slider._manualPauseUntil = Math.max(slider._manualPauseUntil || 0, Date.now() + ms);
       };
 
-      slider.addEventListener('pointerenter', () => { slider._isHovered = true; });
-      slider.addEventListener('pointerleave', () => { slider._isHovered = false; });
+      slider.addEventListener('touchstart', (e) => {
+        if (e.touches && e.touches.length === 1) {
+          startX = e.touches[0].clientX;
+          startY = e.touches[0].clientY;
+          trackingTouch = true;
+        }
+      }, { passive: true });
 
-      slider.addEventListener('touchstart', () => {
-        slider._isInteracting = true;
-        pauseManual(8000);
+      slider.addEventListener('touchmove', (e) => {
+        if (!trackingTouch || !e.touches || e.touches.length !== 1) return;
+        const dx = Math.abs(e.touches[0].clientX - startX);
+        const dy = Math.abs(e.touches[0].clientY - startY);
+        // Only horizontal swipe on this slider triggers pause, vertical page scroll does not
+        if (dx > dy && dx > 8) {
+          slider._isInteracting = true;
+          pauseManual(6000);
+        }
       }, { passive: true });
 
       slider.addEventListener('touchend', () => {
+        trackingTouch = false;
         slider._isInteracting = false;
-        pauseManual(8000);
       }, { passive: true });
 
-      slider.addEventListener('pointerdown', (e) => {
-        if (e.pointerType === 'mouse' && e.button !== 0) return;
-        slider._isInteracting = true;
-      }, { passive: true });
-
-      slider.addEventListener('pointerup', () => {
+      slider.addEventListener('touchcancel', () => {
+        trackingTouch = false;
         slider._isInteracting = false;
       }, { passive: true });
 
       slider.addEventListener('wheel', (e) => {
-        if (Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.shiftKey) {
-          pauseManual(8000);
-        }
-      }, { passive: true });
-
-      slider.addEventListener('scroll', () => {
-        if (!slider._programmaticScroll) {
-          pauseManual(8000);
+        // Only horizontal wheel scroll on this slider triggers pause
+        if (Math.abs(e.deltaX) > Math.abs(e.deltaY) && Math.abs(e.deltaX) > 4) {
+          pauseManual(6000);
         }
       }, { passive: true });
     }
@@ -4097,10 +4105,7 @@
       if (!slider) return;
       const slides = slider.querySelectorAll('.hero-slide');
       if (!slides[idx]) return;
-      slider._programmaticScroll = true;
       slider.scrollTo({ left: slides[idx].offsetLeft, behavior: 'smooth' });
-      clearTimeout(slider._progTimer);
-      slider._progTimer = setTimeout(() => { slider._programmaticScroll = false; }, 600);
       updateHeroDots(idx);
     }
     window.heroGo = heroGo;
@@ -4147,10 +4152,7 @@
       if (!fav) return;
       const cards = fav.querySelectorAll('.fc');
       if (!cards[idx]) return;
-      fav._programmaticScroll = true;
       fav.scrollTo({ left: cards[idx].offsetLeft - fav.offsetLeft, behavior: 'smooth' });
-      clearTimeout(fav._progTimer);
-      fav._progTimer = setTimeout(() => { fav._programmaticScroll = false; }, 600);
       updateFavDots(idx);
     }
     window.favGo = favGo;
@@ -4199,10 +4201,7 @@
       if (!slider) return;
       const slides = slider.querySelectorAll('.pk-slide');
       if (!slides[idx]) return;
-      slider._programmaticScroll = true;
       slider.scrollTo({ left: slides[idx].offsetLeft - slider.offsetLeft, behavior: 'smooth' });
-      clearTimeout(slider._progTimer);
-      slider._progTimer = setTimeout(() => { slider._programmaticScroll = false; }, 600);
       updatePkDots(pkId, idx);
     }
     window.pkSlideGo = pkSlideGo;
