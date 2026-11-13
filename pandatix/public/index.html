@@ -100,6 +100,57 @@
       transform: scale(.96)
     }
 
+    .wx-hdr {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .72), rgba(240, 248, 243, .55));
+      border: 1px solid rgba(255, 255, 255, .75);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8), 0 4px 12px -8px rgba(10, 40, 30, .3);
+      font-size: 12px;
+      color: var(--p-dark);
+      font-weight: 700;
+      -webkit-backdrop-filter: blur(14px) saturate(1.6);
+      backdrop-filter: blur(14px) saturate(1.6);
+      flex-shrink: 0;
+    }
+
+    .wx-hdr .sun {
+      display: inline-flex;
+      align-items: center;
+      color: #E28800;
+    }
+
+    .wx-hdr s {
+      display: inline-block;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--p-300);
+      opacity: .6;
+      text-decoration: none;
+    }
+
+    .wx-hdr #wxD {
+      font-weight: 500;
+      color: var(--ink-2);
+    }
+
+    @media(max-width: 480px) {
+      .wx-hdr {
+        padding: 0 9px;
+        gap: 4px;
+      }
+
+      .wx-hdr #wxD,
+      .wx-hdr s {
+        display: none;
+      }
+    }
+
     .lang-flags {
       display: inline-flex;
       align-items: center;
@@ -381,212 +432,33 @@
       margin: 0
     }
 
-    /* hero: illustrated valley scene with gentle environmental motion */
+    /* hero promo banner */
     .hero {
       position: relative;
       z-index: 2;
       isolation: isolate;
-      background: #6E93A3;
-      margin-top: calc(-1*var(--hh));
-      padding-top: var(--hh)
-    }
-
-    .hero-art {
-      position: absolute;
-      inset: 0;
-      z-index: 0;
+      background: #026068;
+      margin-top: calc(-1 * var(--hh));
+      padding-top: var(--hh);
       overflow: hidden;
-      pointer-events: none
+      border-bottom: 1px solid rgba(0, 0, 0, .06);
     }
 
-    .hero-art svg {
-      display: block;
-      width: 100%;
-      height: 100%
-    }
-
-    .hero::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      background:
-        linear-gradient(180deg, rgba(10, 32, 24, 0) 44%, rgba(10, 32, 24, .05) 66%, rgba(10, 32, 24, .14) 100%),
-        radial-gradient(76% 66% at 14% 84%, rgba(10, 32, 24, .2), rgba(10, 32, 24, 0) 72%)
-    }
-
-    .hero-in {
+    .hero-banner-wrap {
       position: relative;
-      z-index: 2;
-      max-width: 1100px;
-      margin: 0 auto;
-      min-height: 530px;
-      min-height: 480px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      gap: 14px;
-      padding: 26px 20px 80px padding: 26px 20px 60px
-    }
-
-    .hero-curve {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: -1px;
-      z-index: 1;
-      line-height: 0;
-      pointer-events: none
-    }
-
-    .hero-curve svg {
-      display: block;
       width: 100%;
-      height: 34px
+      max-width: 1024px;
+      margin: 0 auto;
+      line-height: 0;
+      display: flex;
+      justify-content: center;
     }
 
-    .hero-art .cl {
-      animation: hcl 160s ease-in-out infinite alternate;
-      will-change: transform
-    }
-
-    .hero-art .tr {
-      transform-box: fill-box;
-      transform-origin: 50% 100%;
-      animation: hsway 9s ease-in-out infinite alternate;
-      will-change: transform
-    }
-
-    .hero-art .wv {
-      animation: hwv 22s ease-in-out infinite alternate;
-      will-change: transform
-    }
-
-    .hero-art .bk {
-      animation: hbk 180s ease-in-out infinite alternate;
-      will-change: transform
-    }
-
-    .hero-art .wing {
-      transform-box: fill-box;
-      transform-origin: 50% 65%;
-      animation: hflap 3.2s ease-in-out infinite
-    }
-
-    .hero-art .cl {
-      transform-box: fill-box
-    }
-
-    .hero-art .lv {
-      transform-box: fill-box;
-      transform-origin: 50% 100%;
-      animation: hsway 11s ease-in-out infinite alternate;
-      will-change: transform
-    }
-
-    .hero-art .lf {
-      transform-box: fill-box;
-      transform-origin: 50% 50%;
-      animation: hleaf 16s ease-in-out infinite alternate;
-      will-change: transform
-    }
-
-    .hero-art .gl {
-      animation: hgl 9s ease-in-out infinite alternate;
-      will-change: opacity
-    }
-
-    @keyframes hcl {
-      from {
-        transform: translateX(-34px)
-      }
-
-      to {
-        transform: translateX(34px)
-      }
-    }
-
-    @keyframes hsway {
-      from {
-        transform: rotate(-.7deg)
-      }
-
-      to {
-        transform: rotate(.9deg)
-      }
-    }
-
-    @keyframes hwv {
-      from {
-        transform: translateX(-12px)
-      }
-
-      to {
-        transform: translateX(12px)
-      }
-    }
-
-    @keyframes hbk {
-      from {
-        transform: translateX(-34px)
-      }
-
-      to {
-        transform: translateX(34px)
-      }
-    }
-
-    @keyframes hflap {
-
-      0%,
-      100% {
-        transform: scaleY(1)
-      }
-
-      50% {
-        transform: scaleY(.5)
-      }
-    }
-
-    @keyframes wxpace {
-      from {
-        transform: translateX(0)
-      }
-
-      to {
-        transform: translateX(138px)
-      }
-    }
-
-    @keyframes wxbob {
-      from {
-        transform: translateY(1px) rotate(-1.3deg)
-      }
-
-      to {
-        transform: translateY(-2px) rotate(1.5deg)
-      }
-    }
-
-    @keyframes hleaf {
-      from {
-        transform: translate(0, 0) rotate(-12deg)
-      }
-
-      to {
-        transform: translate(-42px, 30px) rotate(26deg)
-      }
-    }
-
-    @keyframes hgl {
-      from {
-        opacity: .28
-      }
-
-      to {
-        opacity: .72
-      }
+    .hero-banner-img {
+      width: 100%;
+      max-width: 1024px;
+      height: auto;
+      display: block;
     }
 
     .wxwrap {
@@ -3678,12 +3550,11 @@
     }
     function pgHome() {
       app.innerHTML = `
-  <section class="hero"><div class="hero-art" aria-hidden="true">${heroSceneSVG()}</div>
-    <div class="hero-in">
-      <h1>${L('Mau seru-seruan di Lembah Pandawa hari ini?', 'Ready for fun at Pandawa Valley today?')}</h1>
-      <p>${L('Satu tiket buat semua petualangan seru. Pilih wahananya, bayar, langsung scan QR—tanpa ribet!', 'One ticket for all the fun. Pick your rides, pay, then scan the QR—no hassle!')}</p>
+  <section class="hero">
+    <div class="hero-banner-wrap">
+      <img src="/img/hero-banner.jpg" alt="${L('Paket Terusan Lembah Pandawa Lebih Hemat', 'Pandawa Valley All-Access Package Save More')}" class="hero-banner-img" />
     </div>
-    <div class="hero-curve">${heroCurveSVG()}</div></section>
+  </section>
   <div class="page">
     ${order ? `<a class="mytix" href="#/tunggu"><span>${ico('ticket', 17, 2.2)} ${L('Kamu punya pesanan aktif', 'You have an active order')}</span><span class="r">${L('Lihat', 'View')} ${ico('right', 16, 2.6)}</span></a>` : ''}
     <section class="sec" style="margin-top:24px"><div class="sec-h"><div><h2>${L('Paket hemat wisata', 'Money-saving packages')}</h2><p class="sub">${L('Diskon s/d ' + Math.max(...CAT.paket.map(disc)) + '% buat liburan seru', 'Up to ' + Math.max(...CAT.paket.map(disc)) + '% off for a fun holiday')}</p></div></div>
