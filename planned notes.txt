@@ -1,9 +1,10 @@
-when i manually scroll horizontally on any of the auto scrolls. it will stop automatically stop for a set time
-make the dottet scrollbars white
+home page:
+when i manually scroll horizontally on any of the auto scrolls. it will stop automatically scrolling for a set time
+make the dotted scrollbars white
 
 add cart icon
 
-pemabayaran page
+pembayaran page:
 remove the description under pembayaran
 remove the "wajib diisi" instead add red asterisk on nama field
 
