@@ -77,11 +77,11 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 37px;
-      height: 37px;
-      border-radius: 7px;
-      background: linear-gradient(180deg, rgba(255, 255, 255, .72), rgba(255, 255, 255, .42));
-      border: 1px solid rgba(255, 255, 255, .75);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .75), rgba(255, 255, 255, .45));
+      border: 1px solid rgba(255, 255, 255, .8);
       color: var(--ink);
       -webkit-backdrop-filter: blur(14px) saturate(1.6);
       backdrop-filter: blur(14px) saturate(1.6);
@@ -106,7 +106,7 @@
       gap: 7px;
       height: 37px;
       padding: 0 14px;
-      border-radius: 7px;
+      border-radius: 999px;
       background: linear-gradient(180deg, rgba(255, 255, 255, .62), rgba(228, 243, 234, .44));
       border: 1px solid rgba(255, 255, 255, .66);
       color: var(--p-dark);
@@ -131,10 +131,10 @@
       display: inline-flex;
       align-items: center;
       gap: 3px;
-      padding: 3px 4px;
-      border-radius: 7px;
-      background: linear-gradient(180deg, rgba(255, 255, 255, .62), rgba(255, 255, 255, .38));
-      border: 1px solid rgba(255, 255, 255, .7);
+      padding: 3px 5px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .65), rgba(255, 255, 255, .4));
+      border: 1px solid rgba(255, 255, 255, .75);
       -webkit-backdrop-filter: blur(14px) saturate(1.6);
       backdrop-filter: blur(14px) saturate(1.6);
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8), 0 6px 16px -13px rgba(8, 34, 24, .5);
@@ -146,8 +146,8 @@
       align-items: center;
       justify-content: center;
       height: 29px;
-      padding: 0 7px;
-      border-radius: 5px;
+      padding: 0 8px;
+      border-radius: 999px;
       border: 1.5px solid transparent;
       background: transparent;
       cursor: pointer;
@@ -189,8 +189,8 @@
       align-items: center;
       gap: 6px;
       height: 38px;
-      padding: 0 11px 0 13px;
-      border-radius: 7px;
+      padding: 0 13px 0 15px;
+      border-radius: 999px;
       background: linear-gradient(180deg, rgba(255, 255, 255, .6), rgba(255, 255, 255, .36));
       border: 1px solid rgba(255, 255, 255, .68);
       color: var(--ink);
@@ -1099,37 +1099,18 @@
     .disc-pill {
       display: inline-flex;
       align-items: center;
-      height: 20px;
-      border-radius: 4px;
-      overflow: hidden;
+      justify-content: center;
+      height: 22px;
+      padding: 0 9px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      color: #0E4E30;
+      background: var(--p-cont);
       border: 1px solid rgba(27, 107, 68, .28);
-      background: #fff;
       box-shadow: 0 1px 3px rgba(18, 72, 46, .08);
       vertical-align: middle;
-    }
-
-    .disc-pill .dp-tag {
-      background: var(--p);
-      color: #fff;
-      font-weight: 800;
-      font-size: 9.5px;
-      letter-spacing: .06em;
-      padding: 0 5px;
-      height: 100%;
-      display: inline-flex;
-      align-items: center;
-    }
-
-    .disc-pill .dp-val {
-      padding: 0 6px;
-      color: var(--p-dark);
-      font-weight: 800;
-      font-size: 11px;
-      letter-spacing: -.02em;
-      background: var(--p-cont);
-      height: 100%;
-      display: inline-flex;
-      align-items: center;
     }
 
     .pprice .big {
@@ -1371,6 +1352,24 @@
       display: grid;
       grid-template-columns: 1fr;
       gap: 13px
+    }
+
+    .w-more-wrap {
+      display: flex;
+      justify-content: center;
+      margin-top: 24px;
+    }
+
+    .w-more-btn {
+      min-width: 200px;
+      border-radius: 999px;
+      padding: 11px 24px;
+      font-weight: 700;
+      font-size: 13.5px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     .wc {
@@ -3698,7 +3697,6 @@
       return `<article class="card pk ${isPopular ? 'popular' : ''}" data-pk="${p.id}">
     <div class="pk-header">
       <div class="ptitle"><h3>${esc(pn(p))}</h3>${popBadge}</div>
-      <p class="d">${esc(pd(p))}</p>
     </div>
     <div class="pk-slider-wrap">
       <div class="pk-slider" id="pkSlider_${p.id}">
@@ -3710,7 +3708,7 @@
     </div>
     <div class="pbody">
       <ul class="feats">${pkFeats(p).map(f => `<li><span class="st">${ico('check', 14, 2.8)}</span>${esc(f)}</li>`).join('')}</ul>
-      <div class="pprice"><div class="cor-row"><span class="cor">${rp(p.normal)}</span><span class="disc-pill"><span class="dp-tag">${L('HEMAT', 'SAVE')}</span><span class="dp-val">${d}%</span></span></div><div class="big"><b>${rp(p.harga)}</b><span>${L('/ orang', '/ person')}</span></div></div>
+      <div class="pprice"><div class="cor-row"><span class="cor">${rp(p.normal)}</span><span class="disc-pill">-${d}%</span></div><div class="big"><b>${rp(p.harga)}</b><span>${L('/ orang', '/ person')}</span></div></div>
       <button class="btn block" onclick="buyPaket('${p.id}')">${L('Pilih Paket Ini', 'Choose This Package')} ${ico('right', 18, 2.6)}</button>
     </div></article>`;
     }
@@ -3880,6 +3878,7 @@
     }
     function pgHome() {
       const favs = CAT.wahana.filter(w => w.favorit);
+      wLimit = 4;
       app.innerHTML = `
   <section class="hero">
     <div class="hero-slider" id="heroSlider">
@@ -3895,7 +3894,7 @@
   </section>
   <div class="page">
     ${order ? `<a class="mytix" href="#/tunggu"><span>${ico('ticket', 17, 2.2)} ${L('Kamu punya pesanan aktif', 'You have an active order')}</span><span class="r">${L('Lihat', 'View')} ${ico('right', 16, 2.6)}</span></a>` : ''}
-    <section class="sec" style="margin-top:24px"><div class="sec-h"><div><h2>${L('Paket hemat wisata', 'Money-saving packages')}</h2></div></div>
+    <section class="sec" style="margin-top:24px"><div class="sec-h"><div><h2>${L('Paket bundling wisata', 'Tour bundling packages')}</h2></div></div>
       <div class="pgrid">${CAT.paket.map(paketHTML).join('')}</div></section>
   </div>
   <section class="favband bleed"><div class="in">
@@ -3904,8 +3903,9 @@
     <div class="fav-dots-wrap" id="favDots">${favs.map((_, i) => `<button type="button" class="s-dot ${i === 0 ? 'on' : ''}" onclick="favGo(${i})" aria-label="${L('Favorit ' + (i + 1), 'Favorite ' + (i + 1))}"></button>`).join('')}</div>
   </div></section>
   <div class="page">
-    <section class="sec" style="margin-top:30px"><div class="sec-h"><div><h2>${L('Semua wahana', 'All rides')}</h2></div><span class="side" id="wcount"></span></div>
-      <div class="tabs" id="tabs"></div><div class="wgrid" id="wg"></div></section>
+    <section class="sec" style="margin-top:30px"><div class="sec-h"><div><h2>${L('Semua wahana', 'All rides')}</h2></div></div>
+      <div class="tabs" id="tabs"></div><div class="wgrid" id="wg"></div>
+      <div class="w-more-wrap" id="wMoreWrap"></div></section>
   </div>`;
       renderTabs(); renderGrid(); initPaketSliders(); initHeroSlider(); initFavSlider();
     }
@@ -4092,8 +4092,27 @@
     }
     function addCart(type, id, qty) { const x = cart.find(c => c.type === type && c.id === id); if (x) x.qty = clampQ(x.qty + qty); else cart.push({ type, id, qty }); saveCart() }
     function buyPaket(id) { addCart('paket', id, 1); go('/bayar') }
-    function renderTabs() { const cats = [['all', L('Semua', 'All')], ['fav', L('Favorit', 'Favorites')], ...[...new Set(CAT.wahana.map(w => w.kategori))].map(c => [c, ct(c)])]; $('#tabs').innerHTML = cats.map(([k, label]) => `<button class="tb2 ${k === curCat ? 'on' : ''}" onclick="curCat='${k}';renderTabs();renderGrid()">${esc(label)}</button>`).join('') }
-    function renderGrid() { const l = CAT.wahana.filter(w => curCat === 'all' || (curCat === 'fav' ? w.favorit : w.kategori === curCat)); $('#wg').innerHTML = l.map(cardHTML).join(''); const c = $('#wcount'); if (c) c.textContent = L(l.length + ' wahana', l.length + ' rides') }
+    let wLimit = 4;
+    function renderTabs() { const cats = [['all', L('Semua', 'All')], ['fav', L('Favorit', 'Favorites')], ...[...new Set(CAT.wahana.map(w => w.kategori))].map(c => [c, ct(c)])]; $('#tabs').innerHTML = cats.map(([k, label]) => `<button class="tb2 ${k === curCat ? 'on' : ''}" onclick="curCat='${k}';wLimit=4;renderTabs();renderGrid()">${esc(label)}</button>`).join('') }
+    function renderGrid() {
+      const l = CAT.wahana.filter(w => curCat === 'all' || (curCat === 'fav' ? w.favorit : w.kategori === curCat));
+      const visible = l.slice(0, wLimit);
+      $('#wg').innerHTML = visible.map(cardHTML).join('');
+      const moreWrap = $('#wMoreWrap');
+      if (moreWrap) {
+        if (l.length > wLimit) {
+          const remaining = l.length - wLimit;
+          moreWrap.innerHTML = `<button type="button" class="btn btn-out w-more-btn" onclick="loadMoreWahana()">${ico('plus', 15, 2.4)} ${L('Muat lebih banyak', 'Load more')} (${remaining})</button>`;
+        } else {
+          moreWrap.innerHTML = '';
+        }
+      }
+    }
+    function loadMoreWahana() {
+      wLimit += 4;
+      renderGrid();
+    }
+    window.loadMoreWahana = loadMoreWahana;
     /* ---------- DETAIL ---------- */
     let dq = 1;
     function pgDetail(id) {
