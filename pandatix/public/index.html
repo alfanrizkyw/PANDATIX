@@ -565,12 +565,12 @@
       z-index: 2;
       max-width: 1100px;
       margin: 0 auto;
-      min-height: 530px;
+      min-height: 520px;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      gap: 14px;
-      padding: 26px 20px 80px
+      gap: 12px;
+      padding: 26px 20px 24px
     }
 
     .hero-curve {
@@ -825,8 +825,8 @@
 
     @media(max-width:700px) {
       .hero-in {
-        min-height: 544px;
-        padding-bottom: 106px
+        min-height: 520px;
+        padding-bottom: 24px
       }
 
       .hero-curve svg {
@@ -1070,6 +1070,50 @@
       gap: 5px
     }
 
+    /* dots utility */
+    .s-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .42);
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: width .28s cubic-bezier(.22, 1, .36, 1), background .25s ease, transform .25s ease;
+    }
+
+    .s-dot:hover {
+      background: rgba(255, 255, 255, .78);
+    }
+
+    .s-dot.on {
+      width: 22px;
+      background: #ffffff;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, .35);
+    }
+
+    .fav-dots-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 14px 0 4px;
+    }
+
+    .fav-dots-wrap .s-dot {
+      background: rgba(255, 255, 255, .45);
+    }
+
+    .fav-dots-wrap .s-dot:hover {
+      background: rgba(255, 255, 255, .8);
+    }
+
+    .fav-dots-wrap .s-dot.on {
+      width: 22px;
+      background: #ffffff;
+      box-shadow: 0 1px 6px rgba(255, 255, 255, .45);
+    }
+
     /* package cards */
     .pgrid {
       display: grid;
@@ -1082,141 +1126,141 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      border-width: 2px;
-      transition: box-shadow .35s ease, border-color .3s;
+      border-width: 1.5px;
+      border-color: var(--line);
+      border-radius: 11px;
+      transition: box-shadow .25s ease, border-color .25s;
       transform: none !important;
     }
 
-    .pk:hover,
-    .pk.centered {
-      transform: none !important;
-      box-shadow: 0 16px 36px -14px rgba(18, 72, 46, .28), 0 0 0 1.5px rgba(27, 107, 68, .2);
+    .pk:hover {
+      box-shadow: 0 14px 32px -12px rgba(18, 72, 46, .24);
+      border-color: rgba(27, 107, 68, .35);
     }
 
-    .pk.murah {
-      border-color: #EBCF8E
+    .pk.popular {
+      border-color: #10B981;
+      box-shadow: 0 0 0 2px #10B981, 0 16px 36px -10px rgba(16, 185, 129, .38);
     }
 
-    .pk.reguler {
-      border-color: var(--p-300)
-    }
-
-    .pk.premium {
-      border-color: #C7CBF0
-    }
-
-    .pk-shots {
-      position: relative;
+    .pk-header {
+      padding: 17px 17px 11px;
       display: flex;
-      gap: 10px;
-      padding: 14px 14px 0;
-      isolation: isolate;
-      overflow: hidden;
+      flex-direction: column;
+      gap: 5px;
     }
 
-    .shot-box {
+    .pk-pop-badge {
+      display: inline-flex;
+      align-items: center;
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: #064E3B;
+      background: linear-gradient(135deg, #A7F3D0 0%, #34D399 100%);
+      border: 1px solid #059669;
+      padding: 3px 8px;
+      border-radius: 5px;
+      white-space: nowrap;
+      box-shadow: 0 0 14px rgba(16, 185, 129, .55), 0 2px 6px rgba(6, 78, 59, .2);
+      animation: popGlow 2.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes popGlow {
+      0% {
+        box-shadow: 0 0 10px rgba(16, 185, 129, .45), 0 2px 4px rgba(6, 78, 59, .15);
+      }
+      100% {
+        box-shadow: 0 0 22px rgba(16, 185, 129, .85), 0 0 10px rgba(52, 211, 153, .65);
+      }
+    }
+
+    .pk-slider-wrap {
       position: relative;
-      flex: 1 1 0;
-      min-width: 0;
-      height: 112px;
-      border-radius: 14px;
+      margin: 0 14px;
+      border-radius: 8px;
       overflow: hidden;
       background: var(--p-cont);
-      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08), 0 3px 8px -3px rgba(10, 40, 30, .14);
-      transition: flex .7s cubic-bezier(.22, 1, .36, 1), box-shadow .4s ease, filter .5s ease;
-      will-change: flex;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .06), 0 3px 10px -3px rgba(10, 40, 30, .15);
+    }
+
+    .pk-slider {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      scroll-behavior: smooth;
+      height: 156px;
+    }
+
+    .pk-slider::-webkit-scrollbar {
+      display: none;
+    }
+
+    .pk-slide {
+      flex: 0 0 100%;
+      width: 100%;
+      height: 100%;
+      scroll-snap-align: center;
+      scroll-snap-stop: always;
+      position: relative;
       cursor: pointer;
     }
 
-    .shot-img {
+    .pk-slide-img {
       position: absolute;
       inset: 0;
       background-size: cover;
       background-position: center;
-      transition: transform .7s cubic-bezier(.22, 1, .36, 1);
-      will-change: transform;
-      transform: scale(1);
+      transition: transform .5s cubic-bezier(.22, 1, .36, 1);
     }
 
-    /* Active image enlarges while the other two shrink */
-    .pk[data-active-shot] .shot-box {
-      flex: 0.72 1 0;
-      filter: brightness(0.9);
+    .pk-slide:hover .pk-slide-img {
+      transform: scale(1.035);
     }
 
-    .pk[data-active-shot="0"] .shot-box[data-idx="0"],
-    .pk[data-active-shot="1"] .shot-box[data-idx="1"],
-    .pk[data-active-shot="2"] .shot-box[data-idx="2"] {
-      flex: 2.35 1 0;
-      filter: brightness(1);
-      box-shadow: inset 0 0 0 1.5px rgba(27, 107, 68, .38), 0 8px 18px -4px rgba(18, 72, 46, .24);
-    }
-
-    .pk[data-active-shot="0"] .shot-box[data-idx="0"] .shot-img,
-    .pk[data-active-shot="1"] .shot-box[data-idx="1"] .shot-img,
-    .pk[data-active-shot="2"] .shot-box[data-idx="2"] .shot-img {
-      transform: scale(1.06);
-    }
-
-    /* Desktop hover support: hovering an image enlarges it and shrinks the others */
-    @media(hover: hover) {
-      .pk-shots:hover .shot-box {
-        flex: 0.72 1 0;
-        filter: brightness(0.9);
-      }
-
-      .pk-shots:hover .shot-box:hover {
-        flex: 2.35 1 0;
-        filter: brightness(1);
-        box-shadow: inset 0 0 0 1.5px rgba(27, 107, 68, .38), 0 8px 18px -4px rgba(18, 72, 46, .24);
-      }
-
-      .pk-shots:hover .shot-box:hover .shot-img {
-        transform: scale(1.06);
-      }
-    }
-
-    .pk-badge {
+    .pk-dots {
       position: absolute;
-      top: 22px;
-      left: 22px;
-      z-index: 6;
-      background: #9A3B11;
-      color: #fff;
-      font-weight: 800;
-      font-size: 11.5px;
-      letter-spacing: .02em;
-      padding: 3.5px 10px;
-      border-radius: 999px;
-      box-shadow: 0 4px 12px -2px rgba(0, 0, 0, .4);
-      pointer-events: none;
+      bottom: 8px;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      z-index: 3;
+      pointer-events: auto;
+    }
+
+    .pk-dots .s-dot {
+      width: 6px;
+      height: 6px;
+      background: rgba(255, 255, 255, .55);
+    }
+
+    .pk-dots .s-dot.on {
+      width: 16px;
+      background: #ffffff;
+      box-shadow: 0 1px 4px rgba(255, 255, 255, .45);
     }
 
     @media(max-width: 480px) {
-      .pk-shots {
-        gap: 8px;
-        padding: 12px 12px 0;
+      .pk-slider {
+        height: 136px;
       }
-
-      .shot-box {
-        height: 92px;
-        border-radius: 12px;
-      }
-
-      .pk-badge {
-        top: 19px;
-        left: 19px;
-        font-size: 10.5px;
-        padding: 3px 8.5px;
+      .pk-slider-wrap {
+        margin: 0 12px;
       }
     }
 
     .pbody {
       position: relative;
-      padding: 18px 20px 20px;
+      padding: 15px 17px 18px;
       display: flex;
       flex-direction: column;
-      gap: 13px;
+      gap: 12px;
       flex: 1
     }
 
@@ -1229,17 +1273,17 @@
     }
 
     .ptitle h3 {
-      font-size: 22px;
+      font-size: 21px;
       letter-spacing: -.02em
     }
 
     .tchip {
       display: inline-flex;
       align-items: center;
-      height: 26px;
-      padding: 0 13px;
-      border-radius: 999px;
-      font-size: 12px;
+      height: 23px;
+      padding: 0 10px;
+      border-radius: 5px;
+      font-size: 11px;
       font-weight: 800;
       white-space: nowrap
     }
@@ -1255,10 +1299,10 @@
     }
 
     .pk .d {
-      font-size: 13.5px;
+      font-size: 13px;
       color: var(--ink-2);
-      line-height: 1.5;
-      margin-top: -4px
+      line-height: 1.45;
+      margin-top: 0
     }
 
     .feats {
@@ -1267,48 +1311,48 @@
       padding: 0;
       display: flex;
       flex-direction: column;
-      gap: 11px
+      gap: 9px
     }
 
     .feats li {
       display: flex;
       align-items: flex-start;
-      gap: 11px;
-      font-size: 13.5px;
+      gap: 9px;
+      font-size: 13px;
       font-weight: 500;
-      line-height: 1.4
+      line-height: 1.38
     }
 
     .feats .st {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      border-radius: 5px;
       display: grid;
       place-items: center;
       flex-shrink: 0;
-      margin-top: 0;
-      background: var(--p-cont);
-      color: var(--p)
+      margin-top: 1px;
+      background: #DCFCE7;
+      color: #15803D;
     }
 
     .feats .st svg {
-      width: 14px;
-      height: 14px;
-      fill: currentColor;
-      stroke: none
+      width: 13px;
+      height: 13px;
+      fill: none;
+      stroke: currentColor;
     }
 
     .pprice {
       border-top: 1px solid var(--line);
-      padding-top: 14px;
+      padding-top: 13px;
       margin-top: 2px
     }
 
     .cor-row {
       display: flex;
       align-items: center;
-      gap: 9px;
-      margin-bottom: 3px
+      gap: 8px;
+      margin-bottom: 2px
     }
 
     .cor {
@@ -1317,29 +1361,22 @@
       text-decoration: line-through
     }
 
-    .disc {
+    .disc-pill {
       display: inline-flex;
       align-items: center;
-      height: 21px;
+      justify-content: center;
+      height: 22px;
       padding: 0 9px;
-      border-radius: 7px;
+      border-radius: 999px;
       font-size: 11.5px;
-      font-weight: 800
-    }
-
-    .pk.murah .disc {
-      background: #FBEFC9;
-      color: var(--s-dark)
-    }
-
-    .pk.reguler .disc {
+      font-weight: 800;
+      letter-spacing: -.02em;
+      color: #0E4E30;
       background: var(--p-cont);
-      color: var(--p)
-    }
-
-    .pk.premium .disc {
-      background: #E7E8F9;
-      color: #3B3F9A
+      border: none;
+      outline: none;
+      box-shadow: 0 1px 3px rgba(18, 72, 46, .08);
+      vertical-align: middle;
     }
 
     .pprice .big {
@@ -1358,6 +1395,10 @@
     .pprice .big span {
       font-size: 12.5px;
       color: var(--ink-3)
+    }
+
+    .pk .btn {
+      border-radius: 999px;
     }
 
     /* favorit dark band */
@@ -1543,21 +1584,38 @@
       display: flex;
       gap: 9px;
       overflow-x: auto;
-      padding: 2px 2px 14px;
-      scrollbar-width: none
+      padding: 2px 2px 10px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(27, 107, 68, .35) rgba(0, 0, 0, .05);
     }
 
     .tabs::-webkit-scrollbar {
-      display: none
+      height: 5px;
+      display: block;
+    }
+
+    .tabs::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, .05);
+      border-radius: 999px;
+    }
+
+    .tabs::-webkit-scrollbar-thumb {
+      background: rgba(27, 107, 68, .35);
+      border-radius: 999px;
+      transition: background .15s;
+    }
+
+    .tabs::-webkit-scrollbar-thumb:hover {
+      background: var(--p);
     }
 
     .tb2 {
-      height: 40px;
-      padding: 0 22px;
-      border-radius: 999px;
+      height: 38px;
+      padding: 0 17px;
+      border-radius: 7px;
       border: 1.5px solid var(--line);
       background: var(--surface);
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 700;
       color: var(--ink-2);
       flex-shrink: 0;
@@ -1579,6 +1637,24 @@
       display: grid;
       grid-template-columns: 1fr;
       gap: 13px
+    }
+
+    .w-more-wrap {
+      display: flex;
+      justify-content: center;
+      margin-top: 24px;
+    }
+
+    .w-more-btn {
+      min-width: 200px;
+      border-radius: 999px;
+      padding: 11px 24px;
+      font-weight: 700;
+      font-size: 13.5px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     .wc {
@@ -3315,7 +3391,7 @@
 
       .hero-in {
         min-height: 500px;
-        padding: 34px 30px 74px
+        padding: 34px 30px 24px
       }
 
       .loc {
@@ -3633,6 +3709,10 @@
       document.body.classList.toggle('is-home', h === '/');
       document.body.classList.toggle('not-home', h !== '/');
       if (ES && !/^\/(tunggu|tiket)/.test(h)) { ES.close(); ES = null }
+      if (h !== '/') {
+        if (window.__favTimer) { clearInterval(window.__favTimer); window.__favTimer = null; }
+        if (window.__pkTimers) { window.__pkTimers.forEach(clearInterval); window.__pkTimers = []; }
+      }
       window.scrollTo({ top: 0, behavior: 'instant' });
       updateCartBadge();
       let m;
@@ -3670,28 +3750,34 @@
     function paketHTML(p) {
       const d = disc(p);
       const s = paketShots(p);
-      const chip = p.kelas === 'premium' ? `<span class="tchip indigo">All Access VIP</span>` : p.kelas === 'reguler' ? `<span class="tchip green">${L('Paling Populer')}</span>` : '';
-      return `<article class="card pk ${p.kelas}" data-pk="${p.id}">
-    <div class="pk-shots">
-      <span class="pk-badge">${L('Hemat ' + d + '%')}</span>
-      <div class="shot-box" data-idx="0" onclick="setCardActiveShot(this)"><div class="shot-img" style="${s[0]}"></div></div>
-      <div class="shot-box" data-idx="1" onclick="setCardActiveShot(this)"><div class="shot-img" style="${s[1]}"></div></div>
-      <div class="shot-box" data-idx="2" onclick="setCardActiveShot(this)"><div class="shot-img" style="${s[2]}"></div></div>
+      const isPopular = p.id === 'paket-reguler';
+      const popBadge = isPopular ? `<span class="pk-pop-badge">${L('Paling Populer')}</span>` : '';
+      return `<article class="card pk ${isPopular ? 'popular' : ''}" data-pk="${p.id}">
+    <div class="pk-header">
+      <div class="ptitle"><h3>${esc(pn(p))}</h3>${popBadge}</div>
+    </div>
+    <div class="pk-slider-wrap">
+      <div class="pk-slider" id="pkSlider_${p.id}">
+        ${s.map((shotStyle) => `<div class="pk-slide" onclick="pkSlideNext('${p.id}')"><div class="pk-slide-img" style="${shotStyle}"></div></div>`).join('')}
+      </div>
+      <div class="pk-dots" id="pkDots_${p.id}">
+        ${s.map((_, sIdx) => `<button type="button" class="s-dot ${sIdx === 0 ? 'on' : ''}" onclick="pkSlideGo('${p.id}', ${sIdx})" aria-label="Slide ${sIdx + 1}"></button>`).join('')}
+      </div>
     </div>
     <div class="pbody">
-      <div class="ptitle"><h3>${esc(pn(p))}</h3>${chip}</div>
-      <p class="d">${esc(pd(p))}</p>
-      <ul class="feats">${pkFeats(p).map(f => `<li><span class="st">${ico('star', 15, 2.2)}</span>${esc(f)}</li>`).join('')}</ul>
-      <div class="pprice"><div class="cor-row"><span class="cor">${rp(p.normal)}</span><span class="disc">-${d}%</span></div><div class="big"><b>${rp(p.harga)}</b><span>${L('/ orang')}</span></div></div>
+      <ul class="feats">${pkFeats(p).map(f => `<li><span class="st">${ico('check', 14, 2.8)}</span>${esc(f)}</li>`).join('')}</ul>
+      <div class="pprice"><div class="cor-row"><span class="cor">${rp(p.normal)}</span><span class="disc-pill">-${d}%</span></div><div class="big"><b>${rp(p.harga)}</b><span>${L('/ orang')}</span></div></div>
       <button class="btn block" onclick="buyPaket('${p.id}')">${L('Pilih Paket Ini')} ${ico('right', 18, 2.6)}</button>
     </div></article>`;
     }
-    const cardHTML = (w, i) => `<button class="card wc" style="animation-delay:${i * 35}ms" onclick="go('/w/${w.id}')"><div class="im" style="${img(w.id)}"><span class="tag ${w.kategori}">${ct(w.kategori)}</span></div><div class="bd"><span class="k">${ct(w.kategori)}</span><h3>${esc(wn(w))}</h3><span class="ds">${esc(wd(w))}</span><div class="ft"><div><small>${L('Harga')}</small><b>${rp(w.harga)}</b></div><span class="go">${L('Lihat')} ${ico('right', 13, 2.6)}</span></div></div></button>`;
-    const favHTML = w => `<article class="fc" tabindex="0" role="link" aria-label="${esc(wn(w))}" onclick="go('/w/${w.id}')" onkeydown="if(event.key==='Enter')go('/w/${w.id}')"><div class="im" style="${img(w.id)}"><span class="tag ${w.kategori}">${w.favorit && w.kategori !== 'Ekstrem' ? L('Favorit') : ct(w.kategori)}</span></div><div class="bd"><h3>${esc(wn(w))}</h3><p class="ds">${esc(wd(w))}</p><span class="mt">${/^\d/.test(w.tinggi) ? L('Min. ') + w.tinggi : hTxt(w.tinggi)}</span><div class="ft"><div><small>${L('Harga')}</small><b>${rp(w.harga)}</b></div><span class="lh">${L('Lihat')} ${ico('right', 13, 2.6)}</span></div></div></article>`;
+    const cardHTML = (w, i) => `<button class="card wc" style="animation-delay:${i * 35}ms" onclick="go('/w/${w.id}')"><div class="im" style="${img(w.id)}"></div><div class="bd"><span class="k">${ct(w.kategori)}</span><h3>${esc(wn(w))}</h3><span class="ds">${esc(wd(w))}</span><div class="ft"><div><small>${L('Harga')}</small><b>${rp(w.harga)}</b></div><span class="go">${L('Lihat')} ${ico('right', 13, 2.6)}</span></div></div></button>`;
+    const favHTML = w => `<article class="fc" tabindex="0" role="link" aria-label="${esc(wn(w))}" onclick="go('/w/${w.id}')" onkeydown="if(event.key==='Enter')go('/w/${w.id}')"><div class="im" style="${img(w.id)}"></div><div class="bd"><h3>${esc(wn(w))}</h3><p class="ds">${esc(wd(w))}</p><span class="mt">${/^\d/.test(w.tinggi) ? L('Min. ') + w.tinggi : hTxt(w.tinggi)}</span><div class="ft"><div><small>${L('Harga')}</small><b>${rp(w.harga)}</b></div><span class="lh">${L('Lihat')} ${ico('right', 13, 2.6)}</span></div></div></article>`;
     function heroCurveSVG() {
       return `<svg viewBox="0 0 1440 64" preserveAspectRatio="none" aria-hidden="true"><path d="M0 46 C140 52 300 54 450 50 C600 46 760 34 900 22 C980 15 1060 14 1140 20 C1230 27 1340 36 1440 40 L1440 64 L0 64 Z" fill="#F3F6F3"/></svg>`;
     }
     function pgHome() {
+      const favs = CAT.wahana.filter(w => w.favorit);
+      wLimit = 4;
       app.innerHTML = `
   <section class="hero"><div class="hero-art" aria-hidden="true"><img src="/img/hero.jpg" alt="Lembah Pandawa" /></div>
     <div class="hero-in">
@@ -3700,108 +3786,241 @@
     </div>
     <div class="hero-curve">${heroCurveSVG()}</div></section>
   <div class="page">
-    ${order ? `<a class="mytix" href="#/tunggu"><span>${ico('ticket', 17, 2.2)} ${L('Kamu punya pesanan aktif')}</span><span class="r">${L('Lihat')} ${ico('right', 16, 2.6)}</span></a>` : ''}
-    <section class="sec" style="margin-top:24px"><div class="sec-h"><div><h2>${L('Paket hemat wisata')}</h2><p class="sub">${L('Diskon s/d ' + Math.max(...CAT.paket.map(disc)) + '% buat liburan seru')}</p></div></div>
+    <section class="sec" style="margin-top:24px"><div class="sec-h"><div><h2>${L('Paket bundling wisata')}</h2></div></div>
       <div class="pgrid">${CAT.paket.map(paketHTML).join('')}</div></section>
   </div>
   <section class="favband bleed"><div class="in">
-    <div class="fh"><div><h2>${L('Wahana favorit')}</h2><p class="sub">${L('Pilihan seru & paling diminati')}</p></div><span class="geser">${L('Geser')} ${ico('right', 16, 2.4)}</span></div>
-    <div class="fav">${CAT.wahana.filter(w => w.favorit).map(favHTML).join('')}</div>
+    <div class="fh"><div><h2>${L('Wahana favorit')}</h2></div></div>
+    <div class="fav" id="favCarousel">${favs.map(favHTML).join('')}</div>
+    <div class="fav-dots-wrap" id="favDots">${favs.map((_, i) => `<button type="button" class="s-dot ${i === 0 ? 'on' : ''}" onclick="favGo(${i})" aria-label="${L('Favorit ' + (i + 1))}"></button>`).join('')}</div>
   </div></section>
   <div class="page">
-    <section class="sec" style="margin-top:30px"><div class="sec-h"><div><h2>${L('Semua wahana')}</h2></div><span class="side" id="wcount"></span></div>
-      <div class="tabs" id="tabs"></div><div class="wgrid" id="wg"></div></section>
+    <section class="sec" style="margin-top:30px"><div class="sec-h"><div><h2>${L('Semua wahana')}</h2></div></div>
+      <div class="tabs" id="tabs"></div><div class="wgrid" id="wg"></div>
+      <div class="w-more-wrap" id="wMoreWrap"></div></section>
   </div>`;
-      renderTabs(); renderGrid(); initPaketAnimations();
+      renderTabs(); renderGrid(); initPaketSliders(); initFavSlider();
     }
-    let pkScrollTick = null;
-    function setCardActiveShot(el) {
-      const card = el.closest('.card.pk');
-      if (!card) return;
-      card.dataset.activeShot = el.dataset.idx || '0';
-      if (card._switchInterval) {
-        clearInterval(card._switchInterval);
-        card._curShot = parseInt(el.dataset.idx || '0', 10);
-        card._switchInterval = setInterval(() => {
-          card._curShot = ((card._curShot || 0) + 1) % 3;
-          card.dataset.activeShot = String(card._curShot);
-        }, 2500);
-      }
-    }
-    window.setCardActiveShot = setCardActiveShot;
 
-    function initPaketAnimations() {
-      const cards = $$('.card.pk');
-      if (!cards.length) return;
+    function getClosestSlider() {
+      const vCenter = window.innerHeight / 2;
+      const candidates = [
+        $('#favCarousel'),
+        ...(CAT && CAT.paket ? CAT.paket.map(p => $(`#pkSlider_${p.id}`)) : [])
+      ].filter(Boolean);
 
-      function updateCentered() {
-        const vH = window.innerHeight;
-        const vMid = vH / 2;
-        const isSingleCol = window.innerWidth < 640;
-        let closestCard = null, closestDist = Infinity;
+      let closest = null;
+      let minDist = Infinity;
 
-        if (isSingleCol) {
-          cards.forEach(card => {
-            const rect = card.getBoundingClientRect();
-            if (rect.bottom > vH * 0.12 && rect.top < vH * 0.88) {
-              const dist = Math.abs((rect.top + rect.bottom) / 2 - vMid);
-              if (dist < closestDist) {
-                closestDist = dist;
-                closestCard = card;
-              }
-            }
-          });
+      candidates.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.bottom > 40 && rect.top < window.innerHeight - 40) {
+          const elCenter = (rect.top + rect.bottom) / 2;
+          const dist = Math.abs(elCenter - vCenter);
+          if (dist < minDist) {
+            minDist = dist;
+            closest = el;
+          }
         }
+      });
 
-        cards.forEach(card => {
-          const rect = card.getBoundingClientRect();
-          const cardMid = (rect.top + rect.bottom) / 2;
-          const isCentered = isSingleCol
-            ? (card === closestCard && closestDist < vH * 0.36)
-            : (Math.abs(cardMid - vMid) < vH * 0.32 && rect.bottom > vH * 0.15 && rect.top < vH * 0.85);
+      return closest;
+    }
 
-          if (isCentered) {
-            if (!card.classList.contains('centered')) {
-              card.classList.add('centered');
-              // The image enlarges, other two shrink; the card itself does not scale
-              card._curShot = 0;
-              card.dataset.activeShot = '0';
-              clearInterval(card._switchInterval);
-              // Switch to the second image, then third, cycling
-              card._switchInterval = setInterval(() => {
-                card._curShot = ((card._curShot || 0) + 1) % 3;
-                card.dataset.activeShot = String(card._curShot);
-              }, 2500);
-            }
-          } else {
-            if (card.classList.contains('centered')) {
-              card.classList.remove('centered');
-              delete card.dataset.activeShot;
-              clearInterval(card._switchInterval);
-            }
+    function canAutoScroll(slider) {
+      if (!slider) return false;
+      if (slider._isInteracting) return false;
+      if (Date.now() < (slider._manualPauseUntil || 0)) return false;
+      return getClosestSlider() === slider;
+    }
+
+    function attachManualScrollTracker(slider) {
+      if (!slider || slider._hasManualTracker) return;
+      slider._hasManualTracker = true;
+      slider._manualPauseUntil = 0;
+      slider._isInteracting = false;
+
+      let startX = 0, startY = 0, trackingTouch = false;
+
+      const pauseManual = (ms = 6000) => {
+        slider._manualPauseUntil = Math.max(slider._manualPauseUntil || 0, Date.now() + ms);
+      };
+
+      slider.addEventListener('touchstart', (e) => {
+        if (e.touches && e.touches.length === 1) {
+          startX = e.touches[0].clientX;
+          startY = e.touches[0].clientY;
+          trackingTouch = true;
+        }
+      }, { passive: true });
+
+      slider.addEventListener('touchmove', (e) => {
+        if (!trackingTouch || !e.touches || e.touches.length !== 1) return;
+        const dx = Math.abs(e.touches[0].clientX - startX);
+        const dy = Math.abs(e.touches[0].clientY - startY);
+        // Only horizontal swipe on this slider triggers pause, vertical page scroll does not
+        if (dx > dy && dx > 8) {
+          slider._isInteracting = true;
+          pauseManual(6000);
+        }
+      }, { passive: true });
+
+      slider.addEventListener('touchend', () => {
+        trackingTouch = false;
+        slider._isInteracting = false;
+      }, { passive: true });
+
+      slider.addEventListener('touchcancel', () => {
+        trackingTouch = false;
+        slider._isInteracting = false;
+      }, { passive: true });
+
+      slider.addEventListener('wheel', (e) => {
+        // Only horizontal wheel scroll on this slider triggers pause
+        if (Math.abs(e.deltaX) > Math.abs(e.deltaY) && Math.abs(e.deltaX) > 4) {
+          pauseManual(6000);
+        }
+      }, { passive: true });
+    }
+
+    function favGo(idx) {
+      const fav = $('#favCarousel');
+      if (!fav) return;
+      const cards = fav.querySelectorAll('.fc');
+      if (!cards[idx]) return;
+      fav.scrollTo({ left: cards[idx].offsetLeft - fav.offsetLeft, behavior: 'smooth' });
+      updateFavDots(idx);
+    }
+    window.favGo = favGo;
+
+    function updateFavDots(idx) {
+      const dots = $$('#favDots .s-dot');
+      dots.forEach((d, i) => d.classList.toggle('on', i === idx));
+    }
+
+    function initFavSlider() {
+      const fav = $('#favCarousel');
+      if (!fav) return;
+      if (window.__favTimer) clearInterval(window.__favTimer);
+      attachManualScrollTracker(fav);
+
+      const cards = Array.from(fav.querySelectorAll('.fc'));
+      if (cards.length <= 1) return;
+
+      function getFavIndex() {
+        const sl = fav.scrollLeft;
+        let bestIdx = 0, bestDist = Infinity;
+        cards.forEach((c, i) => {
+          const d = Math.abs((c.offsetLeft - fav.offsetLeft) - sl);
+          if (d < bestDist) {
+            bestDist = d;
+            bestIdx = i;
           }
         });
+        return bestIdx;
       }
 
-      if (!window.__pkScrollBound) {
-        window.__pkScrollBound = true;
-        window.addEventListener('scroll', () => {
-          if (!pkScrollTick) {
-            pkScrollTick = requestAnimationFrame(() => {
-              pkScrollTick = null;
-              updateCentered();
-            });
-          }
+      fav.addEventListener('scroll', () => {
+        updateFavDots(getFavIndex());
+      }, { passive: true });
+
+      window.__favTimer = setInterval(() => {
+        if (!canAutoScroll(fav)) return;
+        const cur = getFavIndex();
+        const next = (cur + 1) % cards.length;
+        favGo(next);
+      }, 3500);
+    }
+
+    function pkSlideGo(pkId, idx) {
+      const slider = $(`#pkSlider_${pkId}`);
+      if (!slider) return;
+      const slides = slider.querySelectorAll('.pk-slide');
+      if (!slides[idx]) return;
+      slider.scrollTo({ left: slides[idx].offsetLeft - slider.offsetLeft, behavior: 'smooth' });
+      updatePkDots(pkId, idx);
+    }
+    window.pkSlideGo = pkSlideGo;
+
+    function pkSlideNext(pkId) {
+      const slider = $(`#pkSlider_${pkId}`);
+      if (!slider) return;
+      const slides = Array.from(slider.querySelectorAll('.pk-slide'));
+      if (slides.length <= 1) return;
+      const cur = getPkSliderIndex(slider, slides);
+      const next = (cur + 1) % slides.length;
+      pkSlideGo(pkId, next);
+    }
+    window.pkSlideNext = pkSlideNext;
+
+    function getPkSliderIndex(slider, slides) {
+      const sl = slider.scrollLeft;
+      let bestIdx = 0, bestDist = Infinity;
+      slides.forEach((s, i) => {
+        const d = Math.abs((s.offsetLeft - slider.offsetLeft) - sl);
+        if (d < bestDist) {
+          bestDist = d;
+          bestIdx = i;
+        }
+      });
+      return bestIdx;
+    }
+
+    function updatePkDots(pkId, idx) {
+      const dots = $$(`#pkDots_${pkId} .s-dot`);
+      dots.forEach((d, i) => d.classList.toggle('on', i === idx));
+    }
+
+    function initPaketSliders() {
+      if (window.__pkTimers) {
+        window.__pkTimers.forEach(clearInterval);
+      }
+      window.__pkTimers = [];
+
+      CAT.paket.forEach((p, pIdx) => {
+        const slider = $(`#pkSlider_${p.id}`);
+        if (!slider) return;
+        attachManualScrollTracker(slider);
+
+        const slides = Array.from(slider.querySelectorAll('.pk-slide'));
+        if (slides.length <= 1) return;
+
+        slider.addEventListener('scroll', () => {
+          updatePkDots(p.id, getPkSliderIndex(slider, slides));
         }, { passive: true });
-        window.addEventListener('resize', updateCentered, { passive: true });
-      }
 
-      setTimeout(updateCentered, 150);
+        const delay = 3600 + (pIdx * 500);
+        const timer = setInterval(() => {
+          if (!canAutoScroll(slider)) return;
+          const cur = getPkSliderIndex(slider, slides);
+          const next = (cur + 1) % slides.length;
+          pkSlideGo(p.id, next);
+        }, delay);
+        window.__pkTimers.push(timer);
+      });
     }
     function addCart(type, id, qty) { const x = cart.find(c => c.type === type && c.id === id); if (x) x.qty = clampQ(x.qty + qty); else cart.push({ type, id, qty }); saveCart() }
     function buyPaket(id) { addCart('paket', id, 1); go('/bayar') }
-    function renderTabs() { const cats = [['all', L('Semua')], ['fav', L('Favorit')], ...[...new Set(CAT.wahana.map(w => w.kategori))].map(c => [c, ct(c)])]; $('#tabs').innerHTML = cats.map(([k, label]) => `<button class="tb2 ${k === curCat ? 'on' : ''}" onclick="curCat='${k}';renderTabs();renderGrid()">${esc(label)}</button>`).join('') }
-    function renderGrid() { const l = CAT.wahana.filter(w => curCat === 'all' || (curCat === 'fav' ? w.favorit : w.kategori === curCat)); $('#wg').innerHTML = l.map(cardHTML).join(''); const c = $('#wcount'); if (c) c.textContent = L(l.length + ' wahana') }
+    let wLimit = 4;
+    function renderTabs() { const cats = [['all', L('Semua')], ['fav', L('Favorit')], ...[...new Set(CAT.wahana.map(w => w.kategori))].map(c => [c, ct(c)])]; $('#tabs').innerHTML = cats.map(([k, label]) => `<button class="tb2 ${k === curCat ? 'on' : ''}" onclick="curCat='${k}';wLimit=4;renderTabs();renderGrid()">${esc(label)}</button>`).join('') }
+    function renderGrid() {
+      const l = CAT.wahana.filter(w => curCat === 'all' || (curCat === 'fav' ? w.favorit : w.kategori === curCat));
+      const visible = l.slice(0, wLimit);
+      $('#wg').innerHTML = visible.map(cardHTML).join('');
+      const moreWrap = $('#wMoreWrap');
+      if (moreWrap) {
+        if (l.length > wLimit) {
+          moreWrap.innerHTML = `<button type="button" class="btn btn-out w-more-btn" onclick="loadMoreWahana()">${ico('plus', 15, 2.4)} ${L('Muat lebih banyak')}</button>`;
+        } else {
+          moreWrap.innerHTML = '';
+        }
+      }
+    }
+    function loadMoreWahana() {
+      wLimit += 4;
+      renderGrid();
+    }
+    window.loadMoreWahana = loadMoreWahana;
     /* ---------- DETAIL ---------- */
     let dq = 1;
     function pgDetail(id) {
