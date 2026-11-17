@@ -347,6 +347,14 @@
       pointer-events: none
     }
 
+    .hero-art img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 48%;
+    }
+
     .hero-art svg {
       display: block;
       width: 100%;
@@ -357,11 +365,11 @@
       content: "";
       position: absolute;
       inset: 0;
-      z-index: 0;
+      z-index: 1;
       pointer-events: none;
       background:
-        linear-gradient(180deg, rgba(10, 32, 24, 0) 44%, rgba(10, 32, 24, .05) 66%, rgba(10, 32, 24, .14) 100%),
-        radial-gradient(76% 66% at 14% 84%, rgba(10, 32, 24, .2), rgba(10, 32, 24, 0) 72%)
+        linear-gradient(180deg, rgba(8, 28, 20, 0.08) 0%, rgba(8, 28, 20, 0.18) 40%, rgba(8, 28, 20, 0.65) 100%),
+        linear-gradient(90deg, rgba(8, 28, 20, 0.52) 0%, rgba(8, 28, 20, 0.22) 48%, rgba(8, 28, 20, 0) 78%);
     }
 
     .hero-in {
@@ -382,7 +390,7 @@
       left: 0;
       right: 0;
       bottom: -1px;
-      z-index: 1;
+      z-index: 2;
       line-height: 0;
       pointer-events: none
     }
@@ -3462,172 +3470,13 @@
     }
     const cardHTML = (w, i) => `<button class="card wc" style="animation-delay:${i * 35}ms" onclick="go('/w/${w.id}')"><div class="im" style="${img(w.id)}"><span class="tag ${w.kategori}">${ct(w.kategori)}</span></div><div class="bd"><span class="k">${ct(w.kategori)}</span><h3>${esc(wn(w))}</h3><span class="ds">${esc(wd(w))}</span><div class="ft"><div><small>${L('Harga', 'Price')}</small><b>${rp(w.harga)}</b></div><span class="go">${L('Lihat', 'View')} ${ico('right', 13, 2.6)}</span></div></div></button>`;
     const favHTML = w => `<article class="fc" tabindex="0" role="link" aria-label="${esc(wn(w))}" onclick="go('/w/${w.id}')" onkeydown="if(event.key==='Enter')go('/w/${w.id}')"><div class="im" style="${img(w.id)}"><span class="tag ${w.kategori}">${w.favorit && w.kategori !== 'Ekstrem' ? L('Favorit', 'Favorite') : ct(w.kategori)}</span></div><div class="bd"><h3>${esc(wn(w))}</h3><p class="ds">${esc(wd(w))}</p><span class="mt">${/^\d/.test(w.tinggi) ? L('Min. ', 'Min. ') + w.tinggi : hTxt(w.tinggi)}</span><div class="ft"><div><small>${L('Harga', 'Price')}</small><b>${rp(w.harga)}</b></div><span class="lh">${L('Lihat', 'View')} ${ico('right', 13, 2.6)}</span></div></div></article>`;
-    function heroSceneSVG() {
-      const cx = 720;
-      /* clouds */
-      const cloud = (x, y, s, o, d) => `<g transform="translate(${x} ${y})"><g class="cl" style="animation-duration:${d}s"><g transform="scale(${s})" opacity="${o}">
-    <ellipse cx="2" cy="16" rx="72" ry="15" fill="#A8BCBE" opacity=".22"/>
-    <rect x="-76" y="2" width="152" height="20" rx="10" fill="url(#hcB)"/>
-    <ellipse cx="-42" cy="6" rx="34" ry="18" fill="url(#hcB)"/>
-    <ellipse cx="40" cy="8" rx="30" ry="16" fill="url(#hcB)"/>
-    <ellipse cx="0" cy="-2" rx="56" ry="25" fill="url(#hcA)"/>
-    <ellipse cx="-16" cy="-15" rx="30" ry="19" fill="url(#hcA)"/>
-    <ellipse cx="24" cy="-9" rx="22" ry="15" fill="url(#hcA)"/>
-    <ellipse cx="-24" cy="-7" rx="22" ry="13" fill="#FFFFFF" opacity=".7"/>
-    <ellipse cx="6" cy="15" rx="58" ry="7" fill="#B9CCCC" opacity=".38"/>
-  </g></g></g>`;
-      const clouds = cloud(600, 116, 1.12, .86, 88) + cloud(672, 54, .46, .46, 72) + cloud(846, 86, .86, .74, 82) + cloud(884, 164, .7, .5, 76) + cloud(1116, 104, 1, .56, 92) + cloud(1324, 206, .68, .32, 68);
-      /* trees */
-      const tree = (x, y, s, a, b, d) => `<g transform="translate(${x} ${y}) scale(${s})">
-    <ellipse cx="0" cy="1" rx="19" ry="4" fill="#16330F" opacity=".3"/>
-    <rect x="-2.4" y="-20" width="4.8" height="21" rx="2" fill="#43301C"/>
-    <g class="tr" style="animation-duration:${d}s"><circle cx="0" cy="-31" r="16" fill="${a}"/><circle cx="-12" cy="-23" r="12" fill="${b}"/><circle cx="12" cy="-23" r="12" fill="${b}"/><circle cx="0" cy="-40" r="9.5" fill="${a}"/><circle cx="-7" cy="-35" r="7" fill="#FFFFFF" opacity=".1"/><path d="M-13 -31 a 13 13 0 0 1 12 -12" fill="none" stroke="#DDEBC8" stroke-opacity=".22" stroke-width="2.2" stroke-linecap="round"/><ellipse cx="1" cy="-17" rx="17" ry="5" fill="#12300D" opacity=".28"/></g></g>`;
-      const palm = (x, y, s, d) => `<g transform="translate(${x} ${y}) scale(${s})">
-    <path d="M0 0 C -2 -15 1 -29 6 -43" fill="none" stroke="#4C3820" stroke-width="4" stroke-linecap="round"/>
-    <g class="tr" style="animation-duration:${d}s" fill="#4E7A2F">
-      <path d="M6 -44 C -4 -53 -16 -54 -24 -48 C -14 -49 -3 -47 6 -41 Z"/>
-      <path d="M6 -44 C 16 -54 29 -55 37 -49 C 26 -50 15 -47 6 -41 Z"/>
-      <path d="M6 -44 C 2 -57 -3 -66 -12 -70 C -9 -59 -2 -50 4 -42 Z"/>
-      <path d="M6 -44 C 12 -57 18 -64 27 -67 C 21 -58 13 -50 7 -41 Z"/>
-      <path d="M6 -44 C -2 -40 -12 -40 -19 -36 C -11 -34 -1 -37 5 -42 Z" fill="#3E6326"/>
-      <path d="M6 -44 C 14 -39 24 -37 31 -41 C 22 -34 12 -36 6 -41 Z" fill="#3E6326"/>
-    </g></g>`;
-      const tl = [[24, 404, 11], [70, 402, 14], [116, 406, 10], [162, 400, 15], [208, 404, 12], [254, 402, 14], [300, 406, 10], [346, 402, 13], [392, 404, 11], [438, 406, 12], [484, 402, 14], [530, 404, 11], [576, 402, 13], [622, 406, 10], [668, 404, 12], [714, 402, 14], [760, 406, 11], [806, 404, 13], [852, 402, 10], [898, 406, 12], [944, 404, 14], [990, 402, 11], [1036, 404, 13], [1082, 406, 10], [1128, 402, 14], [1174, 404, 11], [1220, 406, 12], [1266, 402, 13], [1312, 404, 10], [1358, 402, 14], [1404, 406, 11]];
-      const treesDistant = tl.map(([x, y, r], i) => `<circle cx="${x}" cy="${y - r * .7}" r="${r}" fill="${['#20451A', '#285021', '#193C16'][i % 3]}"/>`).join('');
-      const treesFar =
-        tree(338, 406, 1.25, '#2A5A22', '#1E4719', 10.4) + tree(408, 404, 1.05, '#25521F', '#1A4217', 9.2) + tree(470, 406, 1.15, '#285822', '#1C4519', 10.8) +
-        tree(526, 404, .95, '#285822', '#1C4519', 9.4) + tree(556, 406, 1.05, '#2C6124', '#1F4B1C', 10.6) + tree(584, 404, .9, '#23501E', '#194016', 8.8) +
-        tree(654, 406, .85, '#25521F', '#1A4217', 10.2) + tree(700, 404, .95, '#23501E', '#194016', 9.6) + tree(748, 406, .9, '#285822', '#1C4519', 10.9) + tree(790, 404, .8, '#25521F', '#1A4217', 9.1) +
-        tree(824, 408, 1.3, '#285822', '#194016', 9.8) + palm(852, 408, .95, 8.6) + tree(872, 410, 1.2, '#22501D', '#173D14', 11.2) +
-        tree(1002, 406, 1.2, '#2A5A22', '#1E4719', 10.1) + tree(1096, 404, 1.35, '#25521F', '#1A4217', 9.4) + tree(1190, 408, 1.5, '#285822', '#1C4519', 11.4) + tree(1286, 404, 1.2, '#2A5A22', '#1E4719', 10.2) + tree(1382, 406, 1.35, '#25521F', '#1A4217', 9.7) +
-        `<g fill="#1F4322"><ellipse cx="640" cy="410" rx="24" ry="9"/><ellipse cx="806" cy="410" rx="22" ry="8"/><ellipse cx="470" cy="410" rx="20" ry="8"/><ellipse cx="980" cy="410" rx="18" ry="7"/></g>`;
-      /* bridge */
-      const bridge = (x1, x2, y, id) => {
-        const mx = (x1 + x2) / 2, pk = y - 32, d = `M${x1} ${y} Q ${mx} ${pk} ${x2} ${y}`;
-        let s = `<g id="${id}">
-      <path d="${d}" fill="none" stroke="#DCE4DA" stroke-width="22" opacity=".38"/>
-      <path d="${d}" fill="none" stroke="#EDF0E7" stroke-width="15" stroke-linecap="round"/>
-      <path d="${d}" fill="none" stroke="#FAFBF6" stroke-width="3.2" stroke-linecap="round" transform="translate(0 -5)" opacity=".9"/>`;
-        for (let t = .04; t < .98; t += .05) {
-          const mt = 1 - t, px = mt * mt * x1 + 2 * mt * t * mx + t * t * x2, py = mt * mt * y + 2 * mt * t * pk + t * t * y;
-          s += `<rect x="${(px - 1.9).toFixed(1)}" y="${(py - 18).toFixed(1)}" width="3.8" height="19" rx="1.7" fill="#F3F5EE"/>`;
-        }
-        return s + `<path d="M${x1} ${y - 15} Q ${mx} ${pk - 15} ${x2} ${y - 15}" fill="none" stroke="#F6F8F1" stroke-width="4" stroke-linecap="round"/></g>`;
-      };
-      /* pagoda */
-      const tiers = [[128, 6], [154, 10], [180, 14], [206, 18], [232, 23], [258, 28], [284, 33], [310, 39], [336, 46]];
-      let meru = '';
-      tiers.forEach(([y, hw], i) => {
-        const R = hw + 12, bw = Math.max(4, hw * .45);
-        if (i > 0) {
-          const by = tiers[i - 1][0] + 7;
-          meru += `<path d="M${cx - bw} ${by} L${cx + bw} ${by} L${cx + bw * .92} ${y - 7} L${cx - bw * .92} ${y - 7} Z" fill="#5B4028"/>
-        <path d="M${cx - bw} ${by} L${cx - bw * .55} ${by} L${cx - bw * .5} ${y - 7} L${cx - bw * .92} ${y - 7} Z" fill="#6A4C2F" opacity=".9"/>
-        <path d="M${cx + bw * .5} ${by} L${cx + bw} ${by} L${cx + bw * .92} ${y - 7} L${cx + bw * .44} ${y - 7} Z" fill="#43301C" opacity=".85"/>`;
-        }
-        const wedge = (tipY, topY, botY) => `M${cx - R} ${tipY} L${cx - R * .72} ${topY + 2.6} L${cx} ${topY} L${cx + R * .72} ${topY + 2.6} L${cx + R} ${tipY} L${cx + R * .8} ${botY - 2.2} L${cx + R * .3} ${botY} L${cx - R * .3} ${botY} L${cx - R * .8} ${botY - 2.2} Z`;
-        meru += `<path d="${wedge(y - 8, y - 13.6, y + 8.5)}" fill="#7A5333"/>
-      <path d="${wedge(y - 8, y - 13, y + 4.5)}" fill="#3B2A1C"/>
-      <path d="M${cx - R * .6} ${y - 11.4} L${cx - R * .3} ${y - 12.6} L${cx + R * .3} ${y - 12.6} L${cx + R * .6} ${y - 11.4}" fill="none" stroke="#57402B" stroke-width="1.7" opacity=".55"/>
-      <path d="M${cx - R} ${y - 8} l -5 -3.6 l .4 5.8 Z" fill="#2F2015"/><path d="M${cx + R} ${y - 8} l 5 -3.6 l -.4 5.8 Z" fill="#2F2015"/>`;
-      });
-      meru += `<path d="M${cx - 50} 350 C${cx - 30} 342 ${cx + 30} 342 ${cx + 50} 350 C${cx + 30} 358 ${cx - 30} 358 ${cx - 50} 350 Z" fill="#30221A"/>
-    <path d="M${cx - 50} 350 C${cx - 30} 358 ${cx + 30} 358 ${cx + 50} 350 C${cx + 30} 363 ${cx - 30} 363 ${cx - 50} 350 Z" fill="#6E5133"/>
-    <path d="M${cx - 50} 350 C${cx - 30} 358 ${cx + 30} 358 ${cx + 50} 350" fill="none" stroke="#A9854E" stroke-width="1.8" stroke-linecap="round"/>
-    <rect x="${cx - 23}" y="354" width="46" height="14" rx="2" fill="#3A2A1B"/>
-    <path d="M${cx - 11} 368 h22 v8 h-22 Z" fill="#30221A"/>
-    <rect x="${cx - 8}" y="118" width="16" height="12" fill="#4A3520"/>
-    <path d="M${cx - 8} 122 h16" stroke="#C09A60" stroke-width="2"/>
-    <rect x="${cx - 3.5}" y="96" width="7" height="24" fill="#4A3520"/>
-    <rect x="${cx - 9}" y="100" width="18" height="4.5" rx="2" fill="#D2AE72"/>
-    <rect x="${cx - 7}" y="107" width="14" height="4" rx="2" fill="#D2AE72"/>
-    <rect x="${cx - 5}" y="113" width="10" height="3.5" rx="1.6" fill="#D2AE72"/>
-    <path d="M${cx} 86 l 5 10 h -10 Z" fill="#D9B76F"/>`;
-      /* foreground foliage */
-      const leaves = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})" fill="#1F5A40">
-    <path d="M0 0 C-14 -8 -26 -26 -24 -44 C-8 -36 -1 -18 0 0 Z"/>
-    <path d="M4 0 C18 -10 28 -28 26 -46 C10 -38 4 -18 4 0 Z" fill="#174C36"/>
-    <path d="M-2 2 C-6 -14 -2 -30 6 -40 C8 -22 4 -8 -2 2 Z" fill="#2A6B4A"/></g>`;
-      const clump = (x, y, s, d, dl) => `<g transform="translate(${x} ${y}) scale(${s})"><g class="lv" style="animation-duration:${d}s;animation-delay:${dl || 0}s">${leaves(-13, 3, .85)}${leaves(12, 4, .78)}${leaves(0, 0, 1)}</g></g>`;
-      const flyLeaf = (x, y, s, o, d, dl) => `<g transform="translate(${x} ${y}) scale(${s})" opacity="${o}"><g class="lf" style="animation-duration:${d}s;animation-delay:${dl}s"><path d="M0 0 C-7 -5 -11 -14 -8 -22 C-1 -17 2 -8 0 0 Z" fill="#4C8C5A"/><path d="M0 0 C-7 -5 -11 -14 -8 -22" stroke="#2F6B45" stroke-width="1" fill="none"/></g></g>`;
-      const bird = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})" fill="none" stroke="#2A3C33" stroke-width="2.2" stroke-linecap="round"><g class="wing"><path d="M-10 0 q 5 -6 10 0"/><path d="M0 0 q 5 -6 10 0"/></g></g>`;
-      return `<svg viewBox="0 0 1440 620" preserveAspectRatio="xMidYMin slice" aria-hidden="true">
-    <defs>
-      <linearGradient id="hsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A5D6D"/><stop offset=".22" stop-color="#557A8C"/><stop offset=".42" stop-color="#7A9AA9"/><stop offset=".54" stop-color="#93AEB6"/><stop offset=".72" stop-color="#A9BEC0"/><stop offset="1" stop-color="#B7C9CA"/></linearGradient>
-      <linearGradient id="hwater" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3E7265"/><stop offset=".6" stop-color="#2F5F54"/><stop offset="1" stop-color="#265147"/></linearGradient>
-      <linearGradient id="hhaze" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D3E2DE" stop-opacity="0"/><stop offset=".55" stop-color="#D3E2DE" stop-opacity=".16"/><stop offset="1" stop-color="#D3E2DE" stop-opacity="0"/></linearGradient>
-      <radialGradient id="hsun"><stop offset="0" stop-color="#FFF4DA" stop-opacity=".26"/><stop offset="1" stop-color="#FFF4DA" stop-opacity="0"/></radialGradient>
-      <linearGradient id="hcA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#F1F6F4"/><stop offset="1" stop-color="#D3E1DF"/></linearGradient>
-      <linearGradient id="hcB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F8FBF9"/><stop offset=".6" stop-color="#E3EDEB"/><stop offset="1" stop-color="#C6D6D4"/></linearGradient>
-      <linearGradient id="hg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7FA34F"/><stop offset=".42" stop-color="#5C8338"/><stop offset="1" stop-color="#3F6426"/></linearGradient>
-      <linearGradient id="hg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6E9642"/><stop offset=".5" stop-color="#4C7027"/><stop offset="1" stop-color="#33551D"/></linearGradient>
-      <linearGradient id="hwat" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A8072"/><stop offset=".45" stop-color="#37685C"/><stop offset="1" stop-color="#265147"/></linearGradient>
-    </defs>
-    <rect width="1440" height="620" fill="url(#hsky)"/>
-    <ellipse cx="1080" cy="96" rx="330" ry="220" fill="url(#hsun)"/>
-    ${clouds}
-    <path d="M0 414 C130 388 240 368 350 362 C448 356 520 336 620 330 L820 330 C918 332 1000 326 1092 334 C1200 346 1320 372 1440 398 L1440 470 L0 470 Z" fill="#5E7A45" opacity=".36"/>
-    <path d="M0 470 L0 392 C60 374 140 356 230 350 C320 344 400 350 470 368 C520 380 570 396 620 404 L620 470 Z" fill="url(#hg1)"/>
-    <path d="M1440 470 L1440 388 C1370 370 1290 356 1200 352 C1110 348 1040 356 980 370 C930 384 880 396 840 402 L840 470 Z" fill="url(#hg2)"/>
-    <path d="M420 470 C436 386 478 340 548 324 C602 312 658 318 700 334 L700 470 Z" fill="url(#hg1)"/>
-    <path d="M766 470 C778 384 820 332 894 318 C962 306 1032 316 1082 336 C1120 352 1180 372 1240 384 L1240 470 Z" fill="url(#hg2)"/>
-    <path d="M470 470 C498 402 540 366 594 352 C640 342 690 346 720 356 L720 470 Z" fill="#466826" opacity=".7"/>
-    <g fill="none" stroke="#BBD882" stroke-opacity=".26" stroke-width="2.2" stroke-linecap="round">
-      <path d="M420 470 C436 386 478 340 548 324 C602 312 658 318 700 334"/>
-      <path d="M766 470 C778 384 820 332 894 318 C962 306 1032 316 1082 336"/>
-      <path d="M1440 388 C1370 370 1290 356 1200 352"/>
-    </g>
-    <g fill="#3E5E1D" opacity=".55"><circle cx="512" cy="392" r="13"/><circle cx="556" cy="380" r="10"/><circle cx="600" cy="372" r="12"/><circle cx="648" cy="366" r="9"/><circle cx="838" cy="368" r="12"/><circle cx="884" cy="358" r="9"/><circle cx="932" cy="356" r="12"/><circle cx="976" cy="364" r="10"/><circle cx="1020" cy="372" r="12"/><circle cx="1068" cy="384" r="9"/><circle cx="1120" cy="394" r="11"/></g>
-    <g fill="#62842C" opacity=".45"><circle cx="540" cy="404" r="10"/><circle cx="640" cy="388" r="8"/><circle cx="900" cy="380" r="9"/><circle cx="1010" cy="392" r="10"/></g>
-    <g><rect x="884" y="330" width="32" height="26" rx="2" fill="#E8DCC3"/><path d="M876 332 L900 310 L924 332 Z" fill="#6E4628"/><rect x="895" y="340" width="8" height="10" fill="#8A6A45"/><rect x="907" y="340" width="6" height="8" fill="#8A6A45"/>
-      <rect x="918" y="338" width="24" height="18" rx="2" fill="#E4D7BD"/><path d="M912 340 L930 324 L948 340 Z" fill="#654126"/><rect x="927" y="346" width="7" height="8" fill="#8A6A45"/></g>
-    <rect x="0" y="360" width="1440" height="74" fill="url(#hhaze)"/>
-    ${meru}
-    <ellipse cx="${cx}" cy="380" rx="92" ry="15" fill="#3E6B2B"/>
-    <path d="M0 396 C140 388 300 390 452 396 C620 402 840 400 1008 392 C1168 384 1330 388 1440 396 L1440 416 C1330 408 1168 406 1008 412 C840 420 620 422 452 416 C300 410 140 408 0 416 Z" fill="#4C732C"/>
-    <path d="M440 412 C480 394 530 386 590 388 C650 390 700 382 760 384 C820 386 870 380 920 384 C960 387 990 392 1004 400 L1004 414 L440 414 Z" fill="#1F471B"/>
-    ${treesDistant}
-    ${treesFar}
-    <rect x="0" y="414" width="1440" height="88" fill="url(#hwat)"/>
-    <ellipse cx="721" cy="432" rx="84" ry="8" fill="#123A30" opacity=".16"/>
-    <g class="wv" opacity=".5">
-      <rect x="556" y="420" width="120" height="2.6" rx="1.3" fill="#CFE4D6" opacity=".5"/><rect x="700" y="430" width="82" height="2.6" rx="1.3" fill="#CFE4D6" opacity=".36"/>
-      <rect x="840" y="422" width="110" height="2.6" rx="1.3" fill="#CFE4D6" opacity=".46"/><rect x="880" y="432" width="70" height="2.6" rx="1.3" fill="#CFE4D6" opacity=".32"/>
-      <rect x="360" y="424" width="96" height="2.6" rx="1.3" fill="#CFE4D6" opacity=".3"/><rect x="1090" y="426" width="104" height="2.6" rx="1.3" fill="#CFE4D6" opacity=".3"/>
-      <rect x="196" y="436" width="72" height="2.2" rx="1.1" fill="#CFE4D6" opacity=".26"/><rect x="1204" y="438" width="86" height="2.2" rx="1.1" fill="#CFE4D6" opacity=".26"/>
-    </g>
-    <g fill="#F4FBF4"><rect class="gl" x="1038" y="419" width="86" height="2.4" rx="1.2" style="animation-delay:-1.5s"/><rect class="gl" x="1066" y="426" width="46" height="2" rx="1" style="animation-delay:-4.5s"/><rect class="gl" x="1026" y="433" width="62" height="2" rx="1" style="animation-delay:-6.8s"/><rect class="gl" x="1058" y="440" width="34" height="1.8" rx=".9" style="animation-delay:-2.9s"/></g>
-    <ellipse cx="584" cy="440" rx="62" ry="5" fill="#1E4A3E" opacity=".3"/><ellipse cx="877" cy="442" rx="62" ry="5" fill="#1E4A3E" opacity=".3"/>
-    ${bridge(533, 635, 436, 'brL')}${bridge(824, 930, 438, 'brR')}
-    <path d="M0 620 L0 470 C100 462 220 458 340 462 C460 466 560 474 650 478 C760 480 850 478 950 476 C1080 472 1240 462 1440 460 L1440 620 Z" fill="#2A5F2B"/>
-    <path d="M0 470 C100 462 220 458 340 462 C460 466 560 474 650 478 C760 480 850 478 950 476 C1080 472 1240 462 1440 460 L1440 486 C1240 488 1080 496 950 500 C850 502 760 504 650 502 C560 498 460 490 340 486 C220 482 100 486 0 494 Z" fill="#376E2F" opacity=".85"/>
-    <path d="M0 620 L0 548 C160 542 320 540 470 544 C620 548 780 550 940 548 C1100 546 1280 542 1440 540 L1440 620 Z" fill="#1F5641" opacity=".22"/>
-    <g fill="#326A2E" opacity=".5"><ellipse cx="620" cy="500" rx="90" ry="16"/><ellipse cx="760" cy="530" rx="120" ry="20"/><ellipse cx="900" cy="492" rx="70" ry="13"/><ellipse cx="450" cy="520" rx="80" ry="15"/><ellipse cx="1060" cy="488" rx="90" ry="15"/><ellipse cx="260" cy="512" rx="110" ry="17"/></g>
-    <g fill="#255926" opacity=".45"><ellipse cx="690" cy="560" rx="130" ry="18"/><ellipse cx="380" cy="552" rx="90" ry="15"/><ellipse cx="980" cy="556" rx="100" ry="16"/><ellipse cx="1200" cy="540" rx="110" ry="16"/></g>
-    <g stroke="#4E8C3A" stroke-width="2.4" stroke-linecap="round" fill="none" opacity=".85">
-      <path d="M540 500 l 5 -16 l 5 16 M548 502 l 7 -12 l 1 12"/><path d="M610 486 l 5 -15 l 4 15 M618 488 l 7 -11 l 1 11"/><path d="M665 520 l 4 -14 l 5 14"/><path d="M700 492 l 5 -16 l 5 16 M708 494 l 7 -12 l 1 12"/>
-      <path d="M760 508 l 4 -14 l 4 14"/><path d="M806 488 l 5 -15 l 4 15"/><path d="M860 520 l 5 -16 l 5 16 M868 522 l 7 -12 l 1 12"/><path d="M905 498 l 4 -14 l 5 14"/>
-      <path d="M930 512 l 5 -15 l 4 15"/><path d="M300 500 l 5 -15 l 4 15 M308 502 l 7 -11 l 1 11"/><path d="M380 520 l 4 -14 l 5 14"/><path d="M1100 495 l 5 -15 l 4 15"/><path d="M1180 515 l 4 -14 l 5 14 M1188 517 l 7 -11 l 1 11"/>
-      <path d="M520 560 l 5 -18 l 5 18 M529 562 l 8 -14 l 1 14"/><path d="M640 548 l 4 -16 l 5 16"/><path d="M710 566 l 5 -17 l 4 17"/><path d="M790 552 l 4 -15 l 5 15 M798 554 l 7 -11 l 1 11"/>
-      <path d="M880 562 l 5 -17 l 4 17"/><path d="M950 546 l 4 -15 l 5 15"/><path d="M360 556 l 5 -17 l 4 17"/><path d="M1120 552 l 4 -15 l 5 15"/><path d="M240 566 l 5 -18 l 4 18 M248 568 l 8 -13 l 1 13"/>
-      <path d="M600 572 l 4 -15 l 5 15"/><path d="M840 570 l 5 -17 l 4 17"/><path d="M1030 564 l 4 -15 l 5 15"/><path d="M450 574 l 5 -18 l 4 18"/>
-    </g>
-    <g fill="#23552A"><ellipse cx="600" cy="470" rx="40" ry="12"/><ellipse cx="872" cy="466" rx="34" ry="11"/><ellipse cx="330" cy="478" rx="36" ry="11"/><ellipse cx="1080" cy="474" rx="40" ry="12"/><ellipse cx="140" cy="470" rx="42" ry="12"/><ellipse cx="1310" cy="472" rx="38" ry="11"/></g>
-    <g fill="#2F6B45"><circle cx="566" cy="470" r="15"/><circle cx="596" cy="474" r="11"/><circle cx="918" cy="468" r="13"/><circle cx="946" cy="472" r="16"/></g>
-    <g fill="#2C6A2D" opacity=".6"><ellipse cx="660" cy="548" rx="60" ry="14"/><ellipse cx="820" cy="556" rx="70" ry="15"/><ellipse cx="1040" cy="540" rx="70" ry="14"/><ellipse cx="380" cy="548" rx="66" ry="14"/></g>
-    <g fill="#1F5124" opacity=".55"><ellipse cx="560" cy="586" rx="80" ry="17"/><ellipse cx="760" cy="592" rx="90" ry="18"/><ellipse cx="980" cy="586" rx="76" ry="16"/><ellipse cx="1200" cy="578" rx="80" ry="16"/><ellipse cx="240" cy="584" rx="78" ry="16"/></g>
-    ${clump(505, 578, 1.15, 10.2, -1.4)}${clump(938, 574, 1.2, 11.6, -3.1)}${clump(208, 588, 1.15, 9.4, -2.2)}${clump(1244, 586, 1.2, 12.1, -4.6)}${clump(560, 602, 1, 10.8, -.7)}${clump(1000, 600, 1.05, 9.9, -3.8)}
-    ${flyLeaf(1064, 282, 1.05, .42, 16, -2)}${flyLeaf(1198, 338, .8, .34, 20, -7)}${flyLeaf(330, 346, .9, .4, 18, -5)}${flyLeaf(1236, 196, .68, .26, 23, -11)}
-    <g class="bk" opacity=".5">${bird(800, 196, .8)}${bird(832, 184, .62)}${bird(864, 200, .46)}</g>
-  </svg>`;
-    }
     function heroCurveSVG() {
       return `<svg viewBox="0 0 1440 64" preserveAspectRatio="none" aria-hidden="true"><path d="M0 46 C140 52 300 54 450 50 C600 46 760 34 900 22 C980 15 1060 14 1140 20 C1230 27 1340 36 1440 40 L1440 64 L0 64 Z" fill="#F3F6F3"/></svg>`;
     }
     function pgHome() {
       app.innerHTML = `
-  <section class="hero"><div class="hero-art" aria-hidden="true">${heroSceneSVG()}</div>
-    <div class="hero-in"><span class="wxwrap"><span class="wxship" aria-hidden="true"><svg viewBox="0 0 46 30"><g fill="#EAF4F1" opacity=".62"><ellipse cx="9" cy="26" rx="9" ry="2.6"/><ellipse cx="35" cy="26.8" rx="7" ry="2.2"/><ellipse cx="22" cy="27.4" rx="13" ry="2.4"/></g><path d="M7 20.6 Q10 25.6 17 25.6 H31 Q38 25.6 40 20.6 Z" fill="#6B4729"/><path d="M7 20.6 Q10 23.2 17 23.2 H31 Q38 23.2 40 20.6 Z" fill="#86592F"/><path d="M5.6 20 H41.4 L40 22 H7 Z" fill="#A4713F"/><rect x="22" y="6.6" width="1.8" height="14" rx=".9" fill="#6B4729"/><path d="M23.2 6.6 L20 11.4 L23.2 11.4 Z" fill="#D8443A"/><path d="M21.2 8.2 L12.4 19 H21.2 Z" fill="#F7F0DE"/><path d="M21.2 8.2 L17 19 H21.2 Z" fill="#FFFFFF" opacity=".6"/><path d="M24 9.4 L33.8 19 H24 Z" fill="#FBF7EC"/><path d="M24 9.4 V19 H28.8 Z" fill="#DCCFB4" opacity=".7"/></svg></span><span class="wx" id="wx"><span class="sun"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.4v2.4M12 19.2v2.4M2.4 12h2.4M19.2 12h2.4M5.2 5.2l1.7 1.7M17.1 17.1l1.7 1.7M18.8 5.2l-1.7 1.7M6.9 17.1l-1.7 1.7"/></svg></span><b id="wxT">24°C</b><s></s><span id="wxD">${L('Cerah Sejuk', 'Cool & Clear')}</span></span></span>
+  <section class="hero"><div class="hero-art" aria-hidden="true"><img src="/img/hero.jpg" alt="Lembah Pandawa" /></div>
+    <div class="hero-in">
       <h1>${L('Mau seru-seruan di Lembah Pandawa hari ini?', 'Ready for fun at Pandawa Valley today?')}</h1>
       <p>${L('Satu tiket buat semua petualangan seru. Pilih wahananya, bayar, langsung scan QR—tanpa ribet!', 'One ticket for all the fun. Pick your rides, pay, then scan the QR—no hassle!')}</p>
     </div>
@@ -3645,7 +3494,7 @@
     <section class="sec" style="margin-top:30px"><div class="sec-h"><div><h2>${L('Semua wahana', 'All rides')}</h2></div><span class="side" id="wcount"></span></div>
       <div class="tabs" id="tabs"></div><div class="wgrid" id="wg"></div></section>
   </div>`;
-      renderTabs(); renderGrid(); initPaketAnimations(); loadWx();
+      renderTabs(); renderGrid(); initPaketAnimations();
     }
     let pkScrollTick = null;
     function setCardActiveShot(el) {
