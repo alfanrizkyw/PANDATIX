@@ -79,9 +79,9 @@
     }
 
     body.is-scrolled.is-home .hdr {
-      background: rgba(14, 46, 32, .92) !important;
-      -webkit-backdrop-filter: blur(20px) !important;
-      backdrop-filter: blur(20px) !important;
+      background: #0E2E20 !important;
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
       box-shadow: 0 4px 20px rgba(8, 32, 22, .3) !important;
     }
 
@@ -1268,13 +1268,13 @@
 
     .fav .pk .pprice {
       border-top: 1px solid var(--line);
-      padding-top: 8px;
+      padding-top: 10px;
       margin-top: auto;
+      margin-bottom: 6px;
       flex-shrink: 0;
-      height: 56px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      gap: 3px;
     }
 
     .fav .pk .btn.block {
@@ -1472,50 +1472,53 @@
     .cor-row {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 2px
+      gap: 6px;
+      line-height: 1;
+      margin-bottom: 2px;
     }
 
     .cor {
-      font-size: 12.5px;
+      font-size: 12px;
       color: var(--ink-3);
-      text-decoration: line-through
+      text-decoration: line-through;
     }
 
     .disc-pill {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      height: 22px;
-      padding: 0 9px;
+      height: 18px;
+      padding: 0 6px;
       border-radius: 999px;
-      font-size: 11.5px;
-      font-weight: 800;
-      letter-spacing: -.02em;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: -.01em;
       color: #0E4E30;
-      background: var(--p-cont);
+      background: #D8F2E4;
       border: none;
       outline: none;
-      box-shadow: 0 1px 3px rgba(18, 72, 46, .08);
+      line-height: 1;
       vertical-align: middle;
     }
 
     .pprice .big {
       display: flex;
       align-items: baseline;
-      gap: 7px
+      gap: 6px;
+      line-height: 1;
     }
 
     .pprice .big b {
-      font-size: 27px;
+      font-size: 25px;
       font-weight: 800;
       color: var(--p);
-      letter-spacing: -.03em
+      letter-spacing: -.03em;
+      line-height: 1;
     }
 
     .pprice .big span {
-      font-size: 12.5px;
-      color: var(--ink-3)
+      font-size: 12px;
+      color: var(--ink-3);
     }
 
     .pk .btn {
@@ -1781,15 +1784,33 @@
 
     .tb2 {
       height: 38px;
-      padding: 0 17px;
-      border-radius: 7px;
+      padding: 0 18px;
+      border-radius: 999px;
       border: 1.5px solid var(--line);
       background: var(--surface);
       font-size: 13px;
       font-weight: 700;
       color: var(--ink-2);
       flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       transition: .16s
+    }
+
+    .tb2 .ico {
+      flex-shrink: 0;
+      transition: fill .16s, color .16s;
+    }
+
+    .tb2:not(.on) .ico {
+      color: #F59E0B;
+      fill: #F59E0B;
+    }
+
+    .tb2.on .ico {
+      color: #fff;
+      fill: #fff;
     }
 
     .tb2:hover {
@@ -2322,7 +2343,7 @@
 
     .mo {
       display: grid;
-      grid-template-columns: 48px minmax(0, 1fr) 22px;
+      grid-template-columns: 48px minmax(0, 1fr);
       align-items: center;
       gap: 14px;
       min-height: 76px;
@@ -4144,7 +4165,7 @@
     function addCart(type, id, qty) { const x = cart.find(c => c.type === type && c.id === id); if (x) x.qty = clampQ(x.qty + qty); else cart.push({ type, id, qty }); saveCart() }
     function buyPaket(id) { addCart('paket', id, 1); go('/bayar') }
     let wLimit = 4;
-    function renderTabs() { const cats = [['all', L('Semua')], ['fav', L('Favorit')], ...[...new Set(CAT.wahana.map(w => w.kategori))].map(c => [c, ct(c)])]; $('#tabs').innerHTML = cats.map(([k, label]) => `<button class="tb2 ${k === curCat ? 'on' : ''}" onclick="curCat='${k}';wLimit=4;renderTabs();renderGrid()">${esc(label)}</button>`).join('') }
+    function renderTabs() { const cats = [['all', L('Semua')], ['fav', L('Favorit')], ...[...new Set(CAT.wahana.map(w => w.kategori))].map(c => [c, ct(c)])]; $('#tabs').innerHTML = cats.map(([k, label]) => `<button class="tb2 ${k === curCat ? 'on' : ''}" onclick="curCat='${k}';wLimit=4;renderTabs();renderGrid()">${k === 'fav' ? ico('star', 13, 2) + ' ' : ''}${esc(label)}</button>`).join('') }
     function renderGrid() {
       const l = CAT.wahana.filter(w => curCat === 'all' || (curCat === 'fav' ? w.favorit : w.kategori === curCat));
       const visible = l.slice(0, wLimit);
@@ -4184,12 +4205,12 @@
       cart = cart.filter(c => ref(c.type, c.id)); saveCart();
       if (!cart.length && !undoBuf) { toast(L('Keranjang masih kosong. Pilih wahana dulu.'), true); return go('/') }
       app.innerHTML = `<div class="page"><a class="back" href="#/">${ico('left', 19, 2.4)} ${L('Kembali ke beranda')}</a>
-  <h1 class="h1">${L('Pembayaran')}</h1><p class="sub1">${L('Selesaikan pemesanan tiket wahana Anda')}</p>
+  <h1 class="h1">${L('Pembayaran')}</h1>
   <div class="pgr"><div style="display:grid;gap:16px">
     <section class="card box"><h3>${L('Ringkasan pesanan')}</h3><div id="ols"></div><button class="btn btn-out block" onclick="go('/')">${ico('plusc', 17, 2.2)} ${L('Pilih wahana lain')}</button></section>
-    <section class="card box"><div class="bh"><h3>${L('Data pemesan')}</h3><span>${L('Wajib diisi')}</span></div><div class="field" style="margin-top:12px"><label for="nm">${L('Nama lengkap')}</label><input class="inp" id="nm" placeholder="${L('cth. Carmenita')}" maxlength="60" autocomplete="name" value="${esc(payNama)}"><span class="errtxt" id="nmE" hidden>${L('Nama lengkap wajib diisi.')}</span></div></section>
+    <section class="card box"><div class="bh"><h3>${L('Data pemesan')}</h3></div><div class="field" style="margin-top:12px"><label for="nm">${L('Nama lengkap')} <span style="color:#DC2626">*</span></label><input class="inp" id="nm" placeholder="${L('cth. Carmenita')}" maxlength="60" autocomplete="name" value="${esc(payNama)}"><span class="errtxt" id="nmE" hidden>${L('Nama lengkap wajib diisi.')}</span></div></section>
     <section class="card box"><h3>${L('Metode pembayaran')}</h3><div class="ml" id="mls"></div></section></div>
-  <div class="rt" style="display:grid;gap:16px"><section class="card nota"><div class="nh"><h3>${L('Nota Pemesanan')}</h3><span class="chip">${L('Siap Bayar')}</span></div><div class="nm"><span>${L('Draf pemesanan')}</span><span>${fDate(Date.now())}</span></div><div id="nrs"></div></section>
+  <div class="rt" style="display:grid;gap:16px"><section class="card nota"><div class="nh"><h3>${L('Nota Pemesanan')}</h3></div><div class="nm"><span>${L('Draf pemesanan')}</span><span>${fDate(Date.now())}</span></div><div id="nrs"></div></section>
   <button class="btn block" id="pay" onclick="bayar()">${L('Bayar sekarang')} ${ico('right', 18, 2.6)}</button></div></div></div>`;
       $('#nm').addEventListener('input', e => { payNama = e.target.value; e.target.classList.remove('err'); $('#nmE').hidden = true });
       drawPay();
@@ -4200,7 +4221,7 @@
         const r = ref(c.type, c.id), nm = itemName(r);
         return `<div class="ol"><div class="th" style="${thumbStyle(c)}"></div><div class="i"><b>${esc(nm)}</b><span>${c.qty} × ${rp(r.harga)}</span></div><div class="a">${rp(r.harga * c.qty)}<br><button class="del" onclick="rmCart(${i})" aria-label="${L('Hapus ' + nm + ' dari pesanan')}">${ico('trash', 13, 2.2)} ${L('Hapus')}</button></div></div>`
       }).join('');
-      $('#mls').innerHTML = METHODS.map(m => `<button class="mo ${payMethod === m[0] ? 'on' : ''}" onclick="payMethod='${m[0]}';drawPay()" aria-pressed="${payMethod === m[0]}"><span class="mi">${ico(m[3], 23, 1.9)}</span><span class="tx"><span class="nm"><b>${esc(mName(m))}</b>${m[0] === 'qris' ? `<i class="ins">${L('Instan')}</i>` : ''}</span><span class="sb">${esc(mSub(m))}</span></span><span class="rd"></span></button>`).join('');
+      $('#mls').innerHTML = METHODS.map(m => `<button class="mo ${payMethod === m[0] ? 'on' : ''}" onclick="payMethod='${m[0]}';drawPay()" aria-pressed="${payMethod === m[0]}"><span class="mi">${ico(m[3], 23, 1.9)}</span><span class="tx"><span class="nm"><b>${esc(mName(m))}</b></span><span class="sb">${esc(mSub(m))}</span></span></button>`).join('');
       const t = calc(), M = METHODS.find(m => m[0] === payMethod);
       $('#nrs').innerHTML = (empty ? '' : cart.map(c => { const r = ref(c.type, c.id); return `<div class="nr"><span>${esc(itemName(r))} × ${c.qty}</span><b>${rp(r.harga * c.qty)}</b></div>` }).join(''))
         + `<div class="nr"><span>${L('Biaya admin')}</span><b>${rp(t.fee)}</b></div><div class="nr"><span>${L('Metode')}</span><span class="mt">${ico(M[3], 17, 2)}${M[0] === 'qris' ? 'QRIS' : esc(mName(M))}</span></div><div class="nt"><span>Total</span><b>${rp(t.total)}</b></div>`;
