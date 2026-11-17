@@ -1128,14 +1128,26 @@
       flex-direction: column;
       border-width: 1.5px;
       border-color: var(--line);
-      border-radius: 11px;
-      transition: box-shadow .25s ease, border-color .25s;
-      transform: none !important;
+      border-radius: 18px;
+      transition: box-shadow .25s ease, border-color .25s, transform .2s ease;
+      transform: none;
     }
 
-    .pk:hover {
-      box-shadow: 0 14px 32px -12px rgba(18, 72, 46, .24);
-      border-color: rgba(27, 107, 68, .35);
+    .fav .pk {
+      flex: 0 0 min(300px, 80vw);
+      scroll-snap-align: start;
+      background: #fff;
+      box-shadow: 0 14px 30px -18px rgba(0, 0, 0, .5);
+    }
+
+    .fav .pk:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 22px 40px -18px rgba(0, 0, 0, .55);
+    }
+
+    .fav .pk.popular:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 0 0 2px #10B981, 0 22px 42px -12px rgba(16, 185, 129, .55);
     }
 
     .pk.popular {
@@ -1179,20 +1191,23 @@
     .pk-slider-wrap {
       position: relative;
       margin: 0 14px;
-      border-radius: 8px;
+      border-radius: 12px;
       overflow: hidden;
       background: var(--p-cont);
       box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .06), 0 3px 10px -3px rgba(10, 40, 30, .15);
+      pointer-events: none;
+      user-select: none;
+      touch-action: pan-y;
     }
 
     .pk-slider {
       display: flex;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
       scroll-behavior: smooth;
       height: 156px;
+      pointer-events: none;
     }
 
     .pk-slider::-webkit-scrollbar {
@@ -1206,7 +1221,7 @@
       scroll-snap-align: center;
       scroll-snap-stop: always;
       position: relative;
-      cursor: pointer;
+      cursor: default;
     }
 
     .pk-slide-img {
@@ -1219,31 +1234,6 @@
 
     .pk-slide:hover .pk-slide-img {
       transform: scale(1.035);
-    }
-
-    .pk-dots {
-      position: absolute;
-      bottom: 8px;
-      left: 0;
-      right: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      z-index: 3;
-      pointer-events: auto;
-    }
-
-    .pk-dots .s-dot {
-      width: 6px;
-      height: 6px;
-      background: rgba(255, 255, 255, .55);
-    }
-
-    .pk-dots .s-dot.on {
-      width: 16px;
-      background: #ffffff;
-      box-shadow: 0 1px 4px rgba(255, 255, 255, .45);
     }
 
     @media(max-width: 480px) {
@@ -1403,10 +1393,19 @@
 
     /* favorit dark band */
     .favband {
-      background: linear-gradient(160deg, #165A39 0%, #12482E 55%, #0D3722 100%);
+      background: linear-gradient(160deg, #134B30 0%, #0F3D27 55%, #0B2C1C 100%);
       position: relative;
       overflow: hidden;
-      margin-top: 38px
+      margin-top: 28px;
+    }
+
+    .favband-bg {
+      position: absolute;
+      inset: 0;
+      background: url('/img/fav-bg.jpg') center center / cover no-repeat;
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 1;
     }
 
     .favband::before {
@@ -1414,14 +1413,16 @@
       position: absolute;
       inset: 0;
       background: radial-gradient(120% 80% at 80% 0%, rgba(143, 200, 169, .14), transparent 60%);
-      pointer-events: none
+      pointer-events: none;
+      z-index: 1;
     }
 
     .favband .in {
       position: relative;
+      z-index: 2;
       max-width: 1100px;
       margin: 0 auto;
-      padding: 34px 16px 38px
+      padding: 34px 16px 38px;
     }
 
     .favband .fh {
@@ -3416,6 +3417,10 @@
         flex-basis: 300px
       }
 
+      .fav .pk {
+        flex-basis: 320px
+      }
+
       .dgrid {
         grid-template-columns: 1.1fr 1fr;
         gap: 28px;
@@ -3758,10 +3763,7 @@
     </div>
     <div class="pk-slider-wrap">
       <div class="pk-slider" id="pkSlider_${p.id}">
-        ${s.map((shotStyle) => `<div class="pk-slide" onclick="pkSlideNext('${p.id}')"><div class="pk-slide-img" style="${shotStyle}"></div></div>`).join('')}
-      </div>
-      <div class="pk-dots" id="pkDots_${p.id}">
-        ${s.map((_, sIdx) => `<button type="button" class="s-dot ${sIdx === 0 ? 'on' : ''}" onclick="pkSlideGo('${p.id}', ${sIdx})" aria-label="Slide ${sIdx + 1}"></button>`).join('')}
+        ${s.map((shotStyle) => `<div class="pk-slide"><div class="pk-slide-img" style="${shotStyle}"></div></div>`).join('')}
       </div>
     </div>
     <div class="pbody">
@@ -3776,7 +3778,6 @@
       return `<svg viewBox="0 0 1440 64" preserveAspectRatio="none" aria-hidden="true"><path d="M0 46 C140 52 300 54 450 50 C600 46 760 34 900 22 C980 15 1060 14 1140 20 C1230 27 1340 36 1440 40 L1440 64 L0 64 Z" fill="#F3F6F3"/></svg>`;
     }
     function pgHome() {
-      const favs = CAT.wahana.filter(w => w.favorit);
       wLimit = 4;
       app.innerHTML = `
   <section class="hero"><div class="hero-art" aria-hidden="true"><img src="/img/hero.jpg" alt="Lembah Pandawa" /></div>
@@ -3785,15 +3786,13 @@
       <p>${L('Satu tiket buat semua petualangan seru. Pilih wahananya, bayar, langsung scan QR—tanpa ribet!')}</p>
     </div>
     <div class="hero-curve">${heroCurveSVG()}</div></section>
-  <div class="page">
-    <section class="sec" style="margin-top:24px"><div class="sec-h"><div><h2>${L('Paket bundling wisata')}</h2></div></div>
-      <div class="pgrid">${CAT.paket.map(paketHTML).join('')}</div></section>
-  </div>
-  <section class="favband bleed"><div class="in">
-    <div class="fh"><div><h2>${L('Wahana favorit')}</h2></div></div>
-    <div class="fav" id="favCarousel">${favs.map(favHTML).join('')}</div>
-    <div class="fav-dots-wrap" id="favDots">${favs.map((_, i) => `<button type="button" class="s-dot ${i === 0 ? 'on' : ''}" onclick="favGo(${i})" aria-label="${L('Favorit ' + (i + 1))}"></button>`).join('')}</div>
-  </div></section>
+  <section class="favband bleed">
+    <div class="favband-bg" aria-hidden="true"></div>
+    <div class="in">
+      <div class="fh"><div><h2>${L('Paket Wisata Favorit')}</h2></div></div>
+      <div class="fav" id="favCarousel">${CAT.paket.map(paketHTML).join('')}</div>
+      <div class="fav-dots-wrap" id="favDots">${CAT.paket.map((_, i) => `<button type="button" class="s-dot ${i === 0 ? 'on' : ''}" onclick="favGo(${i})" aria-label="${L('Paket ' + (i + 1))}"></button>`).join('')}</div>
+    </div></section>
   <div class="page">
     <section class="sec" style="margin-top:30px"><div class="sec-h"><div><h2>${L('Semua wahana')}</h2></div></div>
       <div class="tabs" id="tabs"></div><div class="wgrid" id="wg"></div>
@@ -3802,36 +3801,12 @@
       renderTabs(); renderGrid(); initPaketSliders(); initFavSlider();
     }
 
-    function getClosestSlider() {
-      const vCenter = window.innerHeight / 2;
-      const candidates = [
-        $('#favCarousel'),
-        ...(CAT && CAT.paket ? CAT.paket.map(p => $(`#pkSlider_${p.id}`)) : [])
-      ].filter(Boolean);
-
-      let closest = null;
-      let minDist = Infinity;
-
-      candidates.forEach(el => {
-        const rect = el.getBoundingClientRect();
-        if (rect.bottom > 40 && rect.top < window.innerHeight - 40) {
-          const elCenter = (rect.top + rect.bottom) / 2;
-          const dist = Math.abs(elCenter - vCenter);
-          if (dist < minDist) {
-            minDist = dist;
-            closest = el;
-          }
-        }
-      });
-
-      return closest;
-    }
-
     function canAutoScroll(slider) {
       if (!slider) return false;
       if (slider._isInteracting) return false;
       if (Date.now() < (slider._manualPauseUntil || 0)) return false;
-      return getClosestSlider() === slider;
+      const rect = slider.getBoundingClientRect();
+      return rect.bottom > 60 && rect.top < window.innerHeight - 60;
     }
 
     function attachManualScrollTracker(slider) {
@@ -3858,7 +3833,6 @@
         if (!trackingTouch || !e.touches || e.touches.length !== 1) return;
         const dx = Math.abs(e.touches[0].clientX - startX);
         const dy = Math.abs(e.touches[0].clientY - startY);
-        // Only horizontal swipe on this slider triggers pause, vertical page scroll does not
         if (dx > dy && dx > 8) {
           slider._isInteracting = true;
           pauseManual(6000);
@@ -3876,7 +3850,6 @@
       }, { passive: true });
 
       slider.addEventListener('wheel', (e) => {
-        // Only horizontal wheel scroll on this slider triggers pause
         if (Math.abs(e.deltaX) > Math.abs(e.deltaY) && Math.abs(e.deltaX) > 4) {
           pauseManual(6000);
         }
@@ -3886,7 +3859,7 @@
     function favGo(idx) {
       const fav = $('#favCarousel');
       if (!fav) return;
-      const cards = fav.querySelectorAll('.fc');
+      const cards = fav.querySelectorAll('.pk, .fc');
       if (!cards[idx]) return;
       fav.scrollTo({ left: cards[idx].offsetLeft - fav.offsetLeft, behavior: 'smooth' });
       updateFavDots(idx);
@@ -3894,6 +3867,14 @@
     window.favGo = favGo;
 
     function updateFavDots(idx) {
+      const fav = $('#favCarousel');
+      const dotsWrap = $('#favDots');
+      if (fav && dotsWrap && fav.scrollWidth <= fav.clientWidth + 10) {
+        dotsWrap.style.display = 'none';
+        return;
+      } else if (dotsWrap) {
+        dotsWrap.style.display = 'flex';
+      }
       const dots = $$('#favDots .s-dot');
       dots.forEach((d, i) => d.classList.toggle('on', i === idx));
     }
@@ -3904,8 +3885,13 @@
       if (window.__favTimer) clearInterval(window.__favTimer);
       attachManualScrollTracker(fav);
 
-      const cards = Array.from(fav.querySelectorAll('.fc'));
+      const cards = Array.from(fav.querySelectorAll('.pk, .fc'));
       if (cards.length <= 1) return;
+
+      const dotsWrap = $('#favDots');
+      if (dotsWrap && fav.scrollWidth <= fav.clientWidth + 10) {
+        dotsWrap.style.display = 'none';
+      }
 
       function getFavIndex() {
         const sl = fav.scrollLeft;
@@ -3926,6 +3912,7 @@
 
       window.__favTimer = setInterval(() => {
         if (!canAutoScroll(fav)) return;
+        if (fav.scrollWidth <= fav.clientWidth + 10) return;
         const cur = getFavIndex();
         const next = (cur + 1) % cards.length;
         favGo(next);
@@ -3938,20 +3925,8 @@
       const slides = slider.querySelectorAll('.pk-slide');
       if (!slides[idx]) return;
       slider.scrollTo({ left: slides[idx].offsetLeft - slider.offsetLeft, behavior: 'smooth' });
-      updatePkDots(pkId, idx);
     }
     window.pkSlideGo = pkSlideGo;
-
-    function pkSlideNext(pkId) {
-      const slider = $(`#pkSlider_${pkId}`);
-      if (!slider) return;
-      const slides = Array.from(slider.querySelectorAll('.pk-slide'));
-      if (slides.length <= 1) return;
-      const cur = getPkSliderIndex(slider, slides);
-      const next = (cur + 1) % slides.length;
-      pkSlideGo(pkId, next);
-    }
-    window.pkSlideNext = pkSlideNext;
 
     function getPkSliderIndex(slider, slides) {
       const sl = slider.scrollLeft;
@@ -3966,11 +3941,6 @@
       return bestIdx;
     }
 
-    function updatePkDots(pkId, idx) {
-      const dots = $$(`#pkDots_${pkId} .s-dot`);
-      dots.forEach((d, i) => d.classList.toggle('on', i === idx));
-    }
-
     function initPaketSliders() {
       if (window.__pkTimers) {
         window.__pkTimers.forEach(clearInterval);
@@ -3980,16 +3950,11 @@
       CAT.paket.forEach((p, pIdx) => {
         const slider = $(`#pkSlider_${p.id}`);
         if (!slider) return;
-        attachManualScrollTracker(slider);
 
         const slides = Array.from(slider.querySelectorAll('.pk-slide'));
         if (slides.length <= 1) return;
 
-        slider.addEventListener('scroll', () => {
-          updatePkDots(p.id, getPkSliderIndex(slider, slides));
-        }, { passive: true });
-
-        const delay = 3600 + (pIdx * 500);
+        const delay = 3200 + (pIdx * 600);
         const timer = setInterval(() => {
           if (!canAutoScroll(slider)) return;
           const cur = getPkSliderIndex(slider, slides);
