@@ -13,24 +13,24 @@ const ADMIN_FEE = 5000, QTY_MAX = 50, PENDING_TTL = 2 * 3600e3;
 
 /* ---------- katalog ---------- */
 const WAHANA = [
-  {id:'ombak-raksasa',nama:'Roller Coaster Samudra',kategori:'Ekstrem',harga:85000,durasi:'3 mnt',tinggi:'120 cm',favorit:true,desc:'Roller coaster tercepat di Lembah Pandawa, menukik tajam menghadap laut lepas.'},
-  {id:'seluncur-naga',nama:'Seluncur Naga',kategori:'Air',harga:65000,durasi:'2 mnt',tinggi:'120 cm',favorit:true,desc:'Perosotan air sepanjang 80 meter dengan tikungan berliku menyerupai tubuh naga.'},
-  {id:'bianglala',nama:'Bianglala Cakrawala',kategori:'Santai',harga:45000,durasi:'8 mnt',tinggi:'Semua usia',favorit:true,desc:'Kincir raksasa dengan kabin tertutup, pemandangan pantai dari ketinggian 40 meter.'},
-  {id:'kapal-karam',nama:'Kapal Karam',kategori:'Ekstrem',harga:55000,durasi:'10 mnt',tinggi:'130 cm',desc:'Rumah hantu bertema kapal karam dengan efek suara dan visual yang mendebarkan.'},
-  {id:'kolam-ombak',nama:'Kolam Ombak Buatan',kategori:'Air',harga:50000,durasi:'Bebas',tinggi:'Semua usia',favorit:true,desc:'Kolam ombak buatan dengan gelombang setiap 15 menit sekali.'},
-  {id:'flying-fox',nama:'Flying Fox Camar',kategori:'Ekstrem',harga:70000,durasi:'1 mnt',tinggi:'135 cm',favorit:true,desc:'Meluncur sejauh 250 meter di atas kanopi pantai dengan kecepatan angin laut.'},
-  {id:'kereta-mini',nama:'Kereta Mini Pesisir',kategori:'Santai',harga:35000,durasi:'12 mnt',tinggi:'Semua usia',desc:'Kereta wisata yang berkeliling seluruh area Lembah Pandawa.'},
-  {id:'dunia-air-cilik',nama:'Dunia Air Cilik',kategori:'Anak',harga:40000,durasi:'Bebas',tinggi:'Maks 120 cm',desc:'Area bermain air khusus anak dengan kedalaman aman.'},
-  {id:'rumah-cermin',nama:'Rumah Kaca Cermin',kategori:'Santai',harga:30000,durasi:'5 mnt',tinggi:'Semua usia',desc:'Labirin cermin yang memantulkan cahaya ke segala arah.'},
-  {id:'tornado-air',nama:'Tornado Air',kategori:'Air',harga:75000,durasi:'3 mnt',tinggi:'130 cm',favorit:true,desc:'Perosotan berbentuk corong raksasa yang berputar sebelum menjatuhkan pengunjung.'},
-  {id:'komidi-putar',nama:'Komidi Putar Bahari',kategori:'Anak',harga:25000,durasi:'6 mnt',tinggi:'Maks 130 cm',desc:'Komidi putar klasik dengan tema makhluk laut.'},
-  {id:'bumper-boat',nama:'Bumper Boat',kategori:'Air',harga:45000,durasi:'5 mnt',tinggi:'110 cm',desc:'Perahu kecil yang bisa ditabrakkan satu sama lain di kolam dangkal.'},
-  {id:'taman-lumba',nama:'Taman Lumba-Lumba',kategori:'Anak',harga:35000,durasi:'Bebas',tinggi:'Semua usia',desc:'Area interaktif dengan pertunjukan lumba-lumba mini.'}
+  { id: 'ombak-raksasa', nama: 'Roller Coaster Samudra', kategori: 'Ekstrem', harga: 85000, durasi: '3 mnt', tinggi: '120 cm', favorit: true, desc: 'Roller coaster tercepat di Lembah Pandawa, menukik tajam menghadap laut lepas.' },
+  { id: 'seluncur-naga', nama: 'Seluncur Naga', kategori: 'Air', harga: 65000, durasi: '2 mnt', tinggi: '120 cm', favorit: true, desc: 'Perosotan air sepanjang 80 meter dengan tikungan berliku menyerupai tubuh naga.' },
+  { id: 'bianglala', nama: 'Bianglala Cakrawala', kategori: 'Santai', harga: 45000, durasi: '8 mnt', tinggi: 'Semua usia', favorit: true, desc: 'Kincir raksasa dengan kabin tertutup, pemandangan pantai dari ketinggian 40 meter.' },
+  { id: 'kapal-karam', nama: 'Kapal Karam', kategori: 'Ekstrem', harga: 55000, durasi: '10 mnt', tinggi: '130 cm', desc: 'Rumah hantu bertema kapal karam dengan efek suara dan visual yang mendebarkan.' },
+  { id: 'kolam-ombak', nama: 'Kolam Ombak Buatan', kategori: 'Air', harga: 50000, durasi: 'Bebas', tinggi: 'Semua usia', favorit: true, desc: 'Kolam ombak buatan dengan gelombang setiap 15 menit sekali.' },
+  { id: 'flying-fox', nama: 'Flying Fox Camar', kategori: 'Ekstrem', harga: 70000, durasi: '1 mnt', tinggi: '135 cm', favorit: true, desc: 'Meluncur sejauh 250 meter di atas kanopi pantai dengan kecepatan angin laut.' },
+  { id: 'kereta-mini', nama: 'Kereta Mini Pesisir', kategori: 'Santai', harga: 35000, durasi: '12 mnt', tinggi: 'Semua usia', desc: 'Kereta wisata yang berkeliling seluruh area Lembah Pandawa.' },
+  { id: 'dunia-air-cilik', nama: 'Dunia Air Cilik', kategori: 'Anak', harga: 40000, durasi: 'Bebas', tinggi: 'Maks 120 cm', desc: 'Area bermain air khusus anak dengan kedalaman aman.' },
+  { id: 'rumah-cermin', nama: 'Rumah Kaca Cermin', kategori: 'Santai', harga: 30000, durasi: '5 mnt', tinggi: 'Semua usia', desc: 'Labirin cermin yang memantulkan cahaya ke segala arah.' },
+  { id: 'tornado-air', nama: 'Tornado Air', kategori: 'Air', harga: 75000, durasi: '3 mnt', tinggi: '130 cm', favorit: true, desc: 'Perosotan berbentuk corong raksasa yang berputar sebelum menjatuhkan pengunjung.' },
+  { id: 'komidi-putar', nama: 'Komidi Putar Bahari', kategori: 'Anak', harga: 25000, durasi: '6 mnt', tinggi: 'Maks 130 cm', desc: 'Komidi putar klasik dengan tema makhluk laut.' },
+  { id: 'bumper-boat', nama: 'Bumper Boat', kategori: 'Air', harga: 45000, durasi: '5 mnt', tinggi: '110 cm', desc: 'Perahu kecil yang bisa ditabrakkan satu sama lain di kolam dangkal.' },
+  { id: 'taman-lumba', nama: 'Taman Lumba-Lumba', kategori: 'Anak', harga: 35000, durasi: 'Bebas', tinggi: 'Semua usia', desc: 'Area interaktif dengan pertunjukan lumba-lumba mini.' }
 ];
 const PAKET = [
-  {id:'paket-murah',nama:'Paket Murah',tag:'Murah',kelas:'murah',desc:'Buat yang mau seru-seruan santai tanpa bikin kantong bolong.',wahanaIds:['dunia-air-cilik','komidi-putar','taman-lumba'],harga:55000},
-  {id:'paket-reguler',nama:'Paket Reguler',tag:'Reguler',kelas:'reguler',desc:'Pilihan seimbang dengan 3 wahana favorit keluarga.',wahanaIds:['kereta-mini','bianglala','kolam-ombak'],harga:79000},
-  {id:'paket-mahal',nama:'Paket Premium',tag:'Premium',kelas:'premium',desc:'Paling lengkap, 3 wahana seru buat sehari penuh keseruan.',wahanaIds:['kapal-karam','bumper-boat','flying-fox'],harga:119000}
+  { id: 'paket-murah', nama: 'Paket Murah', tag: 'Murah', kelas: 'murah', wahanaIds: ['dunia-air-cilik', 'komidi-putar', 'taman-lumba'], harga: 55000 },
+  { id: 'paket-reguler', nama: 'Paket Reguler', tag: 'Reguler', kelas: 'reguler', wahanaIds: ['kereta-mini', 'bianglala', 'kolam-ombak'], harga: 79000 },
+  { id: 'paket-mahal', nama: 'Paket Premium', tag: 'Premium', kelas: 'premium', wahanaIds: ['kapal-karam', 'bumper-boat', 'flying-fox'], harga: 119000 }
 ];
 const wById = id => WAHANA.find(w => w.id === id);
 const pById = id => PAKET.find(p => p.id === id);
@@ -106,9 +106,9 @@ function sse(res) {
 }
 function emit(filter, event, data) {
   const msg = `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
-  for (const c of clients) if (filter(c)) { try { c.res.write(msg); } catch (e) {} }
+  for (const c of clients) if (filter(c)) { try { c.res.write(msg); } catch (e) { } }
 }
-setInterval(() => { for (const c of clients) try { c.res.write(': ping\n\n'); } catch (e) {} }, 20000);
+setInterval(() => { for (const c of clients) try { c.res.write(': ping\n\n'); } catch (e) { } }, 20000);
 
 /* ---------- domain ---------- */
 function nextSeq(name) { db.seq[name] = (db.seq[name] || 0) + 1; return db.seq[name]; }
@@ -118,12 +118,16 @@ function expireOrders() {
 }
 function ordTickets(o) { return db.tickets.filter(t => t.orderId === o.id); }
 function pubTicket(t) {
-  return { code: t.code, no: t.no, total: t.total, type: t.type, refId: t.refId, name: t.name, price: t.price, validDate: t.validDate,
-    rides: t.rides.map(id => ({ id, nama: wById(id).nama, used: t.usage[id] ? t.usage[id].at : null })) };
+  return {
+    code: t.code, no: t.no, total: t.total, type: t.type, refId: t.refId, name: t.name, price: t.price, validDate: t.validDate,
+    rides: t.rides.map(id => ({ id, nama: wById(id).nama, used: t.usage[id] ? t.usage[id].at : null }))
+  };
 }
 function pubOrder(o, withTickets = true) {
-  const r = { id: o.id, code: o.code, nota: o.nota, nama: o.nama, method: o.method, items: o.items, subtotal: o.subtotal, fee: o.fee, total: o.total,
-    status: o.status, createdAt: o.createdAt, confirmedAt: o.confirmedAt || null, confirmedByName: o.confirmedByName || null };
+  const r = {
+    id: o.id, code: o.code, nota: o.nota, nama: o.nama, method: o.method, items: o.items, subtotal: o.subtotal, fee: o.fee, total: o.total,
+    status: o.status, createdAt: o.createdAt, confirmedAt: o.confirmedAt || null, confirmedByName: o.confirmedByName || null
+  };
   if (withTickets && o.status === 'confirmed') r.tickets = ordTickets(o).map(pubTicket);
   return r;
 }
@@ -146,15 +150,17 @@ function createOrder(body) {
   const subtotal = items.reduce((s, i) => s + i.price * i.qty, 0);
   const n = String(Math.floor(Math.random() * 1e8)).padStart(8, '0');
   const d = wib();
-  const o = { id: rnd(9), key: rnd(18), code: `PTX-${n.slice(0, 4)}-${n.slice(4)}`, nama, method, items, subtotal, fee: ADMIN_FEE, total: subtotal + ADMIN_FEE,
-    status: 'pending', createdAt: Date.now() };
+  const o = {
+    id: rnd(9), key: rnd(18), code: `PTX-${n.slice(0, 4)}-${n.slice(4)}`, nama, method, items, subtotal, fee: ADMIN_FEE, total: subtotal + ADMIN_FEE,
+    status: 'pending', createdAt: Date.now()
+  };
   db.orders.push(o); save();
   emit(c => c.kind === 'staff', 'order', { id: o.id });
   return o;
 }
 function normCode(s) {
   s = String(s || '').trim();
-  try { const u = new URL(s); s = u.searchParams.get('order') || s; } catch (e) {}
+  try { const u = new URL(s); s = u.searchParams.get('order') || s; } catch (e) { }
   return s.toUpperCase().replace(/\s+/g, '');
 }
 function findOrderByCode(c) { c = normCode(c); return db.orders.find(o => o.code === c); }
@@ -204,8 +210,10 @@ function redeem(p, rawCode, ip) {
 function todayStats(p) {
   const k = dayKey();
   const mine = db.scans.filter(s => s.petugasId === p.id && dayKey(s.at) === k);
-  return { okCount: mine.filter(s => s.result === 'ok').length, rejected: mine.filter(s => s.result !== 'ok').length,
-    recent: mine.slice(-15).reverse() };
+  return {
+    okCount: mine.filter(s => s.result === 'ok').length, rejected: mine.filter(s => s.result !== 'ok').length,
+    recent: mine.slice(-15).reverse()
+  };
 }
 function report(range) {
   const conf = db.orders.filter(o => o.status === 'confirmed');
@@ -218,10 +226,14 @@ function report(range) {
   let keys = Object.keys(by).sort().reverse();
   if (range === 'bulan') keys = keys.filter(k => k.startsWith(month));
   else if (range !== 'semua') keys = keys.filter(k => k >= dayKey(now - 6 * 864e5));
-  const rows = keys.map(k => ({ key: k, trx: by[k].length, tiket: by[k].reduce((s, o) => s + ordTickets(o).length, 0), total: by[k].reduce((s, o) => s + o.total, 0),
-    ket: [...new Set(by[k].flatMap(o => o.items.map(i => i.name)))].slice(0, 2).join(' & ') + (new Set(by[k].flatMap(o => o.items.map(i => i.name))).size > 2 ? ' +' : '') }));
-  return { today: sum(o => dayKey(o.confirmedAt) === today), yesterday: sum(o => dayKey(o.confirmedAt) === yest), month: sum(o => dayKey(o.confirmedAt).startsWith(month)),
-    all: sum(() => true), days, rows, todayKey: today, yesterdayKey: yest };
+  const rows = keys.map(k => ({
+    key: k, trx: by[k].length, tiket: by[k].reduce((s, o) => s + ordTickets(o).length, 0), total: by[k].reduce((s, o) => s + o.total, 0),
+    ket: [...new Set(by[k].flatMap(o => o.items.map(i => i.name)))].slice(0, 2).join(' & ') + (new Set(by[k].flatMap(o => o.items.map(i => i.name))).size > 2 ? ' +' : '')
+  }));
+  return {
+    today: sum(o => dayKey(o.confirmedAt) === today), yesterday: sum(o => dayKey(o.confirmedAt) === yest), month: sum(o => dayKey(o.confirmedAt).startsWith(month)),
+    all: sum(() => true), days, rows, todayKey: today, yesterdayKey: yest
+  };
 }
 
 function popularity(range) {
@@ -258,8 +270,10 @@ function petugasByToken(t) { const p = db.petugas.find(x => x.token === t && x.a
 const hits = new Map();
 function limit(key, max, ms) { const n = Date.now(), a = (hits.get(key) || []).filter(t => n - t < ms); a.push(n); hits.set(key, a); if (a.length > max) throw err(429, 'Terlalu banyak percobaan, coba sebentar lagi.'); }
 const pubUser = u => ({ id: u.id, role: u.role, username: u.username, name: u.name, active: u.active });
-const pubPetugas = p => { const w = wById(p.wahanaId); const k = dayKey(); const n = db.scans.filter(s => s.petugasId === p.id && s.result === 'ok' && dayKey(s.at) === k).length;
-  return { id: p.id, name: p.name, wahanaId: p.wahanaId, wahana: w ? w.nama : '-', token: p.token, active: p.active, today: n, lastAt: (db.scans.filter(s => s.petugasId === p.id).slice(-1)[0] || {}).at || null }; };
+const pubPetugas = p => {
+  const w = wById(p.wahanaId); const k = dayKey(); const n = db.scans.filter(s => s.petugasId === p.id && s.result === 'ok' && dayKey(s.at) === k).length;
+  return { id: p.id, name: p.name, wahanaId: p.wahanaId, wahana: w ? w.nama : '-', token: p.token, active: p.active, today: n, lastAt: (db.scans.filter(s => s.petugasId === p.id).slice(-1)[0] || {}).at || null };
+};
 
 async function api(req, res, u) {
   const m = req.method, p = u.pathname;
@@ -324,9 +338,11 @@ async function api(req, res, u) {
     need(req, '__admin__');
     if (p === '/api/admin/overview') {
       const k = dayKey();
-      return send(res, 200, { wahana: WAHANA.map(w => ({ id: w.id, nama: w.nama, kategori: w.kategori })), petugas: db.petugas.map(pubPetugas), users: db.users.filter(x => x.role !== 'admin').map(pubUser),
+      return send(res, 200, {
+        wahana: WAHANA.map(w => ({ id: w.id, nama: w.nama, kategori: w.kategori })), petugas: db.petugas.map(pubPetugas), users: db.users.filter(x => x.role !== 'admin').map(pubUser),
         stats: { scansToday: db.scans.filter(s => dayKey(s.at) === k && s.result === 'ok').length, rejectedToday: db.scans.filter(s => dayKey(s.at) === k && s.result !== 'ok').length, pending: db.orders.filter(o => o.status === 'pending').length },
-        recent: db.scans.slice(-30).reverse() });
+        recent: db.scans.slice(-30).reverse()
+      });
     }
     if (p === '/api/admin/petugas' && m === 'POST') {
       const b = await readBody(req); const name = String(b.name || '').trim().slice(0, 50);
@@ -434,6 +450,6 @@ async function start() {
   }
   server.listen(PORT, () => console.log('PANDATIX berjalan di port ' + PORT + ' dengan database Supabase'));
 }
-process.on('SIGINT', async () => { try { await flushSave(); } catch (e) {} process.exit(0); });
-process.on('SIGTERM', async () => { try { await flushSave(); } catch (e) {} process.exit(0); });
+process.on('SIGINT', async () => { try { await flushSave(); } catch (e) { } process.exit(0); });
+process.on('SIGTERM', async () => { try { await flushSave(); } catch (e) { } process.exit(0); });
 start().catch(e => { console.error('Startup gagal:', e.message); process.exit(1); });
