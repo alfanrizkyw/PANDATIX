@@ -1,5 +1,6 @@
 /* ikon (gaya lucide) */
 const IC={
+cart:'<circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>',
 search:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
 right:'<path d="m9 18 6-6-6-6"/>', left:'<path d="m15 18-6-6 6-6"/>',
 plusc:'<circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/>', plus:'<path d="M5 12h14M12 5v14"/>', minus:'<path d="M5 12h14"/>',
@@ -51,20 +52,16 @@ const BL=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des
 const BF=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 const HR=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
 const HF=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-const EN_BL=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const EN_BF=['January','February','March','April','May','June','July','August','September','October','November','December'];
-const fLang=()=>window.LANG==='en'?'en':'id';
 const W=t=>new Date(+t+7*3600e3); // WIB via getUTC*
-const fDate=(t,full)=>{const d=W(t),en=fLang()==='en',M=en?(full?EN_BF:EN_BL):(full?BF:BL);return d.getUTCDate()+' '+M[d.getUTCMonth()]+' '+d.getUTCFullYear()};
+const fDate=(t,full)=>{const d=W(t),M=full?BF:BL;return d.getUTCDate()+' '+M[d.getUTCMonth()]+' '+d.getUTCFullYear()};
 const fTime=t=>{const d=W(t);return String(d.getUTCHours()).padStart(2,'0')+'.'+String(d.getUTCMinutes()).padStart(2,'0')};
 const fTimeS=t=>fTime(t)+'.'+String(W(t).getUTCSeconds()).padStart(2,'0');
-const API_EN={'Jumlah tiket tidak valid.':'Invalid ticket quantity.','Item tidak ditemukan.':'Item not found.','Tiket tidak ditemukan.':'Ticket not found.','Pesanan tidak ditemukan.':'Order not found.','Kode pesanan tidak ditemukan.':'Order code not found.','Pesanan ini sudah dikonfirmasi sebelumnya.':'This order has already been confirmed.','Pesanan sudah kedaluwarsa. Minta pelanggan membuat pesanan baru.':'This order has expired. Please create a new order.'};
 async function api(url,opt={}){
   const o={method:opt.method||'GET',headers:{...(opt.headers||{})},cache:'no-store'};
   if(opt.body!==undefined){o.body=JSON.stringify(opt.body);o.headers['Content-Type']='application/json'}
-  let r;try{r=await fetch(url,o)}catch(e){throw new Error(fLang()==='en'?'Could not reach the server.':'Tidak dapat terhubung ke server.')}
+  let r;try{r=await fetch(url,o)}catch(e){throw new Error('Tidak dapat terhubung ke server.')}
   const j=await r.json().catch(()=>({}));
-  if(!r.ok){const en=fLang()==='en'?API_EN[j.error]:null;const e=new Error(en||j.error||(fLang()==='en'?'Something went wrong.':'Terjadi kesalahan'));e.status=r.status;throw e}
+  if(!r.ok){const e=new Error(j.error||'Terjadi kesalahan');e.status=r.status;throw e}
   return j;
 }
 function toast(msg,bad){let t=$('.toast');if(!t){t=document.createElement('div');t.className='toast';document.body.appendChild(t)}
