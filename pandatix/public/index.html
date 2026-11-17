@@ -1135,7 +1135,8 @@
 
     .fav .pk {
       flex: 0 0 min(320px, 80vw);
-      aspect-ratio: 4 / 5;
+      aspect-ratio: 4 / 5.5;
+      min-height: 435px;
       scroll-snap-align: center;
       background: #fff;
       border-radius: 20px;
@@ -1145,7 +1146,7 @@
       box-shadow: 0 14px 30px -18px rgba(0, 0, 0, .5);
       border-width: 1.5px;
       border-color: var(--line);
-      transition: transform .2s ease, box-shadow .2s ease;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
     }
 
     @media(min-width: 960px) {
@@ -1159,22 +1160,38 @@
       box-shadow: 0 22px 40px -18px rgba(0, 0, 0, .55);
     }
 
+    .fav .pk.popular {
+      border-color: #10B981;
+      box-shadow: 0 14px 30px -18px rgba(0, 0, 0, .5);
+    }
+
     .fav .pk.popular:hover {
       transform: translateY(-4px);
-      box-shadow: 0 0 0 2px #10B981, 0 22px 42px -12px rgba(16, 185, 129, .55);
+      box-shadow: 0 22px 40px -18px rgba(0, 0, 0, .55);
+      border-color: #059669;
     }
 
     .fav .pk .pk-header {
-      padding: 13px 16px 8px;
+      padding: 12px 16px 8px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      justify-content: center;
+      height: 52px;
       flex-shrink: 0;
+    }
+
+    .fav .pk .ptitle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
     }
 
     .fav .pk .ptitle h3 {
       font-size: 19px;
       letter-spacing: -.02em;
+      margin: 0;
     }
 
     .fav .pk .pk-slider-wrap {
@@ -1216,35 +1233,66 @@
       color: var(--ink-2);
       line-height: 1.35;
       margin: 0;
+      height: 33px;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
 
+    .fav .pk .feats {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .fav .pk .feats li {
+      font-size: 12px;
+      line-height: 1.25;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      height: 20px;
+    }
+
     .pk-spacer {
       flex: 1;
-      min-height: 4px;
+      min-height: 6px;
     }
 
     .fav .pk .pprice {
       border-top: 1px solid var(--line);
-      padding-top: 9px;
+      padding-top: 8px;
       margin-top: auto;
       flex-shrink: 0;
+      height: 56px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
     .fav .pk .btn.block {
+      height: 40px;
       min-height: 40px;
-      padding: 8px 16px;
+      padding: 0 16px;
       font-size: 13.5px;
       border-radius: 999px;
       flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
 
     .pk.popular {
       border-color: #10B981;
-      box-shadow: 0 0 0 2px #10B981, 0 16px 36px -10px rgba(16, 185, 129, .38);
+      box-shadow: 0 14px 30px -18px rgba(0, 0, 0, .5);
     }
 
     .pk-header {
@@ -1257,27 +1305,17 @@
     .pk-pop-badge {
       display: inline-flex;
       align-items: center;
-      font-size: 10.5px;
-      font-weight: 800;
-      letter-spacing: .05em;
-      text-transform: uppercase;
-      color: #064E3B;
-      background: linear-gradient(135deg, #A7F3D0 0%, #34D399 100%);
-      border: 1px solid #059669;
-      padding: 3px 8px;
-      border-radius: 5px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .02em;
+      color: #065F46;
+      background: #D1FAE5;
+      border: 1px solid #A7F3D0;
+      padding: 2.5px 8px;
+      border-radius: 999px;
       white-space: nowrap;
-      box-shadow: 0 0 14px rgba(16, 185, 129, .55), 0 2px 6px rgba(6, 78, 59, .2);
-      animation: popGlow 2.8s ease-in-out infinite alternate;
-    }
-
-    @keyframes popGlow {
-      0% {
-        box-shadow: 0 0 10px rgba(16, 185, 129, .45), 0 2px 4px rgba(6, 78, 59, .15);
-      }
-      100% {
-        box-shadow: 0 0 22px rgba(16, 185, 129, .85), 0 0 10px rgba(52, 211, 153, .65);
-      }
+      box-shadow: none;
+      animation: none;
     }
 
     .pk-slider-wrap {
@@ -1594,8 +1632,6 @@
       scroll-snap-type: x mandatory;
       padding: 4px 2px 12px;
       scrollbar-width: none;
-      -webkit-mask-image: linear-gradient(90deg, #000 94%, transparent);
-      mask-image: linear-gradient(90deg, #000 94%, transparent)
     }
 
     .fav::-webkit-scrollbar {
@@ -3867,23 +3903,23 @@
     }, { passive: true });
     /* ---------- HOME ---------- */
     const PK_FEATS = {
-      'paket-murah': ['Tiket masuk Lembah Pandawa & Area Danau', 'Dunia Air Cilik & Komidi Putar Bahari', 'Spot foto Pagoda Meru & jembatan lengkung'],
-      'paket-reguler': ['Semua fasilitas tiket Paket Murah', 'Kereta Mini Pesisir & Rumah Kaca Cermin', 'Komidi Putar Bahari & spot foto danau', 'Akses jalur fast-track gate utama'],
-      'paket-mahal': ['Bebas akses wahana tanpa batas antre (VIP)', 'Kapal Karam, Bumper Boat & Taman Lumba-Lumba', 'Sewa perahu eksklusif & spot foto khusus VIP', 'Bonus voucher kuliner Pandawa Rp 25.000']
+      'paket-murah': ['Dunia Air Cilik', 'Komidi Putar Bahari', 'Taman Lumba-Lumba'],
+      'paket-reguler': ['Kereta Mini Pesisir', 'Bianglala Cakrawala', 'Kolam Ombak Buatan'],
+      'paket-mahal': ['Kapal Karam', 'Bumper Boat', 'Flying Fox Camar']
     };
     const pkFeats = p => (PK_FEATS[p.id] || (p.wahanaIds ? p.wahanaIds.map(i => wn(wById(i))) : []));
     function paketShots(p) {
       if (p.id === 'paket-murah') {
-        return [heroImg, img('komidi-putar'), img('dunia-air-cilik')];
+        return [img('dunia-air-cilik'), img('komidi-putar'), img('taman-lumba')];
       }
       if (p.id === 'paket-reguler') {
-        return [heroImg, img('komidi-putar'), img('kereta-mini')];
+        return [img('kereta-mini'), img('bianglala'), img('kolam-ombak')];
       }
       if (p.id === 'paket-mahal') {
-        return [heroImg, img('kapal-karam'), img('bumper-boat')];
+        return [img('kapal-karam'), img('bumper-boat'), img('flying-fox')];
       }
       const ids = p.wahanaIds || [];
-      return [heroImg, img(ids[0] || 'komidi-putar'), img(ids[1] || 'kereta-mini')];
+      return ids.slice(0, 3).map(id => img(id));
     }
     function paketHTML(p) {
       const d = disc(p);
@@ -3932,8 +3968,7 @@
     <div class="in">
       <div class="fh">
         <div>
-          <h2>${L('Wahana favorit')}</h2>
-          <p class="sub">${L('Pilihan seru & paling diminati')}</p>
+          <h2>${L('Paket Bundling Wisata', 'Tour Bundle Packages')}</h2>
         </div>
       </div>
       <div class="fav" id="favCarousel">${CAT.paket.map(paketHTML).join('')}</div>
@@ -4059,14 +4094,6 @@
         window.__curFavIndex = idx;
         updateFavDots(idx);
       }, { passive: true });
-
-      window.__favTimer = setInterval(() => {
-        if (!canAutoScroll(fav)) return;
-        if (fav.scrollWidth <= fav.clientWidth + 10) return;
-        const cur = getFavIndex();
-        const next = (cur + 1) % cards.length;
-        favGo(next);
-      }, 3500);
     }
 
     function pkSlideGo(pkId, idx) {
@@ -4104,13 +4131,9 @@
         const slides = Array.from(slider.querySelectorAll('.pk-slide'));
         if (slides.length <= 1) return;
 
-        const delay = 2600;
+        const delay = 2600 + (pIdx * 600);
         const timer = setInterval(() => {
           if (!canAutoScroll(slider)) return;
-          // Only scroll images on the currently selected paket card
-          const currentSelected = typeof window.__curFavIndex === 'number' ? window.__curFavIndex : 0;
-          if (currentSelected !== pIdx) return;
-
           const cur = getPkSliderIndex(slider, slides);
           const next = (cur + 1) % slides.length;
           pkSlideGo(p.id, next);
