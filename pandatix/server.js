@@ -28,9 +28,9 @@ const WAHANA = [
   { id: 'taman-lumba', nama: 'Taman Lumba-Lumba', kategori: 'Anak', harga: 35000, durasi: 'Bebas', tinggi: 'Semua usia', desc: 'Area interaktif dengan pertunjukan lumba-lumba mini.' }
 ];
 const PAKET = [
-  { id: 'paket-murah', nama: 'Paket Murah', tag: 'Murah', kelas: 'murah', wahanaIds: ['dunia-air-cilik', 'komidi-putar', 'taman-lumba'], harga: 55000 },
-  { id: 'paket-reguler', nama: 'Paket Reguler', tag: 'Reguler', kelas: 'reguler', wahanaIds: ['kereta-mini', 'bianglala', 'kolam-ombak'], harga: 79000 },
-  { id: 'paket-mahal', nama: 'Paket Premium', tag: 'Premium', kelas: 'premium', wahanaIds: ['kapal-karam', 'bumper-boat', 'flying-fox'], harga: 119000 }
+  { id: 'paket-murah', nama: 'Paket Murah', tag: 'Murah', kelas: 'murah', desc: 'Buat yang mau seru-seruan santai tanpa bikin kantong bolong.', wahanaIds: ['dunia-air-cilik', 'komidi-putar', 'taman-lumba'], harga: 55000 },
+  { id: 'paket-reguler', nama: 'Paket Reguler', tag: 'Reguler', kelas: 'reguler', desc: 'Pilihan seimbang dengan 3 wahana favorit keluarga.', wahanaIds: ['kereta-mini', 'bianglala', 'kolam-ombak'], harga: 79000 },
+  { id: 'paket-mahal', nama: 'Paket Premium', tag: 'Premium', kelas: 'premium', desc: 'Paling lengkap, 3 wahana seru buat sehari penuh keseruan.', wahanaIds: ['kapal-karam', 'bumper-boat', 'flying-fox'], harga: 119000 }
 ];
 const wById = id => WAHANA.find(w => w.id === id);
 const pById = id => PAKET.find(p => p.id === id);
