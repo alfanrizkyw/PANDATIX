@@ -65,8 +65,8 @@ async function loadDatabase() {
     const create = await fetch(`${SUPABASE_URL}/rest/v1/pandatix_state`, { method: 'POST', headers: { ...sbHeaders(), 'Prefer': 'resolution=ignore-duplicates,return=minimal' }, body: JSON.stringify({ id: 1, data: db }) });
     if (!create.ok) throw new Error(`Gagal membuat state Supabase (${create.status}): ${await create.text()}`);
   }
-  migratePetugas();
   dbReady = true;
+  await migratePetugas();
 }
 function save() {
   if (!dbReady) return;
@@ -88,12 +88,14 @@ function addUser(role, username, name, password, extra = {}) {
   return u;
 }
 
-function migratePetugas() {
+async function migratePetugas() {
+  if (db.petugasMigrated) return;
   if (Array.isArray(db.petugas) && db.petugas.length) {
     for (const p of db.petugas) {
       if (!db.users.some(u => u.id === p.id || u.username === p.id)) {
         const cleanName = (p.name || '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 8);
-        let un = ('petugas_' + (cleanName || 'user') + '_' + p.id.slice(0, 4)).replace(/_+/g, '_');
+        const cleanId = (p.id || '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 4);
+        let un = ('petugas_' + (cleanName || 'user') + '_' + (cleanId || '1')).replace(/_+/g, '_');
         let counter = 1;
         while (db.users.some(u => u.username === un)) {
           un = 'petugas_' + counter++;
@@ -112,9 +114,10 @@ function migratePetugas() {
         });
       }
     }
-    db.petugas = [];
-    save();
   }
+  db.petugas = [];
+  db.petugasMigrated = true;
+  await flushSave();
 }
 
 async function flushSave() {
@@ -386,21 +389,25 @@ async function api(req, res, u) {
       if (!wById(b.wahanaId)) throw err(400, 'Pilih wahana.');
       if (db.users.some(x => x.username === un)) throw err(409, 'Username sudah dipakai.');
       const pt = addUser('petugas', un, name, pw, { wahanaId: b.wahanaId });
+      await flushSave();
       return send(res, 201, pubPetugas(pt));
     }
-    mm = p.match(/^\/api\/admin\/petugas\/(\w+)(?:\/(password|toggle))?$/);
+    mm = p.match(/^\/api\/admin\/petugas\/([\w-]+)(?:\/(password|toggle))?$/);
     if (mm) {
       const pt = db.users.find(x => x.id === mm[1] && x.role === 'petugas');
       if (!pt) throw err(404, 'Petugas tidak ditemukan.');
       if (m === 'DELETE') {
         db.users.splice(db.users.indexOf(pt), 1);
-        save();
+        for (const sid of Object.keys(db.sessions)) {
+          if (db.sessions[sid] && db.sessions[sid].uid === pt.id) delete db.sessions[sid];
+        }
+        await flushSave();
         emit(c => c.kind === 'scan' && c.petugasId === pt.id, 'revoked', {});
         return send(res, 200, { ok: true });
       }
       if (mm[2] === 'toggle') {
         pt.active = !pt.active;
-        save();
+        await flushSave();
         if (!pt.active) emit(c => c.kind === 'scan' && c.petugasId === pt.id, 'revoked', {});
         return send(res, 200, pubPetugas(pt));
       }
@@ -409,7 +416,7 @@ async function api(req, res, u) {
         if (pw.length < 6) throw err(400, 'Kata sandi minimal 6 karakter.');
         pt.salt = rnd(8);
         pt.pass = hash(pw, pt.salt);
-        save();
+        await flushSave();
         return send(res, 200, { ok: true });
       }
       if (m === 'PATCH') {
@@ -421,7 +428,7 @@ async function api(req, res, u) {
           emit(c => c.kind === 'scan' && c.petugasId === pt.id, 'revoked', {});
         }
         if (typeof b.active === 'boolean') pt.active = b.active;
-        save();
+        await flushSave();
         return send(res, 200, pubPetugas(pt));
       }
     }
@@ -432,14 +439,23 @@ async function api(req, res, u) {
       if (String(b.password || '').length < 6) throw err(400, 'Kata sandi minimal 6 karakter.');
       if (String(b.name || '').trim().length < 2) throw err(400, 'Nama wajib diisi.');
       if (db.users.some(x => x.username === un)) throw err(409, 'Username sudah dipakai.');
-      return send(res, 201, pubUser(addUser(b.role, un, String(b.name).trim().slice(0, 50), String(b.password))));
+      const nu = addUser(b.role, un, String(b.name).trim().slice(0, 50), String(b.password));
+      await flushSave();
+      return send(res, 201, pubUser(nu));
     }
-    mm = p.match(/^\/api\/admin\/users\/(\w+)(?:\/(password|toggle))?$/);
+    mm = p.match(/^\/api\/admin\/users\/([\w-]+)(?:\/(password|toggle))?$/);
     if (mm) {
       const usr = db.users.find(x => x.id === mm[1] && x.role !== 'admin'); if (!usr) throw err(404, 'Akun tidak ditemukan.');
-      if (m === 'DELETE') { db.users.splice(db.users.indexOf(usr), 1); save(); return send(res, 200, { ok: true }); }
-      if (mm[2] === 'toggle') { usr.active = !usr.active; save(); return send(res, 200, pubUser(usr)); }
-      if (mm[2] === 'password') { const pw = String((await readBody(req)).password || ''); if (pw.length < 6) throw err(400, 'Kata sandi minimal 6 karakter.'); usr.salt = rnd(8); usr.pass = hash(pw, usr.salt); save(); return send(res, 200, { ok: true }); }
+      if (m === 'DELETE') {
+        db.users.splice(db.users.indexOf(usr), 1);
+        for (const sid of Object.keys(db.sessions)) {
+          if (db.sessions[sid] && db.sessions[sid].uid === usr.id) delete db.sessions[sid];
+        }
+        await flushSave();
+        return send(res, 200, { ok: true });
+      }
+      if (mm[2] === 'toggle') { usr.active = !usr.active; await flushSave(); return send(res, 200, pubUser(usr)); }
+      if (mm[2] === 'password') { const pw = String((await readBody(req)).password || ''); if (pw.length < 6) throw err(400, 'Kata sandi minimal 6 karakter.'); usr.salt = rnd(8); usr.pass = hash(pw, usr.salt); await flushSave(); return send(res, 200, { ok: true }); }
     }
     throw err(404, 'Tidak ditemukan');
   }
@@ -502,9 +518,6 @@ async function start() {
     addUser('keuangan', 'keuangan01', 'Hendra Setiawan', 'keuangan123');
     addUser('petugas', 'petugas01', 'Budi Santoso', 'petugas123', { wahanaId: WAHANA[0].id });
     console.log('Akun awal dibuat -> admin/' + ap + ' , kasir01/kasir123 , keuangan01/keuangan123 , petugas01/petugas123 (segera ganti di /admin)');
-    await flushSave();
-  } else if (!db.users.some(u => u.role === 'petugas')) {
-    addUser('petugas', 'petugas01', 'Budi Santoso', 'petugas123', { wahanaId: WAHANA[0].id });
     await flushSave();
   }
   server.listen(PORT, () => console.log('PANDATIX berjalan di port ' + PORT + ' dengan database Supabase'));
