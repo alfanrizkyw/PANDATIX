@@ -59,16 +59,16 @@
 <script>
 let D=null,tab='petugas',POP=null,popRange='7d',popBusy=false;
 Shell.boot({roles:[],roleLabel:'Admin',idPrefix:'ADMIN',onReady(main){
-  main.innerHTML=`<div class="ttl"><div><h1>Panel Admin</h1><p>Kelola petugas wahana, link scan, dan akun staf. Pantau wahana yang paling sering dikunjungi. Satu wahana hanya boleh punya satu petugas.</p></div></div>
+  main.innerHTML=`<div class="ttl"><div><h1>Panel Admin</h1><p>Kelola akun petugas wahana, penugasan wahana, dan staf kasir/keuangan. Pantau wahana yang paling sering dikunjungi.</p></div></div>
   <div class="kpis" id="kp"></div><div class="tabs3" id="tb"></div><div id="body"></div>
-  <div class="mq" id="mq"><div class="in"><div id="mqQ"></div><b id="mqT"></b><p>Pindai dengan HP petugas untuk membuka halaman scan wahana ini.</p><button class="btn btn-out block" onclick="$('#mq').classList.remove('show')">Tutup</button></div></div>`;
+  <div class="mq" id="mReassign"><div class="in" style="text-align:left"><h3 style="margin-bottom:6px">Ganti Wahana Petugas</h3><p id="mrName" style="color:var(--ink-2);font-size:13px;margin-bottom:14px"></p><div class="field" style="margin-bottom:16px"><label>Pilih Wahana</label><select class="inp sel" id="mrWahana"></select></div><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn-w" onclick="$('#mReassign').classList.remove('show')">Batal</button><button class="btn" id="mrSave">Simpan</button></div></div></div>`;
   load();const d=debounce(load,200);Shell.stream({scan:d,order:d,_reconnect:d});
 }});
 async function load(){try{D=await api('/api/admin/overview');if(tab==='popularitas')POP=null;draw()}catch(e){toast(e.message,true)}}
-const lnk=t=>location.origin+'/s/'+t;
 function draw(){
   const act=D.petugas.filter(p=>p.active).length;
-  const K=[['Tiket masuk hari ini',D.stats.scansToday,'scan valid'],['Scan ditolak',D.stats.rejectedToday,'hari ini'],['Wahana terjaga',act+' / '+D.wahana.length,'petugas aktif'],['Pesanan menunggu',D.stats.pending,'belum dikonfirmasi']];
+  const covered=new Set(D.petugas.filter(p=>p.active).map(p=>p.wahanaId)).size;
+  const K=[['Tiket masuk hari ini',D.stats.scansToday,'scan valid'],['Scan ditolak',D.stats.rejectedToday,'hari ini'],['Wahana terjaga',covered+' / '+D.wahana.length,act+' petugas aktif'],['Pesanan menunggu',D.stats.pending,'belum dikonfirmasi']];
   $('#kp').innerHTML=K.map(k=>`<div class="card kpi"><small>${k[0]}</small><div class="v">${k[1]}</div><div class="f"><span>${k[2]}</span><span></span></div></div>`).join('');
   $('#tb').innerHTML=[['petugas','Petugas Wahana'],['popularitas','Popularitas Wahana'],['staf','Akun Kasir & Keuangan'],['log','Aktivitas Scan']].map(t=>`<button class="tb2 ${tab===t[0]?'on':''}" onclick="tab='${t[0]}';draw()">${t[1]}</button>`).join('');
   $('#body').innerHTML=tab==='petugas'?vPetugas():tab==='popularitas'?vPop():tab==='staf'?vStaf():vLog();
@@ -120,26 +120,49 @@ function popCsv(){
   setTimeout(()=>URL.revokeObjectURL(a.href),2000);toast('CSV popularitas diunduh');
 }
 function vPetugas(){
-  const taken=new Set(D.petugas.filter(p=>p.active).map(p=>p.wahanaId));
-  return `<form class="card frm" onsubmit="addP(event)"><div class="field"><label>Nama petugas</label><input class="inp" id="pn" required minlength="2" maxlength="50" placeholder="cth. Budi Santoso"></div>
-  <div class="field"><label>Wahana (1 petugas : 1 wahana)</label><select class="inp sel" id="pw" required><option value="">Pilih wahana…</option>${D.wahana.map(w=>`<option value="${w.id}" ${taken.has(w.id)?'disabled':''}>${esc(w.nama)}${taken.has(w.id)?' — sudah ada petugas':''}</option>`).join('')}</select></div>
-  <button class="btn">${ico('plus',18,2.4)} Tambah petugas</button></form>
-  <p class="hint">Setelah ditambahkan, sistem membuat link scan unik. Buka link itu di HP petugas yang berjaga di wahana; halaman scan hanya bisa memvalidasi tiket untuk wahana tersebut.</p>
+  return `<form class="card frm u" onsubmit="addP(event)">
+  <div class="field"><label>Nama petugas</label><input class="inp" id="pn" required minlength="2" maxlength="50" placeholder="cth. Budi Santoso"></div>
+  <div class="field"><label>Username</label><input class="inp" id="pu" required placeholder="petugas_budi" autocapitalize="none"></div>
+  <div class="field"><label>Kata sandi</label><input class="inp" id="pp" type="text" required minlength="6" placeholder="min. 6 karakter"></div>
+  <div class="field"><label>Wahana jaga</label><select class="inp sel" id="pw" required><option value="">Pilih wahana…</option>${D.wahana.map(w=>`<option value="${w.id}">${esc(w.nama)} (${w.kategori})</option>`).join('')}</select></div>
+  <button class="btn">${ico('plus',18,2.4)} Tambah</button></form>
+  <p class="hint">Setiap petugas login dengan username & sandi masing-masing di <b>/scan</b>. Satu wahana dapat dijaga oleh banyak petugas.</p>
   <div class="wl">${D.wahana.map((w,i)=>{const ps=D.petugas.filter(p=>p.wahanaId===w.id).sort((a,b)=>b.active-a.active);
-    return `<div class="card wr" style="animation-delay:${i*30}ms"><div class="wn"><b>${esc(w.nama)}</b><small>${w.kategori}</small></div><div>${ps.length?ps.map(pRow).join('<div style="height:12px"></div>'):`<div class="nop"><span class="chip red">Belum ada petugas</span><button class="btn-w" onclick="$('#pw').value='${w.id}';scrollTo({top:0,behavior:'smooth'});$('#pn').focus()">${ico('plus',14,2.4)} Tambah petugas</button></div>`}</div></div>`}).join('')}</div>`;
+    return `<div class="card wr" style="animation-delay:${i*30}ms"><div class="wn"><b>${esc(w.nama)}</b><small>${w.kategori} · ${ps.length} petugas</small></div><div>${ps.length?ps.map(pRow).join('<div style="height:12px"></div>'):`<div class="nop"><span class="chip red">Belum ada petugas</span><button class="btn-w" onclick="$('#pw').value='${w.id}';scrollTo({top:0,behavior:'smooth'});$('#pn').focus()">${ico('plus',14,2.4)} Tambah petugas</button></div>`}</div></div>`}).join('')}</div>`;
 }
 function pRow(p){
-  return `<div class="pt"><div class="h"><span class="av" style="width:32px;height:32px">${esc(p.name.split(/\s+/).map(x=>x[0]).slice(0,2).join('').toUpperCase())}</span><div><b>${esc(p.name)}</b><br><small>${p.today} scan valid hari ini${p.lastAt?' · terakhir '+fTime(p.lastAt)+' WIB':''}</small></div><span class="chip ${p.active?'':'brown'}">${p.active?'Aktif':'Nonaktif'}</span></div>
-  ${p.active?`<div class="lk">${ico('link',16,2)}<code>${lnk(p.token)}</code><button class="btn btn-sm" style="min-height:32px" onclick="copy('${p.token}')">${ico('copy',14,2)} Salin</button></div>`:''}
-  <div class="acts">${p.active?`<a class="btn-w" href="${lnk(p.token)}" target="_blank" rel="noopener">${ico('cam',14,2)} Buka scan</a><button class="btn-w" onclick="showQr('${p.token}','${esc(p.wahana)}')">${ico('qr',14,2)} QR link</button><button class="btn-w" onclick="resetP('${p.id}')">${ico('refresh',14,2)} Reset link</button>`:''}
-  <button class="btn-w" onclick="togP('${p.id}')">${p.active?'Nonaktifkan':'Aktifkan'}</button><button class="btn-w red" onclick="delP('${p.id}','${esc(p.name)}')">${ico('trash',14,2)} Hapus</button></div></div>`;
+  return `<div class="pt"><div class="h"><span class="av" style="width:32px;height:32px">${esc(p.name.split(/\s+/).map(x=>x[0]).slice(0,2).join('').toUpperCase())}</span><div><b>${esc(p.name)}</b> <small style="font-family:ui-monospace,monospace">@${esc(p.username)}</small><br><small>${p.today} scan valid hari ini${p.lastAt?' · terakhir '+fTime(p.lastAt)+' WIB':''}</small></div><span class="chip ${p.active?'':'brown'}">${p.active?'Aktif':'Nonaktif'}</span></div>
+  <div class="acts">
+  <button class="btn-w" onclick="openReassign('${p.id}','${esc(p.name)}','${p.wahanaId}')">${ico('refresh',14,2)} Ganti wahana</button>
+  <button class="btn-w" onclick="pwP('${p.id}')">Ganti sandi</button>
+  <button class="btn-w" onclick="togP('${p.id}')">${p.active?'Nonaktifkan':'Aktifkan'}</button>
+  <button class="btn-w red" onclick="delP('${p.id}','${esc(p.name)}')">${ico('trash',14,2)} Hapus</button></div></div>`;
 }
-async function addP(e){e.preventDefault();try{await api('/api/admin/petugas',{method:'POST',body:{name:$('#pn').value,wahanaId:$('#pw').value}});toast('Petugas ditambahkan. Link scan sudah siap.');await load()}catch(x){toast(x.message,true)}}
-async function copy(t){const u=lnk(t);try{await navigator.clipboard.writeText(u)}catch(e){const i=document.createElement('input');i.value=u;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove()}toast('Link scan disalin')}
-function showQr(t,n){$('#mqQ').innerHTML=qrSvg(lnk(t),320,1);$('#mqT').textContent=n;$('#mq').classList.add('show')}
-async function resetP(id){if(!confirm('Reset link? Link lama langsung tidak berlaku dan HP petugas harus membuka link baru.'))return;try{await api('/api/admin/petugas/'+id+'/reset',{method:'POST',body:{}});toast('Link baru dibuat');load()}catch(x){toast(x.message,true)}}
+async function addP(e){
+  e.preventDefault();
+  try{
+    await api('/api/admin/petugas',{method:'POST',body:{name:$('#pn').value,username:$('#pu').value,password:$('#pp').value,wahanaId:$('#pw').value}});
+    toast('Akun petugas berhasil dibuat');
+    $('#pn').value='';$('#pu').value='';$('#pp').value='';
+    await load();
+  }catch(x){toast(x.message,true)}
+}
+function openReassign(id,name,wId){
+  $('#mrName').textContent='Pindahkan tugas untuk '+name+':';
+  $('#mrWahana').innerHTML=D.wahana.map(w=>`<option value="${w.id}" ${w.id===wId?'selected':''}>${esc(w.nama)} (${w.kategori})</option>`).join('');
+  $('#mrSave').onclick=async()=>{
+    try{
+      await api('/api/admin/petugas/'+id,{method:'PATCH',body:{wahanaId:$('#mrWahana').value}});
+      $('#mReassign').classList.remove('show');
+      toast('Wahana petugas berhasil diganti');
+      load();
+    }catch(x){toast(x.message,true)}
+  };
+  $('#mReassign').classList.add('show');
+}
+async function pwP(id){const p=prompt('Kata sandi baru petugas (min. 6 karakter):');if(!p)return;try{await api('/api/admin/petugas/'+id+'/password',{method:'POST',body:{password:p}});toast('Kata sandi diganti')}catch(x){toast(x.message,true)}}
 async function togP(id){try{await api('/api/admin/petugas/'+id+'/toggle',{method:'POST',body:{}});load()}catch(x){toast(x.message,true)}}
-async function delP(id,n){if(!confirm('Hapus petugas '+n+'? Link scan-nya langsung mati.'))return;try{await api('/api/admin/petugas/'+id,{method:'DELETE'});load()}catch(x){toast(x.message,true)}}
+async function delP(id,n){if(!confirm('Hapus petugas '+n+'? Akun ini tidak akan bisa login lagi.'))return;try{await api('/api/admin/petugas/'+id,{method:'DELETE'});load()}catch(x){toast(x.message,true)}}
 function vStaf(){
   return `<form class="card frm u" onsubmit="addU(event)"><div class="field"><label>Nama</label><input class="inp" id="un" required placeholder="Nama lengkap"></div><div class="field"><label>Username</label><input class="inp" id="uu" required placeholder="kasir02" autocapitalize="none"></div>
   <div class="field"><label>Kata sandi</label><input class="inp" id="up" type="text" required minlength="6" placeholder="min. 6 karakter"></div><div class="field"><label>Peran</label><select class="inp sel" id="ur"><option value="kasir">Kasir</option><option value="keuangan">Staff Keuangan</option></select></div><button class="btn">${ico('plus',18,2.4)} Tambah</button></form>

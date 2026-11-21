@@ -65,6 +65,7 @@ async function loadDatabase() {
     const create = await fetch(`${SUPABASE_URL}/rest/v1/pandatix_state`, { method: 'POST', headers: { ...sbHeaders(), 'Prefer': 'resolution=ignore-duplicates,return=minimal' }, body: JSON.stringify({ id: 1, data: db }) });
     if (!create.ok) throw new Error(`Gagal membuat state Supabase (${create.status}): ${await create.text()}`);
   }
+  migratePetugas();
   dbReady = true;
 }
 function save() {
@@ -79,12 +80,41 @@ function save() {
     }).catch(e => console.error('Gagal menyimpan data ke Supabase:', e.message));
   }, 150);
 }
-function addUser(role, username, name, password) {
+function addUser(role, username, name, password, extra = {}) {
   const salt = rnd(8);
-  const u = { id: rnd(6), role, username, name, salt, pass: hash(password, salt), active: true, createdAt: Date.now() };
+  const u = { id: rnd(6), role, username, name, salt, pass: hash(password, salt), active: true, createdAt: Date.now(), ...extra };
   db.users.push(u);
   save();
   return u;
+}
+
+function migratePetugas() {
+  if (Array.isArray(db.petugas) && db.petugas.length) {
+    for (const p of db.petugas) {
+      if (!db.users.some(u => u.id === p.id || u.username === p.id)) {
+        const cleanName = (p.name || '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 8);
+        let un = ('petugas_' + (cleanName || 'user') + '_' + p.id.slice(0, 4)).replace(/_+/g, '_');
+        let counter = 1;
+        while (db.users.some(u => u.username === un)) {
+          un = 'petugas_' + counter++;
+        }
+        const salt = rnd(8);
+        db.users.push({
+          id: p.id,
+          role: 'petugas',
+          username: un,
+          name: p.name || 'Petugas Wahana',
+          salt,
+          pass: hash('petugas123', salt),
+          wahanaId: p.wahanaId || '',
+          active: p.active !== false,
+          createdAt: p.createdAt || Date.now()
+        });
+      }
+    }
+    db.petugas = [];
+    save();
+  }
 }
 
 async function flushSave() {
@@ -266,13 +296,12 @@ function sessionUser(req) {
   const u = db.users.find(x => x.id === s.uid); return u && u.active ? u : null;
 }
 function need(req, ...roles) { const u = sessionUser(req); if (!u || (roles.length && !roles.includes(u.role) && u.role !== 'admin')) throw err(401, 'Silakan masuk terlebih dahulu.'); return u; }
-function petugasByToken(t) { const p = db.petugas.find(x => x.token === t && x.active); return p; }
 const hits = new Map();
 function limit(key, max, ms) { const n = Date.now(), a = (hits.get(key) || []).filter(t => n - t < ms); a.push(n); hits.set(key, a); if (a.length > max) throw err(429, 'Terlalu banyak percobaan, coba sebentar lagi.'); }
-const pubUser = u => ({ id: u.id, role: u.role, username: u.username, name: u.name, active: u.active });
+const pubUser = u => ({ id: u.id, role: u.role, username: u.username, name: u.name, wahanaId: u.wahanaId, active: u.active });
 const pubPetugas = p => {
   const w = wById(p.wahanaId); const k = dayKey(); const n = db.scans.filter(s => s.petugasId === p.id && s.result === 'ok' && dayKey(s.at) === k).length;
-  return { id: p.id, name: p.name, wahanaId: p.wahanaId, wahana: w ? w.nama : '-', token: p.token, active: p.active, today: n, lastAt: (db.scans.filter(s => s.petugasId === p.id).slice(-1)[0] || {}).at || null };
+  return { id: p.id, name: p.name, username: p.username, wahanaId: p.wahanaId, wahana: w ? w.nama : '-', active: p.active, today: n, lastAt: (db.scans.filter(s => s.petugasId === p.id).slice(-1)[0] || {}).at || null };
 };
 
 async function api(req, res, u) {
@@ -339,37 +368,61 @@ async function api(req, res, u) {
     if (p === '/api/admin/overview') {
       const k = dayKey();
       return send(res, 200, {
-        wahana: WAHANA.map(w => ({ id: w.id, nama: w.nama, kategori: w.kategori })), petugas: db.petugas.map(pubPetugas), users: db.users.filter(x => x.role !== 'admin').map(pubUser),
+        wahana: WAHANA.map(w => ({ id: w.id, nama: w.nama, kategori: w.kategori })),
+        petugas: db.users.filter(x => x.role === 'petugas').map(pubPetugas),
+        users: db.users.filter(x => x.role !== 'admin' && x.role !== 'petugas').map(pubUser),
         stats: { scansToday: db.scans.filter(s => dayKey(s.at) === k && s.result === 'ok').length, rejectedToday: db.scans.filter(s => dayKey(s.at) === k && s.result !== 'ok').length, pending: db.orders.filter(o => o.status === 'pending').length },
         recent: db.scans.slice(-30).reverse()
       });
     }
     if (p === '/api/admin/petugas' && m === 'POST') {
-      const b = await readBody(req); const name = String(b.name || '').trim().slice(0, 50);
+      const b = await readBody(req);
+      const name = String(b.name || '').trim().slice(0, 50);
+      const un = String(b.username || '').trim().toLowerCase();
+      const pw = String(b.password || '');
       if (name.length < 2) throw err(400, 'Nama petugas wajib diisi.');
+      if (!/^[a-z0-9_.]{3,20}$/.test(un)) throw err(400, 'Username 3-20 karakter (huruf kecil, angka, titik, garis bawah).');
+      if (pw.length < 6) throw err(400, 'Kata sandi minimal 6 karakter.');
       if (!wById(b.wahanaId)) throw err(400, 'Pilih wahana.');
-      if (db.petugas.some(x => x.active && x.wahanaId === b.wahanaId)) throw err(409, 'Wahana ini sudah punya petugas. Satu wahana hanya boleh satu petugas.');
-      const pt = { id: rnd(6), name, wahanaId: b.wahanaId, token: rnd(24), active: true, createdAt: Date.now() }; db.petugas.push(pt); save();
+      if (db.users.some(x => x.username === un)) throw err(409, 'Username sudah dipakai.');
+      const pt = addUser('petugas', un, name, pw, { wahanaId: b.wahanaId });
       return send(res, 201, pubPetugas(pt));
     }
-    mm = p.match(/^\/api\/admin\/petugas\/(\w+)(?:\/(reset|toggle))?$/);
+    mm = p.match(/^\/api\/admin\/petugas\/(\w+)(?:\/(password|toggle))?$/);
     if (mm) {
-      const pt = db.petugas.find(x => x.id === mm[1]); if (!pt) throw err(404, 'Petugas tidak ditemukan.');
-      if (m === 'DELETE') { db.petugas.splice(db.petugas.indexOf(pt), 1); save(); emit(c => c.kind === 'scan' && c.petugasId === pt.id, 'revoked', {}); return send(res, 200, { ok: true }); }
-      if (mm[2] === 'reset') { pt.token = rnd(24); save(); emit(c => c.kind === 'scan' && c.petugasId === pt.id, 'revoked', {}); return send(res, 200, pubPetugas(pt)); }
+      const pt = db.users.find(x => x.id === mm[1] && x.role === 'petugas');
+      if (!pt) throw err(404, 'Petugas tidak ditemukan.');
+      if (m === 'DELETE') {
+        db.users.splice(db.users.indexOf(pt), 1);
+        save();
+        emit(c => c.kind === 'scan' && c.petugasId === pt.id, 'revoked', {});
+        return send(res, 200, { ok: true });
+      }
       if (mm[2] === 'toggle') {
-        if (!pt.active && db.petugas.some(x => x.active && x.wahanaId === pt.wahanaId)) throw err(409, 'Wahana ini sudah punya petugas aktif lain.');
-        pt.active = !pt.active; save(); if (!pt.active) emit(c => c.kind === 'scan' && c.petugasId === pt.id, 'revoked', {}); return send(res, 200, pubPetugas(pt));
+        pt.active = !pt.active;
+        save();
+        if (!pt.active) emit(c => c.kind === 'scan' && c.petugasId === pt.id, 'revoked', {});
+        return send(res, 200, pubPetugas(pt));
+      }
+      if (mm[2] === 'password') {
+        const pw = String((await readBody(req)).password || '');
+        if (pw.length < 6) throw err(400, 'Kata sandi minimal 6 karakter.');
+        pt.salt = rnd(8);
+        pt.pass = hash(pw, pt.salt);
+        save();
+        return send(res, 200, { ok: true });
       }
       if (m === 'PATCH') {
         const b = await readBody(req);
         if (b.name) pt.name = String(b.name).trim().slice(0, 50);
         if (b.wahanaId && b.wahanaId !== pt.wahanaId) {
           if (!wById(b.wahanaId)) throw err(400, 'Wahana tidak valid.');
-          if (db.petugas.some(x => x.active && x.id !== pt.id && x.wahanaId === b.wahanaId)) throw err(409, 'Wahana tujuan sudah punya petugas.');
-          pt.wahanaId = b.wahanaId; pt.token = rnd(24); emit(c => c.kind === 'scan' && c.petugasId === pt.id, 'revoked', {});
+          pt.wahanaId = b.wahanaId;
+          emit(c => c.kind === 'scan' && c.petugasId === pt.id, 'revoked', {});
         }
-        save(); return send(res, 200, pubPetugas(pt));
+        if (typeof b.active === 'boolean') pt.active = b.active;
+        save();
+        return send(res, 200, pubPetugas(pt));
       }
     }
     if (p === '/api/admin/users' && m === 'POST') {
@@ -393,17 +446,19 @@ async function api(req, res, u) {
 
   /* petugas wahana (scan) */
   if (p.startsWith('/api/scan/')) {
-    const pt = petugasByToken(req.headers['x-scan-token'] || u.searchParams.get('t') || '');
-    if (!pt) throw err(401, 'Link scan tidak valid atau sudah dinonaktifkan. Hubungi admin.');
-    const w = wById(pt.wahanaId);
-    if (p === '/api/scan/me') return send(res, 200, { name: pt.name, wahana: { id: w.id, nama: w.nama, kategori: w.kategori }, ...todayStats(pt) });
-    if (p === '/api/scan/stream') { sse(res); const c = { res, kind: 'scan', petugasId: pt.id }; clients.add(c); req.on('close', () => clients.delete(c)); return; }
-    if (p === '/api/scan/redeem' && m === 'POST') { limit('scan' + pt.id, 120, 60e3); const r = redeem(pt, (await readBody(req)).code, ip); return send(res, 200, { ...r, ...todayStats(pt) }); }
+    const usr = need(req, 'petugas');
+    const targetWahanaId = usr.role === 'admin' ? (u.searchParams.get('wahanaId') || usr.wahanaId || WAHANA[0].id) : usr.wahanaId;
+    const w = wById(targetWahanaId);
+    if (!w) throw err(400, 'Petugas belum ditugaskan ke wahana.');
+    const ptContext = { id: usr.id, name: usr.name, wahanaId: w.id };
+    if (p === '/api/scan/me') return send(res, 200, { id: usr.id, name: usr.name, username: usr.username, wahana: { id: w.id, nama: w.nama, kategori: w.kategori }, ...todayStats(ptContext) });
+    if (p === '/api/scan/stream') { sse(res); const c = { res, kind: 'scan', petugasId: usr.id }; clients.add(c); req.on('close', () => clients.delete(c)); return; }
+    if (p === '/api/scan/redeem' && m === 'POST') { limit('scan' + usr.id, 120, 60e3); const r = redeem(ptContext, (await readBody(req)).code, ip); return send(res, 200, { ...r, ...todayStats(ptContext) }); }
   }
   throw err(404, 'Tidak ditemukan');
 }
 
-const PAGES = { '/': 'index.html', '/admin': 'admin.html', '/kasir': 'kasir.html', '/keuangan': 'keuangan.html' };
+const PAGES = { '/': 'index.html', '/admin': 'admin.html', '/kasir': 'kasir.html', '/keuangan': 'keuangan.html', '/scan': 'scan.html' };
 const server = http.createServer(async (req, res) => {
   try {
     const u = new URL(req.url, 'http://x'); let p = decodeURIComponent(u.pathname);
@@ -445,7 +500,11 @@ async function start() {
     addUser('admin', 'admin', 'Administrator', ap);
     addUser('kasir', 'kasir01', 'Hendra Setiawan', 'kasir123');
     addUser('keuangan', 'keuangan01', 'Hendra Setiawan', 'keuangan123');
-    console.log('Akun awal dibuat -> admin/' + ap + ' , kasir01/kasir123 , keuangan01/keuangan123 (segera ganti di /admin)');
+    addUser('petugas', 'petugas01', 'Budi Santoso', 'petugas123', { wahanaId: WAHANA[0].id });
+    console.log('Akun awal dibuat -> admin/' + ap + ' , kasir01/kasir123 , keuangan01/keuangan123 , petugas01/petugas123 (segera ganti di /admin)');
+    await flushSave();
+  } else if (!db.users.some(u => u.role === 'petugas')) {
+    addUser('petugas', 'petugas01', 'Budi Santoso', 'petugas123', { wahanaId: WAHANA[0].id });
     await flushSave();
   }
   server.listen(PORT, () => console.log('PANDATIX berjalan di port ' + PORT + ' dengan database Supabase'));

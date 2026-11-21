@@ -12,20 +12,6 @@
     rel="stylesheet">
   <link rel="stylesheet" href="/app.css">
   <style>
-    .top {
-      background: var(--bg);
-      border-bottom: 1px solid var(--line);
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px
-    }
-
-    .top .logo {
-      font-size: 20px
-    }
-
     .wrapS {
       width: 100%;
       max-width: 560px;
@@ -317,89 +303,130 @@
         box-shadow: 0 0 0 10px rgba(255, 255, 255, 0), 0 8px 24px rgba(0, 0, 0, .2)
       }
     }
-
-    .lock {
-      min-height: 100vh;
-      display: none;
-      place-items: center;
-      padding: 24px;
-      text-align: center
-    }
-
-    .lock .card {
-      padding: 30px;
-      max-width: 380px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      align-items: center
-    }
   </style>
 </head>
 
 <body>
-  <div id="main" hidden>
-    <div class="top"><span class="logo">PANDATIX</span><span class="live" id="live"><i></i><span>Terhubung</span></span>
-    </div>
-    <div class="wrapS">
-      <div class="card wh"><small>Pos scan wahana</small>
-        <h1 id="wn">…</h1>
-        <div class="meta"><span class="chip" id="wk"></span><span id="pn"></span></div>
-      </div>
-      <div class="view"><video id="vid" muted playsinline></video>
-        <div class="fr" id="fr" hidden></div>
-        <div class="ph" id="ph"><span style="opacity:.9">Kamera belum aktif</span><button class="btn"
-            onclick="startCam()">Aktifkan kamera</button></div>
-      </div>
-      <form class="card man" onsubmit="man(event)"><input class="inp" id="mc" placeholder="Ketik kode tiket (PT-XXXXXX)"
-          autocomplete="off" autocapitalize="characters"><button class="btn" style="flex-shrink:0">Cek</button></form>
-      <div class="stat">
-        <div class="card st ok"><small>Masuk hari ini</small><b id="sok">0</b></div>
-        <div class="card st no"><small>Ditolak</small><b id="sno">0</b></div>
-      </div>
-      <div class="card rc">
-        <h3>Scan terakhir</h3>
-        <div id="rec"></div>
-      </div>
-    </div>
-  </div>
   <div class="res" id="res" onclick="hideRes()"></div>
-  <div class="lock" id="lock">
-    <div class="card">
-      <div class="logo" style="color:var(--p);font-weight:800;font-size:26px">PANDATIX</div>
-      <h3 id="lt">Link tidak valid</h3>
-      <p id="lm" style="color:var(--ink-2)"></p>
-    </div>
-  </div>
+
   <script src="/vendor/jsQR.js"></script>
   <script src="/common.js"></script>
+  <script src="/staff.js"></script>
   <script>
-    const TOKEN = location.pathname.split('/').pop(), H = { 'X-Scan-Token': TOKEN };
-    let scn = null, busy = false, ctx = null;
+    let scn = null, busy = false, ctx = null, hideT = null;
     const RS = { not_found: 'Tiket tidak ditemukan', unpaid: 'Tiket belum aktif', expired: 'Tidak berlaku hari ini', wrong_ride: 'Bukan untuk wahana ini', used: 'Sudah dipakai' };
-    function lockUI(t, m) { $('#main').hidden = true; $('#lock').style.display = 'grid'; $('#lt').textContent = t; $('#lm').textContent = m; if (scn) scn.stop() }
-    function stats(r) {
-      $('#sok').textContent = r.okCount; $('#sno').textContent = r.rejected;
-      $('#rec').innerHTML = r.recent.length ? r.recent.map(s => `<div class="ri"><div><b>${esc(s.code)}</b><small>${fTimeS(s.at)}${s.nama ? ' · ' + esc(s.nama) : ''}</small></div><span class="chip ${s.result === 'ok' ? '' : 'red'}">${s.result === 'ok' ? 'Valid' : RS[s.reason] || 'Ditolak'}</span></div>`).join('') : '<div class="empty" style="padding:18px">Belum ada scan.</div>'
-    }
-    async function init() {
-      try {
-        const r = await api('/api/scan/me', { headers: H }); $('#main').hidden = false; $('#wn').textContent = r.wahana.nama; $('#wk').textContent = r.wahana.kategori; $('#pn').textContent = 'Petugas: ' + r.name; document.title = r.wahana.nama + ' · Scan PANDATIX'; stats(r);
-        listen('/api/scan/stream?t=' + TOKEN, { scan: () => api('/api/scan/me', { headers: H }).then(stats).catch(() => { }), revoked: () => lockUI('Akses dicabut', 'Link scan ini dinonaktifkan atau diganti oleh admin. Minta link baru.') }, ok => { const l = $('#live'); l.classList.toggle('off', !ok); l.lastChild.textContent = ok ? 'Terhubung' : 'Terputus…' });
-        startCam(true)
+
+    Shell.boot({
+      roles: ['petugas'],
+      roleLabel: 'Petugas Wahana',
+      sub: 'Scan Tiket',
+      idPrefix: 'PTG',
+      onReady(main, user) {
+        main.innerHTML = `
+          <div class="wrapS">
+            <div class="card wh"><small>Pos scan wahana</small>
+              <h1 id="wn">…</h1>
+              <div class="meta"><span class="chip" id="wk"></span><span id="pn">Petugas: ${esc(user.name)}</span></div>
+            </div>
+            <div class="view"><video id="vid" muted playsinline></video>
+              <div class="fr" id="fr" hidden></div>
+              <div class="ph" id="ph"><span style="opacity:.9">Kamera belum aktif</span><button class="btn"
+                  onclick="startCam()">Aktifkan kamera</button></div>
+            </div>
+            <form class="card man" onsubmit="man(event)"><input class="inp" id="mc" placeholder="Ketik kode tiket (PT-XXXXXX)"
+                autocomplete="off" autocapitalize="characters"><button class="btn" style="flex-shrink:0">Cek</button></form>
+            <div class="stat">
+              <div class="card st ok"><small>Masuk hari ini</small><b id="sok">0</b></div>
+              <div class="card st no"><small>Ditolak</small><b id="sno">0</b></div>
+            </div>
+            <div class="card rc">
+              <h3>Scan terakhir</h3>
+              <div id="rec"></div>
+            </div>
+          </div>
+        `;
+        if (!$('#res')) {
+          const r = document.createElement('div');
+          r.className = 'res';
+          r.id = 'res';
+          r.onclick = hideRes;
+          document.body.appendChild(r);
+        }
+        initScannerUI();
       }
-      catch (e) { lockUI('Link tidak valid', e.message) }
+    });
+
+    function stats(r) {
+      $('#sok').textContent = r.okCount;
+      $('#sno').textContent = r.rejected;
+      $('#rec').innerHTML = r.recent.length
+        ? r.recent.map(s => `<div class="ri"><div><b>${esc(s.code)}</b><small>${fTimeS(s.at)}${s.nama ? ' · ' + esc(s.nama) : ''}</small></div><span class="chip ${s.result === 'ok' ? '' : 'red'}">${s.result === 'ok' ? 'Valid' : RS[s.reason] || 'Ditolak'}</span></div>`).join('')
+        : '<div class="empty" style="padding:18px">Belum ada scan.</div>';
     }
+
+    async function initScannerUI() {
+      try {
+        const r = await api('/api/scan/me');
+        $('#wn').textContent = r.wahana.nama;
+        $('#wk').textContent = r.wahana.kategori;
+        $('#pn').textContent = 'Petugas: ' + r.name;
+        document.title = r.wahana.nama + ' · Scan PANDATIX';
+        stats(r);
+
+        Shell.stream({
+          scan: () => api('/api/scan/me').then(stats).catch(() => {}),
+          revoked: () => {
+            toast('Penugasan wahana diubah atau akun diperbarui oleh admin.', true);
+            setTimeout(() => location.reload(), 1500);
+          },
+          _reconnect: () => api('/api/scan/me').then(stats).catch(() => {})
+        });
+
+        startCam(true);
+      } catch (e) {
+        toast('Gagal memuat info pos scan: ' + e.message, true);
+      }
+    }
+
     async function startCam(silent) {
       try {
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('nocam');
-        scn = new Scanner($('#vid'), submit); await scn.start(); $('#ph').hidden = true; $('#fr').hidden = false
+        scn = new Scanner($('#vid'), submit);
+        await scn.start();
+        $('#ph').hidden = true;
+        $('#fr').hidden = false;
+      } catch (e) {
+        $('#ph').hidden = false;
+        $('#ph').firstElementChild.textContent = location.protocol === 'http:' && location.hostname !== 'localhost'
+          ? 'Kamera butuh HTTPS. Buka link ini lewat https:// atau gunakan input manual di bawah.'
+          : 'Izinkan akses kamera di browser, lalu tekan tombol.';
       }
-      catch (e) { $('#ph').hidden = false; $('#ph').firstElementChild.textContent = location.protocol === 'http:' && location.hostname !== 'localhost' ? 'Kamera butuh HTTPS. Buka link ini lewat https:// atau gunakan input manual di bawah.' : 'Izinkan akses kamera di browser, lalu tekan tombol.' }
     }
-    function man(e) { e.preventDefault(); const v = $('#mc').value.trim(); if (v) { submit(v); $('#mc').value = '' } }
-    let hideT;
-    function beep(ok) { try { ctx = ctx || new (window.AudioContext || window.webkitAudioContext)(); const o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.value = ok ? 880 : 220; o.type = ok ? 'sine' : 'square'; g.gain.value = .15; o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + (ok ? .18 : .4)) } catch (e) { } if (navigator.vibrate) navigator.vibrate(ok ? 80 : [120, 60, 120]) }
+
+    function man(e) {
+      e.preventDefault();
+      const v = $('#mc').value.trim();
+      if (v) {
+        submit(v);
+        $('#mc').value = '';
+      }
+    }
+
+    function beep(ok) {
+      try {
+        ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.frequency.value = ok ? 880 : 220;
+        o.type = ok ? 'sine' : 'square';
+        g.gain.value = .15;
+        o.connect(g);
+        g.connect(ctx.destination);
+        o.start();
+        o.stop(ctx.currentTime + (ok ? .18 : .4));
+      } catch (e) {}
+      if (navigator.vibrate) navigator.vibrate(ok ? 80 : [120, 60, 120]);
+    }
+
     function showRes(ok, title, msg, sub, nama) {
       const r = $('#res');
       r.className = 'res show ' + (ok ? 'ok' : 'no');
@@ -412,15 +439,22 @@
       beep(ok);
       if (ok) hideT = setTimeout(hideRes, 1800);
     }
+
     function hideRes() {
-      $('#res').classList.remove('show');
-      if (scn) { scn.pause(1000); scn.last = '' }
+      const r = $('#res');
+      if (r) r.classList.remove('show');
+      if (scn) {
+        scn.pause(1000);
+        scn.last = '';
+      }
     }
+
     async function submit(code) {
-      if (busy || $('#res').classList.contains('show')) return;
-      busy = true; scn && scn.pause(2200);
+      if (busy || ($('#res') && $('#res').classList.contains('show'))) return;
+      busy = true;
+      scn && scn.pause(2200);
       try {
-        const r = await api('/api/scan/redeem', { method: 'POST', headers: H, body: { code } });
+        const r = await api('/api/scan/redeem', { method: 'POST', body: { code } });
         stats(r);
         if (r.ok) {
           showRes(true, 'VALID', `<b>${esc(r.nama)}</b> · tiket ${r.ticketNo} dari ${r.total}<br>${esc(r.tiket)}`, 'Silakan masuk');
@@ -440,13 +474,16 @@
           showRes(false, 'DITOLAK!', msg, '', r.nama);
         }
       } catch (e) {
-        if (e.status === 401) lockUI('Akses dicabut', e.message);
-        else showRes(false, 'GAGAL!', `Waduh terjadi kendala: ${esc(e.message)}<br><span style="font-size:14px;opacity:.9">Yuk coba scan sekali lagi!</span>`);
+        if (e.status === 401) {
+          toast('Sesi berakhir, silakan login kembali.', true);
+          setTimeout(() => location.reload(), 1200);
+        } else {
+          showRes(false, 'GAGAL!', `Waduh terjadi kendala: ${esc(e.message)}<br><span style="font-size:14px;opacity:.9">Yuk coba scan sekali lagi!</span>`);
+        }
       } finally {
         busy = false;
       }
     }
-    init();
   </script>
 </body>
 
